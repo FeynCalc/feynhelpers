@@ -1,0 +1,27 @@
+(* :Title: General.mt														*)
+
+(*
+	This software is covered by the GNU Lesser General Public License 3.
+	Copyright (C) 2015 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Unit tests for FeynHelpers									*)
+
+(* ------------------------------------------------------------------------ *)
+
+
+If [!StringQ[FeynCalc`$FeynHelpersDirectory],
+	BeginPackage["FeynCalc`"];
+	FCDeclareHeader@ToFileName[{$FeynCalcDirectory, "AddOns",
+	"FeynHelpers"}, "FeynHelpers.m"];
+	Get@ToFileName[{$FeynCalcDirectory, "AddOns",
+	"FeynHelpers"}, "FeynHelpers.m"];
+	EndPackage[]
+]
+
+ClearAll[tests];
+tests = FileNames["*.test",FileNameJoin[{$FeynHelpersDirectory, "Tests", "General"}]]
+Get/@tests;
+
+Map[Test[ToExpression[(#[[2]])],ToExpression[(#[[3]])],TestID->#[[1]]]&,
+	Join@@(ToExpression/@Names["Tests`General`*"])];
