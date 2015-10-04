@@ -53,7 +53,7 @@ Begin["`PackageX`Private`"]
 
 paxVerbose::usage="";
 
-$LaunchPackageX = "X`";
+$LaunchPackageX = "X`OneLoop`";
 
 Options[PaXEvaluate] = {
 	Dimension -> D,
@@ -180,10 +180,10 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 			kernel = LaunchKernels[1];
 
 			(* Dirty trick to prevent the package from flushing the front-end with its Print output  *)
-			ParallelEvaluate[Unprotect[System`Print]; System`Print=System`PrintTemporary&, kernel];
+			(*ParallelEvaluate[Unprotect[System`Print]; System`Print=System`PrintTemporary&, kernel];*)
 
 			(* Start Package X *)
-			ParallelEvaluate[Get["X`"], kernel];
+			With[{startX=$LaunchPackageX},ParallelEvaluate[Get[startX], kernel]];
 			resultX = With[{
 					input=xList/. {
 							dim->4-2*Hold[ToExpression["X`OneLoop`\[Epsilon]"]],
