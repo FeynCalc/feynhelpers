@@ -12,7 +12,7 @@
 Tests`General`FeynHelpers = {
 
 {"FeynHelpers-ID1","PaXEvaluate[FAD[{q, m}], q,
-ImplicitPrefactor -> 1/(2 Pi)^(4 - 2 Epsilon)]",
+PaXImplicitPrefactor -> 1/(2 Pi)^(4 - 2 Epsilon)]",
 	"(I m^2)/(16 Epsilon \[Pi]^2) - (
 I m^2 (-1 + EulerGamma - Log[4 \[Pi]] - Log[ScaleMu^2/m^2]))/(
 16 \[Pi]^2)"},
