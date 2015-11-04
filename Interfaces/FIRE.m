@@ -259,10 +259,11 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 			prs = props
 		];
 
-		(* the seed of Unique must be lowercase! *)
-		abbrList=Map[Rule[#, Unique["abm"]] &, Union[Cases[prs,massHead[__],Infinity]]];
+		(* 	The seed of unique must be lowercase! FLink might crash if the unique names become too long,
+			but since we always start counting with 1, this is unlikely to happend, until the counter goes
+			to some very large number.  *)
+		abbrList=MapIndexed[Rule[#1, ToExpression["abm"<>ToString[Identity@@#2]]] &, Union[Cases[prs,massHead[__],Infinity]]];
 
-		(*<> ToString[Identity @@ #2])*)
 
 		prs= prs//.abbrList;
 
