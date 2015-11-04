@@ -1,3 +1,15 @@
+(* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
+
+(* :Title: PackageX															*)
+
+(*
+	This software is covered by the GNU Lesser General Public License 3.
+	Copyright (C) 2015-2016 Vladyslav Shtabovenko
+*)
+
+(* :Summary: 	Interface between FeynCalc and Package-X					*)
+
+(* ------------------------------------------------------------------------ *)
 
 PaXEvaluate::usage="PaXEvaluate[expr,q,D] evaluates \
 scalar 1-loop integrals (up to 3-point functions) in expr that depend\

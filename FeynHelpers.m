@@ -1,4 +1,17 @@
-(* Wolfram Language package *)
+(* ::Package:: *)
+
+(* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
+
+(* :Title: FeynHelpers														*)
+
+(*
+	This software is covered by the GNU Lesser General Public License 3.
+	Copyright (C) 2015-2016 Vladyslav Shtabovenko
+*)
+
+(* :Summary: 	Interfaces between FeynCalc and other useful HEP package	*)
+
+(* ------------------------------------------------------------------------ *)
 
 $FeynHelpersVersion::usage=
 "$FVProjectionVersion is the string that represents the version of FVProjection";
@@ -12,7 +25,7 @@ End[]
 
 Begin["`FeynHelpers`Private`"];
 
-$FeynHelpersVersion="0.1.0";
+$FeynHelpersVersion="0.5.0";
 
 $FeynHelpersDirectory =
 ToFileName[{$FeynCalcDirectory, "AddOns", "FeynHelpers"}];
