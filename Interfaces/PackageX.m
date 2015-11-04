@@ -5,25 +5,25 @@ on the loop momentum q in D dimensions. The evaluation is done on
 a parellel kernel using H. Patel's Package-X.";
 
 PaXSubstituteEpsilon::usage=
-"PaXSubstituteEpsilon is an Option for PaXEvaluate. For brevity, \
+"PaXSubstituteEpsilon is an option for PaXEvaluate. For brevity, \
 Package-X normally abbreviates 1/Epsilon - EulerGamma + Log[4Pi] \
 by 1/Epsilon (see DimRegEpsilon in the Documentation of Package-X). \
 When SubstituteEpsilon is set to True, PaXEvaluate will undo this
 abbreviation to obtain the complete result.";
 
 PaXExpandInEpsilon::usage=
-"PaXExpandInEpsilon is an Option for PaXEvaluate. If ImplicitPrefactor is \
+"PaXExpandInEpsilon is an option for PaXEvaluate. If ImplicitPrefactor is \
 not unity and SubstituteEpsilon is set to True, then the value of ExpandInEpsilon \
 determines wheter the final result should be again expanded in Epsilon. Only the
 1/Epsilon pole is kept. The default value is True.";
 
 PaXSimplifyEpsilon::usage=
-"PaXSimplifyEpsilon is an Option for PaXEvaluate. When set to True, PaXEvaluate will
+"PaXSimplifyEpsilon is an option for PaXEvaluate. When set to True, PaXEvaluate will
 attempt to simplify the final result by applying simplifications to the Epsilon-free parts
 of the expression. The default value is True.";
 
 PaXImplicitPrefactor::usage=
-"PaXImplicitPrefactor is an Option for PaXEvaluate. It specifies a prefactor \
+"PaXImplicitPrefactor is an option for PaXEvaluate. It specifies a prefactor \
 that doesn't show up explicitly in the input expression, but is understood \
 to appear in fron of every 1-loop integral. For technical reasons, PaXImplicitPrefactor \
 shouldn't depend on the number of dimensions D. Instead you should explicitly specify \
@@ -327,7 +327,7 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 				PowerExpand[Log[x]]}/. Log[4 Pi x_] :> Log[4 Pi] + Log[x]);
 		];
 
-		FCPrint[2,"last finalResult (simplified): ", finalResult, FCDoControl->paxVerbose];
+		FCPrint[2,"PaXEvaluate: Last finalResult (simplified): ", finalResult, FCDoControl->paxVerbose];
 		finalResult
 	]
 

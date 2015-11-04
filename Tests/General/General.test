@@ -11,10 +11,14 @@
 
 Tests`General`FeynHelpers = {
 
-{"FeynHelpers-ID1","PaXEvaluate[FAD[{q, m}], q,
-PaXImplicitPrefactor -> 1/(2 Pi)^(4 - 2 Epsilon)]",
+{"FeynHelpers-ID1",
+	"PaXEvaluate[FAD[{q, m}], q,
+	PaXImplicitPrefactor -> 1/(2 Pi)^(4 - 2 Epsilon)]",
 	"(I m^2)/(16 Epsilon \[Pi]^2) - (
-I m^2 (-1 + EulerGamma - Log[4 \[Pi]] - Log[ScaleMu^2/m^2]))/(
-16 \[Pi]^2)"},
-{"FeynHelpers-ID2","",	"1"}
+	I m^2 (-1 + EulerGamma - Log[4 \[Pi]] - Log[ScaleMu^2/m^2]))/(
+	16 \[Pi]^2)"},
+{"FeynHelpers-ID2",
+	"PaXEvaluate[ FAD[{l, 0}, {q + l, 0}], l, PaXSubstituteEpsilon -> True,
+	PaXImplicitPrefactor -> 1/(2 Pi)^(4 - 2 Epsilon)]",	"I/(16 Epsilon \[Pi]^2) - (
+	I (-2 + EulerGamma - Log[-((4 \[Pi] ScaleMu^2)/Pair[Momentum[q], Momentum[q]])]))/(16 \[Pi]^2)"}
 };

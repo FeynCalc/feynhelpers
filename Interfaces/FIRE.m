@@ -1,219 +1,234 @@
 
 
 FeynBurn::usage="";
-FeynBurn2::usage="";
+
 $FIREPackage::usage="";
 
 
+AddPropagators::usage="AddPropagators is an option for FeynBurn. Normally, for loop integrals \
+that don't have enough propagators to form a complete basis, FeynBurn will automatically include \
+missing propagators and put them to unity after the reduction is complete. In some cases it may \
+be desirable to choose the missing propagators manually. This can be done by specifying the \
+propagators via AddPropagators->{prop1,prop2,...}. E.g.
+
+
+
+
+
+";
+
+FeynBurn::usage="FeynBurn[expr,{q1,q2,..},{p1,p2,..}] reduces loop integrals with loop \
+momenta q1,q2,... and external momenta p1,p2,... with integration-by-parts (IBP) relations. \
+The evaluation is done on a parellel kernel using A.V. Smirnov's and V.A. Smirnov's FIRE. \
+FeynBurn expects that the input doesn't contain any loop integrals with linearly dependent \
+propagators. Therefore, prior to starting the reduction, use ApartFF.";
 
 FeynBurn::tens=
-"Warning! Your input contains loop integrals that a has either loop momenta \
-with free indices or loop momenta contracted with Dirac matrices. Those integrals
-will be ignored, because FIRE doesn't handle such cases. Please simplify the Dirac
-algebra of perform tensor reduction first.";
+"Warning! Your input contains loop integrals that have either loop momenta \
+with free indices or loop momenta contracted with Dirac matrices and/or Epsilon tensors. \
+Those integrals will be ignored, because FIRE doesn't handle such cases. Please perform \
+the tensor reduction first.";
 
 FeynBurn::convfail=
 "Error! Conversion of the integral `1` to FIRE failed. Evaluation aborted. Reason: `2`";
 
-AddPropagators::usage=
-"fill me";
+FeynBurn::lindep=
+"Error! The input contains integrals with linearly dependent propagators. Please perform
+partial fractioning with ApartFF first. Problematic integrals are: `1`";
+
+FeynBurn::badcomp=
+"Error! You chose to complete the propagator basis by yourself, but the inclusion of the \
+propagators `1` that you specified either does not do give a complete basis for `2` or produces an
+overdetermined basis.";
 
 Begin["`Package`"]
 End[]
 
 Begin["`FIRE`Private`"]
 
+fbVerbose::usage="";
+
 $FIREPackage = "FIRE5`FIRE5`";
 
 
 Options[FeynBurn] = {
-	AddPropagators -> {}
+	AddPropagators -> Automatic,
+	FCVerbose -> False
 };
 
-fromTallyProps[props_List,qs_List]:=
-	FAD@@Map[(# /. {prop_, int_Integer} :>
-		Sequence@@Table[FCSplit[prop /. Power -> pow, qs] /.
-		{mass_,	pow[mom_, 2]} :> {mom, mass} /.
-		{-pow[m_, 2] :> m}, {i, 1, int}]) &, props];
-
-fromTallyQPs[qps_List]:=
-	Times @@ Map[(# /. {qp_, int_Integer} :>
-	Sequence@@Table[qp /. Power->pow /.
-	{Times[x_, y_] :> SPD[x, y], pow[x_,2] :> SPD[x,x]}, {i, 1, int}]) &,qps];
-
-
-
-(*	purely scalar loop integrals	*)
-toFIRE[FAD[b__],qs_List] :=
-	Block[{propList,check,pow},
-		FCPrint[3, "Integral accepted:",FAD[b]];
-		propList = Tally[Sort[{b}]] /. {
-			{{mom_, mass_}, int_Integer}:> {mom^2-mass^2,int},
-			{mom_, int_Integer}/;Head[mom]=!=List :> {mom^2,int}};
-		(* check that the list of propagators looks how it should *)
-		If[!MatchQ[propList, {{_, _Integer} ..}],
-			Message[FeynBurn::convfail,FAD[b],propList];
-			Abort[]
-		];
-		(* 	check that there is one-to-one correspondence between the list
-			of propagators and the original integral *)
-		check = fromTallyProps[propList,qs];
-		If[((FAD[b]-check)//FCI//FDS) =!= 0,
-			Message[FeynBurn::convfail,FAD[b],ToString[((FAD[b]-check)//FCI//FDS),InputForm]];
-			Abort[]
-		];
-
-		fireFormScalar[propList]
-	]/;!FreeQ2[{b},qs];
-
-(*	loop integrals with scalar products involving loop momenta	*)
-toFIRE[(qps : Times[SPD[_, _]^_. ..] ) FAD[b__],qs_List] :=
-	Block[{propList,qpList,pow,one,check,qpS},
-		If[Length[{qps}]>1,
-			qpS=Times@@{qps},
-			qpS = qps
-		];
-		FCPrint[3, "Integral accepted:", qpS FAD[b]];
-
-		qpList =Tally[Sort[List @@ (one*qpS /. Power -> pow)]] /.
-			{one,1} :> Sequence[] /.
-			{pow[x_, i1_Integer], i2_Integer} :> {x, i1*i2} /.
-			{SPD[x_, y_], int_Integer} :> {x*y,int};
-		(* 	check that there is one-to-one correspondence between the list
-			of scalar products and the original denominator *)
-		check = fromTallyQPs[qpList];
-		If[qpS =!= check,
-			Message[FeynBurn::convfail, ToString[qpS FAD[b],InputForm]];
-			Abort[]
-		];
-		propList = toFIRE2[FAD[b],qs]/.fireFormScalar->Identity;
-		fireFormQP[propList,qpList]
-	]/;!FreeQ2[{qps,b},qs];
-
-
-
-
-
-FeynBurn[expr_, q_, extMom_List, opts:OptionsPattern[]] :=
-	FeynBurn[expr, {q}, extMom,opts]/; Head[q]=!=List;
-
-
-FeynBurn[expr_, qs_List, extMom_List, OptionsPattern[]] :=
-	Block[ {fclsOutput, intsScalar, intsQP, intsScalarUnique,intsQPUnique,null1,null2,
-			fireList1,fireList2,fireRes1,fireRes2,finalRepList1,finalRepList2,res
+FeynBurn[expr_, qs_List/;qs=!={}, extMom_List, OptionsPattern[]] :=
+	Block[ {rest, loopInts, intsUnique,
+			fireList,fireRes,finalRepList,res,
+			multiloop=False,needApart, allFine, needCompletion,tmpList
 			},
 
+		If [OptionValue[FCVerbose]===False,
+			fbVerbose=$VeryVerbose,
+			If[MatchQ[OptionValue[FCVerbose], _Integer?Positive | 0],
+				fbVerbose=OptionValue[FCVerbose]
+			];
+		];
 
-		fclsOutput  = FCLoopSplit[expr,qs];
-		If [fclsOutput[[4]]=!=0,
+		FCPrint[1,"FeynBurn: Entering with: ", expr, FCDoControl->fbVerbose];
+		FCPrint[1,"FeynBurn: Loop momenta: ", qs, " ", FCDoControl->fbVerbose];
+		FCPrint[1,"FeynBurn: External momenta: ", extMom, " ", FCDoControl->fbVerbose];
+
+		(* 	If the user specifies more than one loop momentum, only multiloop integrals
+			are treated in the expression.	*)
+		If[	Length[qs]>1,
+			multiloop=True
+		];
+
+		{rest,loopInts,intsUnique} = FCLoopExtract[expr,qs,loopIntegral,FCLoopSplit->{2,3},MultiLoop->multiloop,PaVe->False];
+
+		(* 	If the input contains loop integrals with loop momenta that are uncontracted,
+			or contracted with Dirac matrices or epsilon tensors, issue a warning.*)
+		If [  FCLoopSplit[rest,qs][[4]]=!=0,
 			Message[FeynBurn::tens]
 		];
 
-		intsScalar=FCLoopIsolate[fclsOutput[[2]], qs, FCI->True, Head->loopIntegral];
-		intsQP=FCLoopIsolate[fclsOutput[[3]], qs, FCI->True, Head->loopIntegral];
 
-		intsScalarUnique = (Cases[intsScalar+null1+null2,loopIntegral[__],Infinity]/.null1|null2->0)//Union;
-		intsQPUnique = (Cases[intsQP+null1+null2,loopIntegral[__],Infinity]/.null1|null2->0)//Union;
+		(*	Check that the propagators of each integral form a basis	*)
+		tmpList=Map[{#, FCLoopBasisIncompleteQ[#,qs,FCI->True],
+			FCLoopBasisOverdeterminedQ[#,qs,FCI->True]}&,(intsUnique/.loopIntegral->Identity)];
 
-		fireList1 = Map[If[!FreeQ2[#,qs],toFIRE[FCE[#],qs],#]&, (intsScalarUnique/.loopIntegral->Identity)]/.fireFormScalar->Identity;
-		fireList2 = Map[If[!FreeQ2[#,qs],toFIRE[FCE[#],qs],#]&, (intsQPUnique/.loopIntegral->Identity)]/.fireFormQP->List;
-				If[!FreeQ2[Join[fireList1,fireList2],{loopIntegral,fireFormScalar,fireFormQP}],
-			Message[FeynBurn::convfail,ToString[Join[fireList1,fireList2],InputForm]];
+		needApart=Cases[tmpList,{_,True|False,True}];
+		allFine=Cases[tmpList,{_,False,False}];
+		needCompletion=Cases[tmpList,{_,True,False}];
+
+		If[needApart=!={},
+			Message[FeynBurn::lindep,ToString[needApart,InputForm]];
 			Abort[]
 		];
 
-		(* For now let us process the integrals one by one *)
-		If[	fireList1=!={},
-			fireRes1=Map[
-				If[!FreeQ2[#,qs],runFIRE[qs,extMom,#,{},OptionValue[AddPropagators]],#]&, fireList1],
-			fireRes1={}
-		];
-
-		If[	fireList2=!={},
-			fireRes2=Map[
-				If[!FreeQ2[#,qs],runFIRE[qs,extMom,#[[1]],#[[2]],{}],#]&, fireList2],
-			fireRes2={}
+		(* Check that we correctly decomposed the list of unique integrals*)
+		If[	Sort[Join[allFine,needCompletion]]=!=Sort[tmpList],
+			Print["Error..."];
+			Abort[]
 		];
 
 
-		(* OK, let's return the final result *)
-		finalRepList1= MapThread[Rule[#1,#2]&,{intsScalarUnique,fireRes1}];
-		finalRepList2= MapThread[Rule[#1,#2]&,{intsQPUnique,fireRes2}];
+		allFine=Map[{#[[1]],{}}&,allFine];
+		needCompletion=Map[FCLoopBasisFindCompletion[#[[1]],qs]&,needCompletion];
+		fireList = Map[{toFIRE[FCE[#[[1]]],qs],#[[2]]}&,Sort[Join[allFine,needCompletion]]];
+		fireList= Map[Join[#[[1]],Thread[List[(FCE/@#[[2]]), 0]]]&,fireList]/.{SPD[a_,b_]:>a*b};
 
-		res=FCI[fclsOutput[[1]]+(intsScalar/.finalRepList1)+(intsQP/.finalRepList2)];
+		FCPrint[3,"FeynBurn: Fire list: ", fireList, " ", FCDoControl->fbVerbose];
+
+		(* Process the integrals *)
+		If[	fireList=!={},
+			fireRes=Map[runFIRE[qs,extMom,#,OptionValue[AddPropagators]]&, fireList],
+			fireRes={}
+		];
+
+		(* Solutions list *)
+		finalRepList= MapThread[Rule[#1,#2]&,{intsUnique,fireRes}];
+		(* Final result *)
+		res = rest + FCI[loopInts/.finalRepList];
+
+		FCPrint[1,"FeynBurn: Leaving with: ", res, FCDoControl->fbVerbose];
+		res
+	];
+
+fromFIRE[props_List,qs_List]:=
+	Block[{pow,tmp,res,head,headSP},
+		res= props /. Power -> pow /. {
+			{y_, int_Integer?Negative} :> headSP[(y//.
+				{a_. q1_*q2_ +x_:0/;!FreeQ2[q1,qs] && !FreeQ2[q2,qs] && FreeQ[{q1,q2},SPD] :>
+					a SPD[q1,q2]+ x,
+					a_. pow[q_,2]+x_:0/;!FreeQ2[q,qs]:>a*SPD[q,q]+x}),-int],
+			{_, 0} :> Unevaluated[Sequence[]],
+			{x_, int_Integer?Positive} :>
+				(tmp=FCSplit[x,qs]; Power[FAD[{head[(tmp[[2]]/.pow[mom_, 2]:>mom)],
+				head[(tmp[[1]]/.{-pow[m_, 2]:>m})]}],int])};
+		FCPrint[4,"fromFIRE: Intermediate result :", res, FCDoControl->fbVerbose];
+		res = FeynAmpDenominatorCombine[Times@@(res /.pow->Power /.headSP->Power /. head->Identity)];
+		FCPrint[4,"fromFIRE: Final result :", res, FCDoControl->fbVerbose];
+		res
+	];
+
+toFIRE[int_,qs_List] :=
+	Block[{one,two,res,pow,check},
+
+		If[	!MatchQ[int,FAD[b__]/;!FreeQ2[{b},qs]] &&
+			!MatchQ[int,((qps : Times[SPD[_, _]^_. ..] ) FAD[b__])/;!FreeQ2[{b,qps},qs]],
+			Message[FeynBurn::convfail,ToString[int,InputForm],"toFIRE can't recognize the form of the integral."];
+			Abort[]
+		];
+		res = Tally[ReplaceAll[List@@(one*two*FeynAmpDenominatorSplit[int,FCE->True]),one | two -> Unevaluated[Sequence[]]]];
+
+		res = res/.Power -> pow /.	{pow[x_, i1_Integer], i2_Integer} :> {x, i1*i2} //. {
+									{SPD[x_, y_], i_Integer} :> {x*y,-i}, (* scalar products count as negative propagators*)
+									{FAD[mom_],i_Integer}/;Head[mom]=!=List:> {mom^2,i},
+
+									(* massHead is here to protect complicated mass terms like a*m or I*m etc. *)
+									{FAD[{mom_,mass_}],i_Integer}:> {mom^2-massHead[mass]^2,i}
+									};
+
+		FCPrint[4,"toFIRE: Intermediate result :", res, FCDoControl->fbVerbose];
+
+		If[!MatchQ[res, {{_, _Integer} ..}],
+			Message[FeynBurn::convfail,int,res];
+			Abort[]
+		];
+
+		(* 	check that there is one-to-one correspondence between the list
+			of propagators and the original integral *)
+		check = fromFIRE[res,qs];
+
+		If[((int-(check/.massHead->Identity))//FCI//FDS) =!= 0,
+			Message[FeynBurn::convfail,int,ToString[(int-check)//FCI//FDS,InputForm]];
+			Abort[]
+		];
 
 		res
-
-
-
 	];
 
 
-
-runFIRE[qs_List,ext_List,prop_List,qps_List,addprops_List,file_:ToFileName[{$FeynCalcDirectory, "Database"}, "tempFIRE"]]:=
-	Block[{internal,external,propagators,replacements, integral, kernel, outFIRE, gList,
-		gListProps,gListQPs, pList,qpList,g,fadList,spdList,repList,fakeTailLen=0,
-		aux,fullBasis,ourBasis,fakeStuff={}},
-
-		(* 	list of loop momenta; We take only loop momenta that are explicitly present
-			in the integral. Otherwise FIRE would "wrongly" set the integral to zero *)
-
-		internal=Select[qs,!FreeQ2[{prop,qps},#]&];
-		(* 	list of external momenta; We take only external momenta that are explicitly
-			present in the integral. *)
-		external=Select[ext, !FreeQ2[{prop,qps},#]&];
-
-		(* list of unique propagators and scalar products involving loop momenta *)
-		propagators= Join[prop,qps]/.{a_,_Integer}:>a;
-
-		(* create list of all possible basis elements *)
-		aux[x_] :=
-			Map[(x*#) &, external];
-		fullBasis=Join[Apply[Times, #] & /@ Tuples[internal, {2}],(aux /@ internal) // Flatten] // Union;
-
-		(* determine basis elements availalbe in our integral	*)
-		ourBasis=((Expand2[#, internal] /. Plus -> Sequence) & /@ propagators) //Select[#, ! FreeQ2[#1, internal] &] & //
-		ReplaceAll[#, {a_ x_ /; FreeQ2[a, Join[internal,external]] :> x}] & // Union;
-
-		(*	if our basis is not complete, we add fake scalar products to make it complete
-			With "fake" we mean that even though they appear in the propagator lists,
-			their power in the F-integral is 0. Thus they are needed only for the reduction
-			itself and are dropped afterwards.
-		*)
-		FCPrint[1,"FeynBurn: Full basis ",fullBasis];
+runFIRE[qs_List,ext_List,props_List,addprops_,file_:ToFileName[{$FeynCalcDirectory, "Database"}, "tempFIRE"]]:=
+	Block[{internal,external,prs,propagators,replacements, integral, kernel, outFIRE, gList,
+		pList,g,repList,solsList,res,null1,null2,tmp},
 
 
-		If[addprops =!= {},
-			tmpprops = Map[FCSplit[#,Join[qs,ext],Expanding->False][[2]]&,propagators];
+		If[	addprops=!=Automatic && Head[addprops]===List && addprops=!={},
 
+			(* If the user wants to compete the basis by hand	*)
+			prs = Join[Cases[props,{_,x_/;x=!=0}],Map[{#,0}&,addprops]];
 
-			fakeStuff=Complement[addprops,tmpprops];
-			fakeTailLen= Length[fakeStuff];
-			propagators = Join[propagators,fakeStuff]
-
+			(* 	Check that with this completion the basis is indeed complete and not
+				overdetermined	*)
+			tmp=fromFIRE[prs /. {a_ b_,0}:>{a b,-1} /. {a_^2 - b_^2,0}:>{a^2-b^2,1},qs];
+			FCPrint[3,"runFIRE: Integral with missing propagators (user input):", tmp, FCDoControl->fbVerbose];
+			If[!(!FCLoopBasisIncompleteQ[tmp,qs,FCI->True] && !FCLoopBasisOverdeterminedQ[tmp,qs,FCI->True]),
+				Message[FeynBurn::badcomp,ToString[addprops,InputForm],ToString[tmp,InputForm]];
+				Abort[]
+			],
+			prs = props
 		];
 
-		(* determine basis elements availalbe in our integral	*)
-		finalBasis=((Expand2[#, internal] /. Plus -> Sequence) & /@ propagators) //Select[#, ! FreeQ2[#1, internal] &] & //
-		ReplaceAll[#, {a_ x_ /; FreeQ2[a, Join[internal,external]] :> x}] & // Union;
+		(* 	We take only loop and external momenta that are explicitly present in the integral.
+			Otherwise FIRE might "wrongly" set the integral to zero *)
+		internal=Select[qs,!FreeQ2[{prs},#]&];
+		external=Select[ext, !FreeQ2[{prs},#]&];
 
-		FCPrint[1,"FeynBurn: Final basis ",finalBasis];
-
-
+		(*	unique propagators	*)
+		propagators= prs/.{a_,_Integer}:>a;
 
 		(*	kinematics for external momenta	*)
-		replacements=Map[Rule[Apply[Times, #], SP[#[[1]], #[[2]]]] &, Union[Sort /@ Tuples[external, 2]]];
+		replacements=Map[Rule[Apply[Times, #], SPD[#[[1]], #[[2]]]] &, Union[Sort /@ Tuples[external, 2]]];
 
-		(*	 this is the integral F[1,xxx] that FIRE will simplify	*)
-		integral = {1,(Join[(prop/.{_,a_Integer}:>a),(qps/.{_,a_Integer}:>-a),Sequence@@Tuples[{0},fakeTailLen]])};
+		(*	this is the integral F[1,xxx] that FIRE will simplify	*)
+		integral = {1,prs/.{_,a_Integer}:>a};
 
 
-		FCPrint[3,"FIRE's Internal :", StandardForm[internal]];
-		FCPrint[3,"FIRE's External :", StandardForm[external]];
-		FCPrint[3,"FIRE's Propagators :", StandardForm[propagators]];
-		FCPrint[3,"FIRE's Replacements :", StandardForm[replacements]];
-		FCPrint[3,"FIRE's Intitial Data File :", StandardForm[file]];
-		FCPrint[3,"FIRE's F integral :", StandardForm[integral]];
+		FCPrint[3,"runFIRE: FIRE's Internal :", StandardForm[internal], FCDoControl->fbVerbose];
+		FCPrint[3,"runFIRE: FIRE's External :", StandardForm[external], FCDoControl->fbVerbose];
+		FCPrint[3,"runFIRE: FIRE's Propagators :", StandardForm[propagators], FCDoControl->fbVerbose];
+		FCPrint[3,"runFIRE: FIRE's Replacements :", StandardForm[replacements], FCDoControl->fbVerbose];
+		FCPrint[3,"runFIRE: FIRE's Intitial Data File :", StandardForm[file], FCDoControl->fbVerbose];
+		FCPrint[3,"runFIRE: FIRE's F integral :", StandardForm[integral], FCDoControl->fbVerbose];
+
+
 		(* Start a new kernel	*)
 		kernel = LaunchKernels[1];
 		(* Dirty trick to prevent the package from flushing the front-end with its Print output  *)
@@ -226,6 +241,8 @@ runFIRE[qs_List,ext_List,prop_List,qps_List,addprops_List,file_:ToFileName[{$Fey
 		With[{replacements1=replacements},ParallelEvaluate[System`Replacements = replacements1,kernel]];
 		ParallelEvaluate[System`PrepareIBP[], kernel];
 		With[{file1=file},ParallelEvaluate[
+				(*	Make FIRE detect the boundary conditions automatically*)
+				(*TODO Idea: have FIRE config file*)
 				System`Prepare[AutoDetectRestrictions -> True];
 				System`SaveStart[file1],
 				kernel
@@ -242,35 +259,28 @@ runFIRE[qs_List,ext_List,prop_List,qps_List,addprops_List,file_:ToFileName[{$Fey
 		kernel]];
 		outFIRE = (With[{integral1=integral},ParallelEvaluate[System`F@@integral1, kernel]])/.{Global`G->g,Global`d->System`D};
 		CloseKernels[kernel];
-		FCPrint[1,"Output of FIRE: ", outFIRE];
-		If [$VersionNumber>=10,
+
+		(* LaunchKernels[1] returns an object in MMA 8 and 9, but a list element in MMA 10 and above*)
+		If[	$VersionNumber>=10,
 				outFIRE = Total[outFIRE];
 		];
+
+		FCPrint[3,"runFIRE: Output of FIRE: ", outFIRE, FCDoControl->fbVerbose];
+
 		gList = Cases[Expand2[outFIRE, g]+null1+null2, g[__] ,Infinity];
+		FCPrint[3,"gList: ", gList, FCDoControl->fbVerbose];
 
-		FCPrint[3,"gList: ", gList];
-		(*Drop fake stuff*)
-		gList = gList/. g[z_,x__List]:>g[z, Take[x,Length[x]-Length[fakeTailLen]]];
-		FCPrint[3,"gList after dropping fake stuff: ", gList];
+		pList = Map[MapThread[{#1, #2} &, {propagators, (#/. g[_, i_] :> i)}]&,gList];
+		pList = Map[(#/. {_,0}:>Unevaluated[Sequence[]])&,pList];
+		FCPrint[3,"pList: ", pList, FCDoControl->fbVerbose];
 
-		gListProps = gList /. g[z_,x__List]:>g[z,x[[1;;Length[prop]]]];
-		gListQPs = gList /.g[z_,x__List]:>g[z,Take[x,-Length[qps]]];
+		solsList=fromFIRE[#,qs]&/@pList;
+		repList= MapThread[Rule[#1,#2]&,{gList,solsList}];
 
-		FCPrint[3,"gListProps: ", gListProps];
-		FCPrint[3,"gListQPs: ", gListQPs];
+		FCPrint[3,"repList: ", repList, FCDoControl->fbVerbose];
 
-		(*TODO check that all integers in gListProps are either 0 or positive *)
-		(*TODO check that all integers in gListQPs are either 0 or negative *)
-
-		pList = Map[MapThread[{#1, #2} &, {propagators[[1;;Length[prop]]], (#/. g[_, i_] :> i)}]&,gListProps];
-		qpList = Map[MapThread[{#1, #2} &, {Take[propagators,-Length[qps]], (#/. g[_, i_] :> i)}]&,gListQPs];
-		FCPrint[3,"pList: ", pList];
-		FCPrint[3,"qpList: ", qpList];
-
-		fadList=fromTallyProps[#,qs]&/@pList;
-		spdList=fromTallyQPs/@qpList;
-		repList= MapThread[Rule[#1,#2*#3]&,{gList,fadList,spdList}];
-		outFIRE/.repList
+		res = outFIRE/.repList/. massHead->Identity;
+		res
 	];
 
 End[]
