@@ -70,6 +70,8 @@ FIREBurn::badconfig2=
 "Error! The FIRE configuration file `1` appears to be invalid. It doesn't contain the list of \
 propagators, that must be specified as \"Propagators={...};\"";
 
+toFIRE::usage="";
+
 Begin["`Package`"]
 End[]
 
@@ -171,6 +173,8 @@ fromFIRE[props_List,qs_List]:=
 			{y_, int_Integer?Negative} :> headSP[(y//.
 				{a_. q1_*q2_ +x_:0/;!FreeQ2[q1,qs] && !FreeQ2[q2,qs] && FreeQ[{q1,q2},SPD] :>
 					a SPD[q1,q2]+ x,
+				p_*q_ +x_:0/;!FreeQ2[q,qs] && FreeQ2[p,qs] && FreeQ[{q,p},SPD] :>
+					SPD[q,p]+ x,
 					a_. pow[q_,2]+x_:0/;!FreeQ2[q,qs]:>a*SPD[q,q]+x}),-int],
 			{_, 0} :> Unevaluated[Sequence[]],
 			{x_, int_Integer?Positive} :>
@@ -211,7 +215,6 @@ toFIRE[int_,qs_List] :=
 		(* 	check that there is one-to-one correspondence between the list
 			of propagators and the original integral *)
 		check = fromFIRE[res,qs];
-
 		If[((int-(check/.massHead->Identity))//FCI//FDS) =!= 0,
 			Message[FIREBurn::convfail,int,ToString[(int-check)//FCI//FDS,InputForm]];
 			Abort[]
@@ -235,7 +238,8 @@ batchFIRE[qs_List,ext_List,props_List,opts:OptionsPattern[FIREBurn]]:=
 prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 	Block[{	internal,external,prs,propagators,replacements,
 			integral,tmp,addprops,startFile,fireConfig1,fireConfig2,
-			fireConfigPath1,fireConfigPath2,firePath,abbrList={}},
+			fireConfigPath1,fireConfigPath2,firePath,abbrListMasses={},
+			abbrListMoms={}},
 
 		addprops = OptionValue[FIREAddPropagators];
 		startFile = OptionValue[FIREStartFile];
@@ -259,25 +263,46 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 			prs = props
 		];
 
-		(* 	The seed of unique must be lowercase! FLink might crash if the unique names become too long,
-			but since we always start counting with 1, this is unlikely to happend, until the counter goes
-			to some very large number.  *)
-		abbrList=MapIndexed[Rule[#1, ToExpression["abm"<>ToString[Identity@@#2]]] &, Union[Cases[prs,massHead[__],Infinity]]];
-
-
-		prs= prs//.abbrList;
-
-
 		(* 	We take only loop and external momenta that are explicitly present in the integral.
 			Otherwise FIRE might "wrongly" set the integral to zero *)
 		internal=Select[qs,!FreeQ2[{prs},#]&];
 		external=Select[ext, !FreeQ2[{prs},#]&];
 
+		(* 	The seed of unique must be lowercase! FLink might crash if the unique names become too long,
+			but since we always start counting with 1, this is unlikely to happend, until the counter goes
+			to some very large number.  *)
+		abbrListMasses=MapIndexed[Rule[Power[#1,2], ToExpression["am"<>ToString[Identity@@#2]]] &, Union[Cases[prs,massHead[__],Infinity]]];
+
+		abbrListMoms=MapIndexed[Rule[#1, ToExpression["ap"<>ToString[Identity@@#2]]] &,
+			Union[Map[Times[#[[1]], #[[2]]] &, Union[Sort /@ Tuples[external, 2]]]]];
+
+		(* Fish out numerical values for external momenta	*)
+		abbrListMoms = Map[ If[ NumberQ[SPD[#[[1]],#[[2]]]],
+						Rule[#[[1]],SPD[#[[1]],#[[2]]]],
+						#]&, abbrListMoms];
+
+		(*	kinematics for external momenta	*)
+		replacements= abbrListMoms;
+
+		(*Map[
+			If[ IntegerQ[SPD[#[[1]], #[[2]]]],
+				Rule[Apply[Times, #],
+				SPD[#[[1]], #[[2]]]],Unevaluated[Sequence[]]] &, Union[Sort /@ Tuples[external, 2]]];*)
+
+
+		prs= prs//.abbrListMasses /. abbrListMoms;
+
+
+		(*TODO fix this*)
+		If[!FreeQ[prs,massHead],
+			Message[FIREBurn::fail,""];
+			Abort[]
+		];
+
 		(*	unique propagators	*)
 		propagators= prs/.{a_,_Integer}:>a;
 
-		(*	kinematics for external momenta	*)
-		replacements=Map[Rule[Apply[Times, #], SPD[#[[1]], #[[2]]]] &, Union[Sort /@ Tuples[external, 2]]];
+
 
 		(*	this is the integral F[1,xxx] that FIRE will reduce	*)
 		integral = {1,prs/.{_,a_Integer}:>a};
@@ -316,7 +341,8 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 		WriteString[fireConfig2, "Get[\""<> firePath  <>"\"];\n"];
 		WriteString[fireConfig2, "LoadStart[" <> ToString[startFile,InputForm] <> ",1];\n"];
 		WriteString[fireConfig2, "Burn[];\n"];
-		WriteString[fireConfig2, "abbrList="<> ToString[Reverse/@abbrList,InputForm]  <>";\n"];
+		WriteString[fireConfig2, "abbrListMasses="<> ToString[Reverse/@abbrListMasses,InputForm]  <>";\n"];
+		WriteString[fireConfig2, "abbrListMoms="<> ToString[Reverse/@abbrListMoms,InputForm]  <>";\n"];
 		WriteString[fireConfig2, "F@@" <> ToString[integral,InputForm] <> "\n"];
 		Close[fireConfig2];
 
@@ -324,7 +350,8 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 
 RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 	Block[{	tmp,propagators,qs,kernel, outFIRE, gList, pList,g,repList,
-			solsList,res,null1,null2,abbreviatons},
+			solsList,res,null1,null2,abbreviatonsMasses={},
+			abbreviatonsMomenta={}},
 
 
 		FCPrint[3,"RunFIRE: Entering with: ", {fireConfigPath1,fireConfigPath2}, FCDoControl->fbVerbose];
@@ -352,13 +379,24 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 		propagators=StringTrim[tmp[[1]], {"Propagators=", ";"}]//ToExpression;
 
 		(*	Get the abbreviations for masses. This one is optional.	*)
-		tmp = FindList[fireConfigPath2, {"abbrList="}];
+		tmp = FindList[fireConfigPath2, {"abbrListMasses="}];
 
 		If[	Length[tmp]===1,
-			abbreviatons=StringTrim[tmp[[1]], {"abbrList=", ";"}]//ToExpression;
+			abbreviatonsMasses=StringTrim[tmp[[1]], {"abbrListMasses=", ";"}]//ToExpression;
 		];
-		FCPrint[3,"RunFIRE: List of abbreviations: ", abbreviatons, FCDoControl->fbVerbose];
 
+		(*	Get the abbreviations for masses. This one is optional.	*)
+		tmp = FindList[fireConfigPath2, {"abbrListMoms="}];
+
+		If[	Length[tmp]===1,
+			abbreviatonsMomenta=StringTrim[tmp[[1]], {"abbrListMoms=", ";"}]//ToExpression;
+		];
+
+
+		FCPrint[3,"RunFIRE: List of abbreviations for masses: ", abbreviatonsMasses, FCDoControl->fbVerbose];
+		FCPrint[3,"RunFIRE: List of abbreviations for momenta: ", abbreviatonsMomenta, FCDoControl->fbVerbose];
+
+		FCPrint[3,"RunFIRE: First run", FCDoControl->fbVerbose];
 		(*	First run	*)
 		kernel = LaunchKernels[1];
 		If[	OptionValue[FIRESilentMode],
@@ -368,13 +406,15 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 		With[{file1=fireConfigPath1},ParallelEvaluate[Get[file1],kernel]];
 		CloseKernels[kernel];
 
+		FCPrint[3,"RunFIRE: Second run", FCDoControl->fbVerbose];
 		(*	Second run	*)
 		kernel = LaunchKernels[1];
 		If[	OptionValue[FIRESilentMode],
 			(* Dirty trick to prevent FIRE from flushing the front-end with its Print output  *)
 			ParallelEvaluate[Unprotect[System`Print]; System`Print=System`PrintTemporary&, kernel]
 		];
-		outFIRE = With[{file1=fireConfigPath2},ParallelEvaluate[Get[file1],kernel]]/.{Global`G->g,Global`d->System`D};
+		(* This trick with Global`G is needed b/c FeynArts also defines a G in the global context...	*)
+		outFIRE = With[{file1=fireConfigPath2},ParallelEvaluate[Get[file1],kernel]]/.{ToExpression["Global`G"]->g,ToExpression["Global`d"]->System`D};
 		CloseKernels[kernel];
 
 		(* LaunchKernels[1] returns an object in MMA 8 and 9, but a list element in MMA 10 and above*)
@@ -396,7 +436,7 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 
 		FCPrint[3,"RunFIRE: repList: ", repList, FCDoControl->fbVerbose];
 
-		res = outFIRE/.repList/. abbreviatons /.massHead->Identity;
+		res = outFIRE/.repList/. abbreviatonsMasses /.massHead->Identity /. abbreviatonsMomenta;
 
 		FCPrint[3,"RunFIRE: Leaving with: ", res, FCDoControl->fbVerbose];
 		res
