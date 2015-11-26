@@ -1,0 +1,36 @@
+(* :Title: General.test														*)
+
+(*
+	This software is covered by the GNU Lesser General Public License 3.
+	Copyright (C) 2015 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for FeynHelpers				*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`FIRE`Generic = {
+
+{"FIRE-Generic-ID1",
+	"FIREBurn[0, {q}, {}]",	"0"},
+{"FIRE-Generic-ID2",
+	"FIREBurn[x, {q}, {}]",	"x"},
+{"FIRE-Generic-ID3",
+	"FIREBurn[0, {}, {}]",	"FIREBurn[0, {}, {}]"},
+{"FIRE-Generic-ID4",
+	"FIREBurn[FAD[{q1, m}], {q}, {}] // FCE",	"FAD[{q1, m}]"}
+};
+
+Tests`FIRE`OneLoop = {
+
+{"FIRE-OneLoop-ID1","FIREBurn[FAD[{q, m, 5}], {q}, {}] // FCE","((-8 + D) (-6 + D) (-4 + D) (-2 + D) FAD[{q, -m^2}])/(384 m^8)"},
+{"FIRE-OneLoop-ID2","",""},
+{"FIRE-OneLoop-ID3","",""},
+{"FIRE-OneLoop-ID4","",""},
+{"FIRE-OneLoop-ID5","",""},
+{"FIRE-OneLoop-ID6","",""},
+{"FIRE-OneLoop-ID7","",""},
+{"FIRE-OneLoop-ID8","",""},
+{"FIRE-OneLoop-ID9","",""}
+
+};
