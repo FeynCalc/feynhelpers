@@ -9,17 +9,64 @@
 
 (* ------------------------------------------------------------------------ *)
 
-Tests`FIRE`Generic = {
+Tests`FIRE`Generic = ({
+{"FIRE-Generic-ID1", "FIREBurn[0,{q},{}]", "0"},
+{"FIRE-Generic-ID2", "FIREBurn[x,{q},{}]", "x"},
+{"FIRE-Generic-ID3", "FIREBurn[0,{},{}]//FCE",
+"FIREBurn[0, {}, {}]"},
+{"FIRE-Generic-ID4", "FIREBurn[FAD[{q1,m}],{q},{}]",
+"FeynAmpDenominator[PropagatorDenominator[Momentum[q1, D], m]]"},
+{"FIRE-Generic-ID5", "FIREBurn[FAD[{q,1}],{q},{}]//FCE",
+"FAD[{q, 1}]"},
+{"FIRE-Generic-ID6", "FIREBurn[FAD[{q,-3}],{q},{}]//FCE",
+"FAD[{q, -3}]"},
+{"FIRE-Generic-ID7", "FIREBurn[FAD[{q,I}],{q},{}]//FCE",
+"FAD[{q, I}]"},
+{"FIRE-Generic-ID8", "FIREBurn[FAD[{q,2+I}],{q},{}]//FCE",
+"FAD[{q, 2 + I}]"},
+{"FIRE-Generic-ID9", "FIREBurn[FAD[{q,I m}],{q},{}]//FCE",
+"FAD[{q, I*m}]"},
+{"FIRE-Generic-ID10", "FIREBurn[FAD[{q,a+I b}],{q},{}]//FCE",
+"FAD[{q, a + I*b}]"},
+{"FIRE-Generic-ID11",
+"FIREBurn[FAD[{q1,a+I b},{q,m,2}],{q},{}]//FCE",
+"((-2 + D)*FAD[{q, m}]*FAD[{q1, a + I*b}])/(2*m1^2)"}
+});
 
-{"FIRE-Generic-ID1",
-	"FIREBurn[0, {q}, {}]",	"0"},
-{"FIRE-Generic-ID2",
-	"FIREBurn[x, {q}, {}]",	"x"},
-{"FIRE-Generic-ID3",
-	"FIREBurn[0, {}, {}]",	"FIREBurn[0, {}, {}]"},
-{"FIRE-Generic-ID4",
-	"FIREBurn[FAD[{q1, m}], {q}, {}] // FCE",	"FAD[{q1, m}]"}
-};
+Tests`FIRE`GenericWithFermat = ({
+{"FIREGeneric-GenericWithFermat-ID1",
+"FIREBurn[0,{q},{},FIREUsingFermat\[Rule]True]", "0"},
+{"FIREGeneric-GenericWithFermat-ID2",
+"FIREBurn[x,{q},{},FIREUsingFermat\[Rule]True]", "x"},
+{"FIREGeneric-GenericWithFermat-ID3",
+"FIREBurn[0,{},{},FIREUsingFermat\[Rule]True]//FCE",
+"FIREBurn[0, {}, {}, FIREUsingFermat -> True]"},
+{"FIREGeneric-GenericWithFermat-ID4",
+"FIREBurn[FAD[{q1,m}],{q},{},FIREUsingFermat\[Rule]True]",
+"FeynAmpDenominator[PropagatorDenominator[Momentum[q1, D], m]]"},
+{"FIREGeneric-GenericWithFermat-ID5",
+"FIREBurn[FAD[{q,1}],{q},{},FIREUsingFermat\[Rule]True]//FCE",
+"FAD[{q, 1}]"},
+{"FIREGeneric-GenericWithFermat-ID6",
+"FIREBurn[FAD[{q,-3}],{q},{},FIREUsingFermat\[Rule]True]//FCE",
+"FAD[{q, -3}]"},
+{"FIREGeneric-GenericWithFermat-ID7",
+"FIREBurn[FAD[{q,I}],{q},{},FIREUsingFermat\[Rule]True]//FCE",
+"FAD[{q, I}]"},
+{"FIREGeneric-GenericWithFermat-ID8",
+"FIREBurn[FAD[{q,2+I}],{q},{},FIREUsingFermat\[Rule]True]//FCE",
+"FAD[{q, 2 + I}]"},
+{"FIREGeneric-GenericWithFermat-ID9",
+"FIREBurn[FAD[{q,I m}],{q},{},FIREUsingFermat\[Rule]True]//FCE",
+"FAD[{q, I*m}]"},
+{"FIREGeneric-GenericWithFermat-ID10",
+"FIREBurn[FAD[{q,a+I b}],{q},{},FIREUsingFermat\[Rule]True]//FCE",
+"FAD[{q, a + I*b}]"},
+{"FIREGeneric-GenericWithFermat-ID11",
+"FIREBurn[FAD[{q1,a+I \
+b},{q,m,2}],{q},{},FIREUsingFermat\[Rule]True]//FCE",
+"((-2 + D)*FAD[{q, m}]*FAD[{q1, a + I*b}])/(2*m1^2)"}
+})
 
 Tests`FIRE`OneLoop = {
 

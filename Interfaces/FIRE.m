@@ -72,6 +72,10 @@ propagators, that must be specified as \"Propagators={...};\"";
 
 toFIRE::usage="";
 
+FIREMassAbbreviation::usage="";
+
+FIREMomentumAbbreviation::usage="";
+
 Begin["`Package`"]
 End[]
 
@@ -130,6 +134,8 @@ FIREBurn[expr_, qs_List/;qs=!={}, extMom_List, opts:OptionsPattern[]] :=
 		If [  FCLoopSplit[rest,qs][[4]]=!=0,
 			Message[FIREBurn::tens]
 		];
+
+		FCPrint[1,"FIREBurn: List of unique loop integrals: ", intsUnique,  FCDoControl->fbVerbose];
 
 
 		(*	Check that the propagators of each integral form a basis	*)
@@ -273,7 +279,7 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 	Block[{	internal,external,prs,propagators,replacements,
 			integral,tmp,addprops,startFile,fireConfig1,fireConfig2,
 			fireConfigPath1,fireConfigPath2,firePath,abbrListMasses={},
-			abbrListMoms={}},
+			abbrListMoms={},listHead},
 
 		addprops = OptionValue[FIREAddPropagators];
 		startFile = OptionValue[FIREStartFile];
@@ -308,7 +314,7 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 		abbrListMasses=MapIndexed[Rule[#1, ToExpression[massAbbrName<>ToString[Identity@@#2]]] &, Union[Cases[prs,massHead[__],Infinity]]];
 
 		abbrListMoms=MapIndexed[Rule[#1, ToExpression[momAbbrName<>ToString[Identity@@#2]]] &,
-			Union[Map[Times[#[[1]], #[[2]]] &, Union[Sort /@ Tuples[external, 2]]]]];
+			Union[Map[FCGV["SPD"][#[[1]], #[[2]]] &, Union[Sort /@ Tuples[external, 2]]]]];
 
 		(* Fish out numerical values for external momenta	*)
 		abbrListMoms = Map[ If[ NumberQ[SPD[#[[1]],#[[2]]]],
@@ -319,7 +325,7 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 		FCPrint[2,"prepareFIRE: List of momenta abbreviations (automatic):", abbrListMoms, FCDoControl->fbVerbose];
 
 		(*	kinematics for external momenta	*)
-		replacements= abbrListMoms;
+		replacements= abbrListMoms/. FCGV["SPD"]->Times;
 
 		(*Map[
 			If[ IntegerQ[SPD[#[[1]], #[[2]]]],
@@ -328,7 +334,6 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 
 
 		prs= prs//.abbrListMasses /. abbrListMoms;
-
 
 		(*TODO fix this*)
 		If[!FreeQ[prs,massHead],
@@ -426,7 +431,8 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 		tmp = FindList[fireConfigPath2, {"abbrListMoms="}];
 
 		If[	Length[tmp]===1,
-			abbreviatonsMomenta=StringTrim[tmp[[1]], {"abbrListMoms=", ";"}]//ToExpression;
+			abbreviatonsMomenta=StringTrim[tmp[[1]], {"abbrListMoms=", ";"}]//ToExpression//
+			ReplaceAll[#,FCGV["SPD"]->SPD]&;
 		];
 
 
@@ -461,11 +467,19 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 
 		FCPrint[3,"RunFIRE: Output of FIRE: ", outFIRE, FCDoControl->fbVerbose];
 
+
+		(*	Substitute abbreviated masses and momenta back everywhere,
+			except for in loop integrals	*)
+		outFIRE = outFIRE/. abbreviatonsMasses/. abbreviatonsMomenta;
+
 		gList = Cases[Expand2[outFIRE, g]+null1+null2, g[__] ,Infinity];
 		FCPrint[3,"RunFIRE: gList: ", gList, FCDoControl->fbVerbose];
 
+		(*	This list contains only abbreviated masses and momenta *)
 		pList = Map[MapThread[{#1, #2} &, {propagators, (#/. g[_, i_] :> i)}]&,gList];
-		pList = Map[((#/. {_,0}:>Unevaluated[Sequence[]])/. abbreviatonsMasses/. abbreviatonsMomenta) &,pList];
+
+
+		pList = Map[((#/. {_,0}:>Unevaluated[Sequence[]])/. abbreviatonsMasses) &,pList];
 		FCPrint[3,"RunFIRE: pList: ", pList, FCDoControl->fbVerbose];
 
 		solsList=fromFIRE[#,qs]&/@pList;
@@ -473,7 +487,7 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 
 		FCPrint[3,"RunFIRE: repList: ", repList, FCDoControl->fbVerbose];
 
-		res = outFIRE/.repList /.massHead-> Identity;
+		res = outFIRE/.repList  /.massHead-> Identity;
 
 		FCPrint[3,"RunFIRE: Leaving with: ", res, FCDoControl->fbVerbose];
 		res
