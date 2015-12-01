@@ -281,6 +281,8 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 			fireConfigPath1,fireConfigPath2,firePath,abbrListMasses={},
 			abbrListMoms={},listHead},
 
+		FCPrint[2,"prepareFIRE: Entering with:", qs, " | ",  ext, " | ", props, " ", FCDoControl->fbVerbose];
+
 		addprops = OptionValue[FIREAddPropagators];
 		startFile = OptionValue[FIREStartFile];
 		fireConfigPath1 = OptionValue[FIREConfigFiles][[1]];
@@ -320,6 +322,9 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 		abbrListMoms = Map[ If[ NumberQ[SPD[#[[1]],#[[2]]]],
 						Rule[#[[1]],SPD[#[[1]],#[[2]]]],
 						#]&, abbrListMoms];
+
+		abbrListMoms=Map[Rule[#/.FCGV["SPD"]->Times, #/.FCGV["SPD"]->SPD] &,
+			Union[Map[FCGV["SPD"][#[[1]], #[[2]]] &, Union[Sort /@ Tuples[external, 2]]]]];
 
 		FCPrint[2,"prepareFIRE: List of mass abbreviations (automatic):", abbrListMasses, FCDoControl->fbVerbose];
 		FCPrint[2,"prepareFIRE: List of momenta abbreviations (automatic):", abbrListMoms, FCDoControl->fbVerbose];
@@ -437,7 +442,7 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 
 
 		FCPrint[3,"RunFIRE: List of abbreviations for masses: ", abbreviatonsMasses, FCDoControl->fbVerbose];
-		FCPrint[3,"RunFIRE: List of abbreviations for momenta: ", abbreviatonsMomenta, FCDoControl->fbVerbose];
+		(*FCPrint[3,"RunFIRE: List of abbreviations for momenta: ", abbreviatonsMomenta, FCDoControl->fbVerbose];*)
 
 		FCPrint[3,"RunFIRE: First run", FCDoControl->fbVerbose];
 		(*	First run	*)
@@ -470,7 +475,7 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 
 		(*	Substitute abbreviated masses and momenta back everywhere,
 			except for in loop integrals	*)
-		outFIRE = outFIRE/. abbreviatonsMasses/. abbreviatonsMomenta;
+		outFIRE = outFIRE/. abbreviatonsMasses(*/. abbreviatonsMomenta*);
 
 		gList = Cases[Expand2[outFIRE, g]+null1+null2, g[__] ,Infinity];
 		FCPrint[3,"RunFIRE: gList: ", gList, FCDoControl->fbVerbose];
