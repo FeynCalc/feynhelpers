@@ -160,8 +160,14 @@ FIREBurn[expr_, qs_List/;qs=!={}, extMom_List, opts:OptionsPattern[]] :=
 
 		allFine=Map[{#[[1]],{}}&,allFine];
 		needCompletion=Map[FCLoopBasisFindCompletion[#[[1]],qs]&,needCompletion];
+
 		fireList = Map[{toFIRE[FCE[#[[1]]],qs],#[[2]]}&,Sort[Join[allFine,needCompletion]]];
-		fireList= Map[Join[#[[1]],Thread[List[(FCE/@#[[2]]), 0]]]&,fireList]/.{SPD[a_,b_]:>a*b};
+
+
+
+		fireList= Map[Join[#[[1]],Thread[List[(FCE/@#[[2]]), 0, "DUMMY"]]]&,fireList]/.{SPD[a_,b_]:>a*b};
+
+
 
 		FCPrint[3,"FIREBurn: Fire list: ", fireList, " ", FCDoControl->fbVerbose];
 
@@ -181,10 +187,15 @@ FIREBurn[expr_, qs_List/;qs=!={}, extMom_List, opts:OptionsPattern[]] :=
 	];
 
 (*	Converts the output of FIRE into FeynCalc notation	*)
-(*TODO Should better take the list of external momenta into account*)
 fromFIRE[props_List,qs_List]:=
 	Block[{pow,tmp,res,head,headSP, hd},
 		FCPrint[4,"fromFIRE: Entering with :", props , " | ", qs, " ", FCDoControl->fbVerbose];
+
+
+		(*TODO some cross checks *)
+		res = Times@@(Replace[props, {_, i_, j_}/; NumberQ[i] :> Power[j,i], 1]);
+
+		(*
 		res= props /. Power -> pow /. {
 
 			(* scalar products *)
@@ -216,7 +227,7 @@ fromFIRE[props_List,qs_List]:=
 		If[!FreeQ[res,hd],
 			Message[FIREBurn::fail,""];
 			Abort[]
-		];
+		];*)
 
 		FCPrint[4,"fromFIRE: Intermediate result :", res, FCDoControl->fbVerbose];
 		res = FeynAmpDenominatorCombine[Times@@(res /.pow->Power /.headSP->Power /. head->Identity)];
@@ -236,18 +247,19 @@ toFIRE[int_,qs_List] :=
 		res = Tally[ReplaceAll[List@@(one*two*FeynAmpDenominatorSplit[int,FCE->True]),one | two -> Unevaluated[Sequence[]]]];
 		FCPrint[4,"toFIRE: Preparing the conversion :", res, FCDoControl->fbVerbose];
 		res = res/.Power -> pow /.	{pow[x_, i1_Integer], i2_Integer} :> {x, i1*i2} //. {
-									{SPD[x_, y_], i_Integer} :> {x*y,-i}, (* scalar products count as negative propagators*)
-									{FAD[mom_],i_Integer}/;Head[mom]=!=List:> {mom^2,i},
+									{SPD[x_, y_], i_Integer} :> {x*y,-i, SPD[x,y]}, (* scalar products count as negative propagators*)
+									{FAD[mom_],i_Integer}/;Head[mom]=!=List:> {mom^2,i,FAD[mom]},
 
 									(* massHead is here to protect complicated mass terms like a*m or I*m etc. *)
-									{FAD[{mom_,mass_}],i_Integer}:> {mom^2-massHead[mass]^2,i}
-									} /.
+									(*{FAD[{mom_,mass_}],i_Integer}:> {mom^2-massHead[mass]^2,i}*)
+									{FAD[{mom_,mass_}],i_Integer}:> {mom^2-mass^2,i,FAD[{mom,mass}]}
+									} (*/.
 									(*	For masses that are  positive real numbers, massHead is not neaded.
 										For all the other cases we keep massHead!	*)
-									massHead[x_]/;(NumberQ[x] && NonNegative[x]===True):>x;
+									massHead[x_]/;(NumberQ[x] && NonNegative[x]===True):>x*);
 
 		FCPrint[4,"toFIRE: Intermediate result :", res, FCDoControl->fbVerbose];
-		If[!MatchQ[res, {{_, _Integer} ..}],
+		If[!MatchQ[res, {{_, _Integer, _SPD|_FAD} ..}],
 			Message[FIREBurn::convfail,int,res];
 			Abort[]
 		];
@@ -289,6 +301,7 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 		fireConfigPath2 = OptionValue[FIREConfigFiles][[2]];
 		firePath = OptionValue[FIREPath];
 
+		(* TODO FIX THIS!!! *)
 		If[	addprops=!=Automatic && Head[addprops]===List && addprops=!={},
 
 			(* If the user wants to compete the basis by hand	*)
@@ -314,6 +327,7 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 			but since we always start counting with 1, this is unlikely to happend, until the counter goes
 			to some very large number.  *)
 		abbrListMasses=MapIndexed[Rule[#1, ToExpression[massAbbrName<>ToString[Identity@@#2]]] &, Union[Cases[prs,massHead[__],Infinity]]];
+		abbrListMasses={};
 
 		abbrListMoms=MapIndexed[Rule[#1, ToExpression[momAbbrName<>ToString[Identity@@#2]]] &,
 			Union[Map[FCGV["SPD"][#[[1]], #[[2]]] &, Union[Sort /@ Tuples[external, 2]]]]];
@@ -330,7 +344,7 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 		FCPrint[2,"prepareFIRE: List of momenta abbreviations (automatic):", abbrListMoms, FCDoControl->fbVerbose];
 
 		(*	kinematics for external momenta	*)
-		replacements= abbrListMoms/. FCGV["SPD"]->Times;
+		replacements= abbrListMoms;
 
 		(*Map[
 			If[ IntegerQ[SPD[#[[1]], #[[2]]]],
@@ -347,12 +361,12 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 		];
 
 		(*	unique propagators	*)
-		propagators= prs/.{a_,_Integer}:>a;
+		propagators= prs/.{a_,_Integer,_}:>a;
 
 
 
 		(*	this is the integral F[1,xxx] that FIRE will reduce	*)
-		integral = {1,prs/.{_,a_Integer}:>a};
+		integral = {1,prs/.{_,a_Integer,_}:>a};
 
 		FCPrint[3,"prepareFIRE: FIRE's Internal :", StandardForm[internal], FCDoControl->fbVerbose];
 		FCPrint[3,"prepareFIRE: FIRE's External :", StandardForm[external], FCDoControl->fbVerbose];
@@ -372,7 +386,7 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 		WriteString[fireConfig1, "Internal=" <> ToString[internal,InputForm] <> ";\n"];
 		WriteString[fireConfig1, "External=" <> ToString[external,InputForm] <> ";\n"];
 		WriteString[fireConfig1, "Propagators=" <> ToString[propagators,InputForm] <> ";\n"];
-		WriteString[fireConfig1, "Replacements=" <> ToString[replacements,InputForm] <> ";\n"];
+		WriteString[fireConfig1, StringReplace["Replacements=" <> ToString[replacements,InputForm] <> ";\n",{"SPD"->"FeynCalc`SPD"}]];
 		WriteString[fireConfig1, "PrepareIBP[];\n"];
 		WriteString[fireConfig1, "Prepare[AutoDetectRestrictions -> True];\n"];
 		WriteString[fireConfig1, "SaveStart["<> ToString[startFile,InputForm]  <>"];\n"];
@@ -388,8 +402,7 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 		WriteString[fireConfig2, "Get[\""<> firePath  <>"\"];\n"];
 		WriteString[fireConfig2, "LoadStart[" <> ToString[startFile,InputForm] <> ",1];\n"];
 		WriteString[fireConfig2, "Burn[];\n"];
-		WriteString[fireConfig2, "abbrListMasses="<> ToString[Reverse/@abbrListMasses,InputForm]  <>";\n"];
-		WriteString[fireConfig2, "abbrListMoms="<> ToString[Reverse/@abbrListMoms,InputForm]  <>";\n"];
+		WriteString[fireConfig2, StringReplace["prs="<> ToString[prs,InputForm]  <>";\n",{"SPD"->"FeynCalc`SPD","FAD"->"FeynCalc`FAD"}]];
 		WriteString[fireConfig2, "F@@" <> ToString[integral,InputForm] <> "\n"];
 		Close[fireConfig2];
 
@@ -398,7 +411,7 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 	Block[{	tmp,propagators,qs,kernel, outFIRE, gList, pList,g,repList,
 			solsList,res,null1,null2,abbreviatonsMasses={},
-			abbreviatonsMomenta={}},
+			abbreviatonsMomenta={},prs},
 
 
 		FCPrint[3,"RunFIRE: Entering with: ", {fireConfigPath1,fireConfigPath2}, FCDoControl->fbVerbose];
@@ -425,6 +438,7 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 		];
 		propagators=StringTrim[tmp[[1]], {"Propagators=", ";"}]//ToExpression;
 
+		(*
 		(*	Get the abbreviations for masses. This one is optional.	*)
 		tmp = FindList[fireConfigPath2, {"abbrListMasses="}];
 
@@ -438,6 +452,15 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 		If[	Length[tmp]===1,
 			abbreviatonsMomenta=StringTrim[tmp[[1]], {"abbrListMoms=", ";"}]//ToExpression//
 			ReplaceAll[#,FCGV["SPD"]->SPD]&;
+		];*)
+
+		(*TODO*)
+		(*	Propagators. This one is obligatory...	*)
+		tmp = FindList[fireConfigPath2, {"prs="}];
+
+		If[	Length[tmp]===1,
+			prs=StringTrim[tmp[[1]], {"prs=", ";"}]//ToExpression//
+			ReplaceAll[#,{FCGV["SPD"]->SPD,FCGV["FAD"]->FAD}]&;
 		];
 
 
@@ -462,7 +485,11 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 			ParallelEvaluate[Unprotect[System`Print]; System`Print=System`PrintTemporary&, kernel]
 		];
 		(* This trick with Global`G is needed b/c FeynArts also defines a G in the global context...	*)
-		outFIRE = With[{file1=fireConfigPath2},ParallelEvaluate[Get[file1],kernel]]/.{ToExpression["Global`G"]->g,ToExpression["Global`d"]->System`D};
+
+		outFIRE = With[{file1=fireConfigPath2}
+
+						,ParallelEvaluate[Get[file1],kernel]]/.{ToExpression["Global`G"]->g,ToExpression["Global`d"]->System`D(*,
+		ToExpression["Global`FCGV"]->fcgv*)};
 		CloseKernels[kernel];
 
 		(* LaunchKernels[1] returns an object in MMA 8 and 9, but a list element in MMA 10 and above*)
@@ -470,22 +497,26 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 				outFIRE = Total[outFIRE];
 		];
 
+
+
 		FCPrint[3,"RunFIRE: Output of FIRE: ", outFIRE, FCDoControl->fbVerbose];
 
 
 		(*	Substitute abbreviated masses and momenta back everywhere,
 			except for in loop integrals	*)
-		outFIRE = outFIRE/. abbreviatonsMasses(*/. abbreviatonsMomenta*);
+		outFIRE = outFIRE(*/. abbreviatonsMasses*)(*/. abbreviatonsMomenta*);
 
 		gList = Cases[Expand2[outFIRE, g]+null1+null2, g[__] ,Infinity];
 		FCPrint[3,"RunFIRE: gList: ", gList, FCDoControl->fbVerbose];
 
 		(*	This list contains only abbreviated masses and momenta *)
-		pList = Map[MapThread[{#1, #2} &, {propagators, (#/. g[_, i_] :> i)}]&,gList];
+		pList = Map[MapThread[{#1, #2, #3} &, {propagators, (# /.  g[_, i_] :> i), (prs /. {_, _, j_} /; Head[j] =!= List :>j)}] &, gList];
 
 
-		pList = Map[((#/. {_,0}:>Unevaluated[Sequence[]])/. abbreviatonsMasses) &,pList];
+		(*pList = Map[((#/. {_,0}:>Unevaluated[Sequence[]])/. abbreviatonsMasses) &,pList];*)
 		FCPrint[3,"RunFIRE: pList: ", pList, FCDoControl->fbVerbose];
+
+		(*pList=Map[prs,gList];*)
 
 		solsList=fromFIRE[#,qs]&/@pList;
 		repList= MapThread[Rule[#1,#2]&,{gList,solsList}];
