@@ -30,7 +30,7 @@ Tests`FIRE`Generic = ({
 "FAD[{q, a + I*b}]"},
 {"FIRE-Generic-ID11",
 "FIREBurn[FAD[{q1,a+I b},{q,m,2}],{q},{}]//FCE",
-"((-2 + D)*FAD[{q, m}]*FAD[{q1, a + I*b}])/(2*m1^2)"}
+"((-2 + D)*FAD[{q, m}]*FAD[{q1, a + I*b}])/(2*m^2)"}
 });
 
 Tests`FIRE`GenericWithFermat = ({
@@ -65,19 +65,5 @@ Tests`FIRE`GenericWithFermat = ({
 {"FIREGeneric-GenericWithFermat-ID11",
 "FIREBurn[FAD[{q1,a+I \
 b},{q,m,2}],{q},{},FIREUsingFermat\[Rule]True]//FCE",
-"((-2 + D)*FAD[{q, m}]*FAD[{q1, a + I*b}])/(2*m1^2)"}
+"((-2 + D)*FAD[{q, m}]*FAD[{q1, a + I*b}])/(2*m^2)"}
 })
-
-Tests`FIRE`OneLoop = {
-
-{"FIRE-OneLoop-ID1","FIREBurn[FAD[{q, m, 5}], {q}, {}] // FCE","((-8 + D) (-6 + D) (-4 + D) (-2 + D) FAD[{q, -m^2}])/(384 m^8)"},
-{"FIRE-OneLoop-ID2","",""},
-{"FIRE-OneLoop-ID3","",""},
-{"FIRE-OneLoop-ID4","",""},
-{"FIRE-OneLoop-ID5","",""},
-{"FIRE-OneLoop-ID6","",""},
-{"FIRE-OneLoop-ID7","",""},
-{"FIRE-OneLoop-ID8","",""},
-{"FIRE-OneLoop-ID9","",""}
-
-};

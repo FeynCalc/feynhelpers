@@ -9,16 +9,16 @@
 
 (* ------------------------------------------------------------------------ *)
 
-Tests`General`FeynHelpers = {
+Tests`PackageX`Generic = {
 
-{"FeynHelpers-ID1",
+{"PackageX-Generic-ID1",
 	"PaXEvaluate[FAD[{q, m}], q,
 	PaXImplicitPrefactor -> 1/(2 Pi)^(4 - 2 Epsilon)]",
 	"(I m^2)/(16 Epsilon \[Pi]^2) - (
 	I m^2 (-1 + EulerGamma - Log[4 \[Pi]] - Log[ScaleMu^2/m^2]))/(
 	16 \[Pi]^2)"},
-{"FeynHelpers-ID2",
+{"PackageX-Generic-ID2",
 	"PaXEvaluate[ FAD[{l, 0}, {q + l, 0}], l, PaXSubstituteEpsilon -> True,
-	PaXImplicitPrefactor -> 1/(2 Pi)^(4 - 2 Epsilon)]",	"I/(16 Epsilon \[Pi]^2) - (
-	I (-2 + EulerGamma - Log[-((4 \[Pi] ScaleMu^2)/Pair[Momentum[q], Momentum[q]])]))/(16 \[Pi]^2)"}
+	PaXImplicitPrefactor -> 1/(2 Pi)^(4 - 2 Epsilon)]",	"(I/16)/(Epsilon*Pi^2) - ((I/16)*(-2 + EulerGamma))/Pi^2 +
+	((I/16)*Log[(-4*Pi*ScaleMu^2)/Pair[Momentum[q, D], Momentum[q, D]]])/Pi^2"}
 };

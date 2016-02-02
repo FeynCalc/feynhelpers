@@ -20,8 +20,8 @@ If [!StringQ[FeynCalc`$FeynHelpersDirectory],
 ]
 
 ClearAll[tests];
-tests = FileNames["*.test",FileNameJoin[{$FeynHelpersDirectory, "Tests", "General"}]]
+tests = FileNames["*.test",FileNameJoin[{$FeynHelpersDirectory, "Tests", "PackageX"}]]
 Get/@tests;
 
 Map[Test[ToExpression[(#[[2]])],ToExpression[(#[[3]])],TestID->#[[1]]]&,
-	Join@@(ToExpression/@Names["Tests`General`*"])];
+	Join@@(ToExpression/@Names["Tests`PackageX`*"])];
