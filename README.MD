@@ -1,6 +1,6 @@
 # Description
 
-FeynHelpers is a collection of intefaces that allow you to use other HEP-related tools from your FeynCalc session.
+FeynHelpers is a collection of interfaces that allow you to use other HEP-related tools from your FeynCalc session.
 
 # Warning
 
@@ -8,13 +8,13 @@ In the present state FeynHelpers is **NOT READY** for productive use. In particu
 
 # Supported tools
 
-Tools that are currently supported are 
+Tools that are currently supported are
  * FIRE
  * Package-X
 
 # Installation
 
-FeynHelpers is designed as an add-on for FeynCalc. Therefore, you need to create a directory FeynHelpers inside 
+FeynHelpers is designed as an add-on for FeynCalc. Therefore, you need to create a directory FeynHelpers inside
 
 ```
 FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns"}]
@@ -55,17 +55,17 @@ Here is an example of IBP-reducing a bubble with propagators in powers
 FIREBurn[FAD[{q, m0, 2}, {q - p, m1, 3}], {q}, {p}]
 ```
 
-# Acknowledgements
+# Acknowledgments
 
-If you use FeynHelpers in you work, please cite 
+If you use FeynHelpers in you work, please cite
 
 * V. Shtabovenko, "FeynHelpers: Connecting FeynCalc to FIRE and Package-X", TUM-EFT 75/15, in preparation
 
 Also don't forget to cite the authors of the tools that you are calling from FeynHelpers, which are
 
-* [FIRE](http://inspirehep.net/record/1310407?ln=en) if you use FIREBurn 
-* [Package X](http://inspirehep.net/record/1347391/) if you use PaXEvaluate 
+* [FIRE](http://inspirehep.net/record/1310407?ln=en) if you use FIREBurn
+* [Package X](http://inspirehep.net/record/1347391/) if you use PaXEvaluate
 
 # License
 
-The code of FeynHelpers is licenced under LGPLv3. This doesn't apply to the packages for which FeynHelpers provides an interface to FeynCalc. For the licensing of those packages please check the informations provided by the respective authors.
+The code of FeynHelpers is licensed under GNU GPLv3. This doesn't apply to the packages for which FeynHelpers provides an interface to FeynCalc. For the licensing of those packages please check the informations provided by the respective authors.

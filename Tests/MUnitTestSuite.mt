@@ -1,7 +1,7 @@
 (* :Title: MUnitTestSuite.mt												*)
 
 (*
-	This software is covered by the GNU Lesser General Public License 3.
+	This software is covered by the GNU General Public License 3.
 	Copyright (C) 2015 Vladyslav Shtabovenko
 *)
 
