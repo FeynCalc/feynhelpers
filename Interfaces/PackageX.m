@@ -350,17 +350,16 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 		FCPrint[3,"PaXEvaluate: finalResult(w/o implicit prefactor) with protected dimensions: ",
 			finalResult, FCDoControl->paxVerbose];
 
-		If[OptionValue[PaXImplicitPrefactor]=!=1,
-			(* 	If implicit prefactor depends on D or Epsilon, then we need to expand around Epsilon=0 again here.
-				However, this is safe only if the final expression is free of loop integrals and EpsilonBar. *)
+		(* 	Since the implicit prefactor or other coefficients in the expression may depends on D or Epsilon,
+			we need to expand around Epsilon=0 again here.
+			However, this is safe only if the final expression is free of loop integrals and EpsilonBar. *)
 
-			If[	!FreeQ2[OptionValue[PaXImplicitPrefactor],{dim,Epsilon}] &&
-				FreeQ2[finalResult,{FeynAmpDenominator,q,PaXEpsilonBar}] &&
-				OptionValue[PaXExpandInEpsilon],
-				finalResult = Series[(OptionValue[PaXImplicitPrefactor] ChangeDimension[finalResult,4])/.dim->4-2Epsilon,{Epsilon,0,0}]//Normal,
-				finalResult = (OptionValue[PaXImplicitPrefactor] finalResult)
-			]
+		If[	FreeQ2[finalResult,{FeynAmpDenominator,q,PaXEpsilonBar}] &&
+			OptionValue[PaXExpandInEpsilon],
+			finalResult = Series[(OptionValue[PaXImplicitPrefactor] ChangeDimension[finalResult,4])/.dim->4-2Epsilon,{Epsilon,0,0}]//Normal,
+			finalResult = (OptionValue[PaXImplicitPrefactor] finalResult)
 		];
+
 
 		FCPrint[2,"PaXEvaluate: finalResult (with implicit prefactor): ", finalResult, FCDoControl->paxVerbose];
 
