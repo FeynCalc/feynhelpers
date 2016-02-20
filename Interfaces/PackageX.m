@@ -100,6 +100,7 @@ End[]
 Begin["`PackageX`Private`"]
 
 paxVerbose::usage="";
+dummyLoopMom::usage="";
 
 $LaunchPackageX = "X`OneLoop`";
 
@@ -200,6 +201,8 @@ toPackageX[pref_. FeynAmpDenominator[PD[Momentum[q_,dim_],m1_],PD[Momentum[q_,di
 	I Pi^2 pref toPackageX[PaVeOrder[C0[FCI[ScalarProduct[p1]],FCI[ScalarProduct[p1-p2]],FCI[ScalarProduct[p2]],m1^2,m2^2,m3^2]],q]/; FreeQ[pref,q];
 
 
+PaXEvaluate[expr_, opts:OptionsPattern[]]:=
+	PaXEvaluate[expr, dummyLoopMom, opts];
 
 PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 	Block[{kernel,temp,resultX,finalResult,xList,ints,fclsOutput,fclcOutput,dim,
