@@ -108,6 +108,7 @@ Options[PaXEvaluate] = {
 	Collect -> True,
 	Dimension -> D,
 	FCVerbose -> False,
+	FinalSubstitutions -> {},
 	PaXDiscExpand -> True,
 	PaXExpandInEpsilon -> True,
 	PaXImplicitPrefactor -> 1,
@@ -330,7 +331,8 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 				If[	!FreeQ[resultX,PaXEpsilonBar],
 					Message[PaXEvaluate::gen, "Failed to eliminate EpsilonBar."];
 					Abort[]
-				]
+				],
+				resultX = resultX//.PaXEpsilonBar->Epsilon
 			],
 			resultX={}
 		];
@@ -358,7 +360,7 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 			However, this is safe only if the final expression is free of loop integrals and EpsilonBar. *)
 
 		If[	FreeQ2[finalResult,{FeynAmpDenominator,q,PaXEpsilonBar}] &&
-			OptionValue[PaXExpandInEpsilon],
+			OptionValue[PaXExpandInEpsilon]  && FreeQ[finalResult,ConditionalExpression],
 			finalResult = Series[(OptionValue[PaXImplicitPrefactor] ChangeDimension[finalResult,4])/.dim->4-2Epsilon,{Epsilon,0,0}]//Normal,
 			finalResult = (OptionValue[PaXImplicitPrefactor] finalResult)
 		];
@@ -368,7 +370,7 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 
 
 		(* Before returning the final result it is useful to try to simplify the Epsilon-free pieces separately *)
-		If [ OptionValue[PaXSimplifyEpsilon],
+		If [ OptionValue[PaXSimplifyEpsilon] && FreeQ[finalResult,ConditionalExpression],
 			{epsFree,epsNotFree} = FCSplit[finalResult,{Epsilon}];
 			finalResult = Simplify[epsNotFree] + (Simplify[epsFree]/. {Log[x_Integer] :>
 				PowerExpand[Log[x]]}/. Log[4 Pi x_] :> Log[4 Pi] + Log[x]);
@@ -381,8 +383,12 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 		Momentum[holddim[a_,str_String]] :> Momentum[a,ToExpression[str]] /.
 		LorentzIndex[holddim[a_,str_String]] :> LorentzIndex[a,ToExpression[str]];
 
-		If[	OptionValue[Collect],
+		If[	OptionValue[Collect] && FreeQ[finalResult,ConditionalExpression],
 			finalResult = Collect2[finalResult, {Epsilon, Pair}]
+		];
+
+		If[	OptionValue[FinalSubstitutions]=!={},
+			finalResult = finalResult /. OptionValue[FinalSubstitutions]
 		];
 
 		FCPrint[2,"PaXEvaluate: Last finalResult (simplified): ", finalResult, FCDoControl->paxVerbose];
