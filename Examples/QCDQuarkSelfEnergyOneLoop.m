@@ -44,7 +44,7 @@ Paint[diags = InsertFields[CreateTopologies[1, 1 -> 1,
 
 
 amps=FCFAConvert[CreateFeynAmp[diags, Truncated -> True,GaugeRules->{},PreFactor->-1],IncomingMomenta->{p},
-OutgoingMomenta->{p},LoopMomenta->{q},DropSumOver->True,UndoChiralSplittings->True,ChangeDimension->D,List->False]/.{MU->M,GaugeXi[g]->GaugeXi}
+OutgoingMomenta->{p},LoopMomenta->{q},DropSumOver->True,UndoChiralSplittings->True,ChangeDimension->D,List->False]/.{SMP["m_u"]->M,GaugeXi[g]->GaugeXi}
 
 
 ampsEval=amps//Contract//SUNSimplify//TID[#,q]&
@@ -64,7 +64,7 @@ quarkSelfEnergy=-SelectNotFree[res1,Epsilon]//Expand
 (*We can compare this result to Eq. 2.5.138 in Foundations of QCD by T. Muta.*)
 
 
-quarSelfEnergyMuta=I*(-Gstrong^2/(4Pi)^2 CF*(3+GaugeXi)(1/Epsilon)*M+GS[p]*Gstrong^2/(4Pi)^2*
+quarSelfEnergyMuta=I*(-SMP["g_s"]^2/(4Pi)^2 CF*(3+GaugeXi)(1/Epsilon)*M+GS[p]*SMP["g_s"]^2/(4Pi)^2*
 		CF*GaugeXi*(1/Epsilon))SDF[Col1,Col2]//FCI;
 Print["Check with Muta, Eq 2.5.138: ",
 			If[Simplify[quarkSelfEnergy-FCI[quarSelfEnergyMuta]]===0, "CORRECT.", "!!! WRONG !!!"]];
@@ -77,6 +77,6 @@ Print["Check with Muta, Eq 2.5.138: ",
 quarkSelfEnergyMassless=quarkSelfEnergy/.{M->0,GaugeXi->1}
 
 
-ampsSingMasslessPeskin=I*Gstrong^2/(4Pi)^2*GS[p]*CF*(1/Epsilon)SDF[Col1,Col2]//FCI;
+ampsSingMasslessPeskin=I*SMP["g_s"]^2/(4Pi)^2*GS[p]*CF*(1/Epsilon)SDF[Col1,Col2]//FCI;
 Print["Check with Peskin and Schroeder, Eq 16.76: ",
 			If[Simplify[quarkSelfEnergyMassless-FCI[ampsSingMasslessPeskin]]===0, "CORRECT.", "!!! WRONG !!!"]];

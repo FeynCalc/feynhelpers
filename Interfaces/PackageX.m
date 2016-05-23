@@ -43,18 +43,22 @@ what D is (e.g. 4-2 Epsilon). The default value is 1. \
 If the standard prefactor 1/(2Pi)^D is implicit in your calculations then you set
 ImplicitPrefactor to 1/(2 Pi)^(4 - 2 Epsilon).";
 
-$LaunchPackageX::usage=
-"$LaunchPackageX determines what package name Mathematica calls to load Package-X. \
-The default is \"X`\"";
+PaXVersion::usage=
+"PaXVersion is an option for PaXEvaluate. It specifies the version of Package-X \
+that FeynHelpers should work with. This necessary due to many internal changes \
+between Package-X 1.x and Package-X 2.x";
 
 PaXpvA::usage=
-"PaXpvA corresponds to the pvA function in Package-X";
+"PaXpvA corresponds to the PVA function in Package-X";
 
 PaXpvB::usage=
-"PaXpvB corresponds to the pvB function in Package-X";
+"PaXpvB corresponds to the PVB function in Package-X";
 
 PaXpvC::usage=
-"PaXpvC corresponds to the pvC function in Package-X";
+"PaXpvC corresponds to the PVC function in Package-X";
+
+PaXpvD::usage=
+"PaXpvD corresponds to the PVD function in Package-X";
 
 PaXEpsilonBar::usage =
 "PaXEpsilonBar corresponds to DimRegEpsilon in Package-X, i.e. \
@@ -93,7 +97,6 @@ PaXEvaluate::gen=
 "PaXEvaluate has encountered an error and must abort the evaluation. The
 error description reads: `1`";
 
-
 Begin["`Package`"]
 End[]
 
@@ -102,11 +105,10 @@ Begin["`PackageX`Private`"]
 paxVerbose::usage="";
 dummyLoopMom::usage="";
 
-$LaunchPackageX = "X`OneLoop`";
-
 Options[PaXEvaluate] = {
 	Collect -> True,
 	Dimension -> D,
+	ChangeDimension -> False,
 	FCVerbose -> False,
 	FinalSubstitutions -> {},
 	PaXDiscExpand -> True,
@@ -114,7 +116,8 @@ Options[PaXEvaluate] = {
 	PaXImplicitPrefactor -> 1,
 	PaXKallenExpand -> True,
 	PaXSimplifyEpsilon -> True,
-	PaXSubstituteEpsilon -> True
+	PaXSubstituteEpsilon -> True,
+	PaXVersion -> 1.
 };
 
 (* Typesetting *)
@@ -137,9 +140,12 @@ PaXDiLog /:
 
 (* FeynCalc->Package-X conversion of scalar products *)
 momConv[x_] :=
-	ExpandScalarProduct[MomentumCombine[FCI[x]]] /. {Pair[Momentum[a_, _ : 4], Momentum[b_, _ : 4]] :> LDot[a,b]}
+	FCE[ExpandScalarProduct[MomentumCombine[FCI[x]]]];
 
 toPackageX[pref_, q_]:=
+	pref /; FreeQ2[pref,Join[{q},FeynCalc`Package`PaVeHeadsList]];
+
+toPackageX2[pref_, q_]:=
 	pref /; FreeQ2[pref,Join[{q},FeynCalc`Package`PaVeHeadsList]];
 
 (* FeynCalc->Package-X conversion for A0, B0, B1, B00, B11 and C0.
@@ -150,6 +156,9 @@ toPackageX[pref_, q_]:=
 	Package-X: A0(m) =  16Pi^2/(I) 1/(2Pi)^D \int d^4 q 1/(q^2-m^2)
  *)
 toPackageX[pref_. A0[m_, OptionsPattern[]], q_]:=
+	(2 Pi)^(FCGV["D"]-4) pref PaXpvA[1, PowerExpand[Sqrt[m]]]/;FreeQ[pref,q] && FreeQ[m, Complex];
+
+toPackageX[pref_. A00[m_, OptionsPattern[]], q_]:=
 	(2 Pi)^(FCGV["D"]-4) pref PaXpvA[0, PowerExpand[Sqrt[m]]]/;FreeQ[pref,q] && FreeQ[m, Complex];
 
 toPackageX[pref_. B0[mom1_, m1_, m2_, OptionsPattern[]], q_]:=
@@ -168,39 +177,110 @@ toPackageX[pref_. C0[mom1_, mom1min2_, mom2_, m1_, m2_, m3_, OptionsPattern[]], 
 	(2 Pi)^(FCGV["D"]-4) pref PaXpvC[0, 0, 0, momConv[mom1], momConv[mom2], momConv[mom1min2], PowerExpand[Sqrt[m3]],
 	PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m1]]]/;FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex];
 
+(* 1-point functions, same convention as for version 1*)
+toPackageX2[pref_. A00[m_, opts:OptionsPattern[]], q_]:=
+	toPackageX[pref  A00[m, opts], q];
+
+toPackageX2[pref_. A0[m_, opts:OptionsPattern[]], q_]:=
+	toPackageX[pref  A0[m, opts], q];
+
+(* 2-point functions, same convention as for version 1*)
+toPackageX2[pref_. (h:B0|B1|B00|B11)[mom1_, m1_, m2_, opts:OptionsPattern[]], q_]:=
+	toPackageX[pref  h[mom1, m1, m2, opts], q];
+
+(* 3-point functions, careful, here the convention in version 2 is different*)
+toPackageX2[pref_. C0[mom1_, mom1min2_, mom2_, m1_, m2_, m3_, OptionsPattern[]], q_]:=
+	(2 Pi)^(FCGV["D"]-4) pref PaXpvC[0, 0, 0, momConv[mom1], momConv[mom1min2], momConv[mom2], PowerExpand[Sqrt[m1]],
+	PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]]]/;FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex];
+
+(* 4-point functions, new in version 2*)
+toPackageX2[pref_. D0[mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_, m1_, m2_, m3_, m4_, OptionsPattern[]], q_]:=
+	(2 Pi)^(FCGV["D"]-4) pref PaXpvD[0, 0, 0, 0, momConv[mom1], momConv[mom1min2], momConv[mom2min3],
+		momConv[mom3], momConv[mom2], momConv[mom1min3], PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]],
+		PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m4]]]/;FreeQ[pref,q] && FreeQ[{m1,m2,m3,m4}, Complex];
+
 (* FeynCalc->Package-X conversion for PaVe's
 	PaVe's are normalized the same way as A0, B0 etc.
 *)
 
+toPackageX[pref_. PaVe[0, {}, {m_}, OptionsPattern[]], q_]:=
+	(2 Pi)^(FCGV["D"]-4) pref PaXpvA[0, PowerExpand[Sqrt[m]]]/;
+	FreeQ[pref,q] && FreeQ[m, Complex];
+
 toPackageX[pref_. PaVe[inds__, {}, {m_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(FCGV["D"]-4) pref PaXpvA[Count[{inds},0]/2, PowerExpand[Sqrt[m]]]/;
-	FreeQ[pref,q] && FreeQ[m, Complex] && EvenQ[Count[{inds},0]];
+	FreeQ[pref,q] && FreeQ[m, Complex] && EvenQ[Count[{inds},0]] && {inds}=!={0};
+
+toPackageX[pref_. PaVe[0, {mom1_}, {m1_, m2_}, OptionsPattern[]], q_]:=
+	(2 Pi)^(FCGV["D"]-4) pref PaXpvB[0, 0, momConv[mom1], PowerExpand[Sqrt[m1]],
+	PowerExpand[Sqrt[m2]]]/;FreeQ[pref,q] && FreeQ[{m1,m2}, Complex];
 
 toPackageX[pref_. PaVe[inds__, {mom1_}, {m1_, m2_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(FCGV["D"]-4) pref PaXpvB[Count[{inds},0]/2, Count[{inds},1], momConv[mom1], PowerExpand[Sqrt[m1]],
 	PowerExpand[Sqrt[m2]]]/;FreeQ[pref,q] && FreeQ[{m1,m2}, Complex] &&
-	(EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0);
+	(EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0) && {inds}=!={0};
+
+toPackageX[pref_. PaVe[0,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPattern[]], q_]:=
+	(2 Pi)^(FCGV["D"]-4) pref PaXpvC[0, 0, 0, momConv[mom1], momConv[mom2], momConv[mom1min2],
+	PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m1]]]/;
+	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex];
 
 toPackageX[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(FCGV["D"]-4) pref PaXpvC[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], momConv[mom1], momConv[mom2], momConv[mom1min2],
 	PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m1]]]/;
+	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex] && (EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0) && {inds}=!=0;
+
+(* 1-point functions, same convention as for version 1*)
+toPackageX2[pref_. PaVe[inds__, {}, {m_}, opts:OptionsPattern[]], q_]:=
+	toPackageX[pref PaVe[inds, {}, {m}, opts], q];
+
+(* 2-point functions, same convention as for version 1*)
+toPackageX2[pref_. PaVe[inds__, {mom1_}, {m1_, m2_}, opts:OptionsPattern[]], q_]:=
+	toPackageX[pref PaVe[inds, {mom1}, {m1, m2}, opts], q];
+
+(* 3-point functions, careful, here the convention in version 2 is different*)
+toPackageX2[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPattern[]], q_]:=
+	(2 Pi)^(FCGV["D"]-4) pref PaXpvC[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], momConv[mom1], momConv[mom1min2], momConv[mom2],
+	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]]]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex] && (EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0);
+
+(* 4-point functions, new in version 2*)
+toPackageX2[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_}, {m1_, m2_, m3_, m4_}, OptionsPattern[]], q_]:=
+	(2 Pi)^(FCGV["D"]-4) pref PaXpvD[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], Count[{inds},3],
+		momConv[mom1], momConv[mom1min2], momConv[mom2min3], momConv[mom3], momConv[mom2], momConv[mom1min3],
+	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m4]]]/;
+	FreeQ[pref,q] && FreeQ[{m1,m2,m3,m4}, Complex] && (EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0);
 
 (*	FeynCalc FAD ->FeynCalc PaVe conversion.
 	I Pi^2 prefactor comes from the way how FAD's and PaVe's are
 	normalized in FeynCalc.
 *)
 
-toPackageX[pref_. FeynAmpDenominator[PD[Momentum[q_,_],m_]],q_]:=
-	I Pi^2 pref toPackageX[A0[m^2],q]/; FreeQ[pref,q];
+toPackageX[pref_. (f:FeynAmpDenominator[PD[Momentum[q_,_:4],_]]),q_]:=
+	toPackageX[pref ToPaVe[f,q,PaVeAutoReduce->False],q]/; FreeQ[pref,q];
 
-toPackageX[pref_. FeynAmpDenominator[PD[Momentum[q_,dim_],m1_],PD[Momentum[q_,dim_]+p_:0,m2_]],q_]:=
-	I Pi^2 pref toPackageX[PaVeOrder[B0[FCI[ScalarProduct[p]],m1^2,m2^2]],q]/; FreeQ[pref,q];
 
-toPackageX[pref_. FeynAmpDenominator[PD[Momentum[q_,dim_],m1_],PD[Momentum[q_,dim_]+p1_:0,m2_],
-	PD[Momentum[q_,dim_]+p2_:0,m3_]],q_]:=
-	I Pi^2 pref toPackageX[PaVeOrder[C0[FCI[ScalarProduct[p1]],FCI[ScalarProduct[p1-p2]],FCI[ScalarProduct[p2]],m1^2,m2^2,m3^2]],q]/; FreeQ[pref,q];
+toPackageX[pref_. (f:FeynAmpDenominator[PD[Momentum[q_,_],_],PD[Momentum[q_,_]+p_:0,_]]),q_]:=
+	toPackageX[pref ToPaVe[f,q,PaVeAutoReduce->False],q]/; FreeQ[{pref,p},q];
 
+toPackageX[pref_. (f:FeynAmpDenominator[PD[Momentum[q_,_],_],PD[Momentum[q_,_]+p1_:0,_],
+	PD[Momentum[q_,_]+p2_:0,_]]),q_]:=
+	toPackageX[pref ToPaVe[f,q,PaVeAutoReduce->False],q]/; FreeQ[{pref,p1,p2},q];
+
+toPackageX2[pref_. (f:FeynAmpDenominator[PD[Momentum[q_,_:4],_]]),q_]:=
+	toPackageX2[pref ToPaVe[f,q,PaVeAutoReduce->False],q]/; FreeQ[pref,q];
+
+
+toPackageX2[pref_. (f:FeynAmpDenominator[PD[Momentum[q_,_],_],PD[Momentum[q_,_]+p_:0,_]]),q_]:=
+	toPackageX2[pref ToPaVe[f,q,PaVeAutoReduce->False],q]/; FreeQ[{pref,p},q];
+
+toPackageX2[pref_. (f:FeynAmpDenominator[PD[Momentum[q_,_],_],PD[Momentum[q_,_]+p1_:0,_],
+	PD[Momentum[q_,_]+p2_:0,_]]),q_]:=
+	toPackageX2[pref ToPaVe[f,q,PaVeAutoReduce->False],q]/; FreeQ[{pref,p1,p2},q];
+
+toPackageX2[pref_. (f:FeynAmpDenominator[PD[Momentum[q_,_],_],PD[Momentum[q_,_]+p1_:0,_],
+	PD[Momentum[q_,_]+p2_:0,_],PD[Momentum[q_,_]+p3_:0,_]]),q_]:=
+	toPackageX[pref ToPaVe[f,q,PaVeAutoReduce->False],q]/; FreeQ[{pref,p1,p2,p3},q];
 
 PaXEvaluate[expr_, opts:OptionsPattern[]]:=
 	PaXEvaluate[expr, dummyLoopMom, opts];
@@ -217,6 +297,8 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 			];
 		];
 
+		FCPrint[3,"PaXEvaluate: Entering with: ", expr, FCDoControl->paxVerbose];
+
 		If [ !FreeQ[OptionValue[PaXImplicitPrefactor],PaXEpsilonBar],
 			Message[PaXEvaluate::gen, "ImplicitPrefactor is not allowed to depend on EpsilonBar."];
 			Abort[]
@@ -224,23 +306,35 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 
 		(*	Since we care only for the scalar integrals, we need
 			only the second element from the list returned by FCLoopSplit *)
+
+
+		FCPrint[1,"PaXEvaluate: Applying FCLoopSplit.", FCDoControl->paxVerbose];
 		fclsOutput  = FCLoopSplit[expr,{q}];
 		If [fclsOutput[[3]]=!=0 || fclsOutput[[4]]=!=0,
 			Message[PaXEvaluate::tens]
 		];
+
 		(*	FCLoopCanonicalize is of course an overkill for purely scalar integrals,
 			but it is better to use it than to implement own functions every time...	*)
+
+		FCPrint[1,"PaXEvaluate: Applying FCLoopIsolate.", FCDoControl->paxVerbose];
 		ints=FCLoopIsolate[fclsOutput[[2]], {q}, FCI->True, Head->loopIntegral];
 
 		(*	The 4th element in fclcOutput is our list of unique scalar integrals that
 			need to be computed. But first we need to convert them to the Pacakge X input *)
 		fclcOutput = FCLoopCanonicalize[ints, q, loopIntegral,FCI->True];
-		xList = Map[toPackageX[(#/.loopIntegral->Identity),q]&, fclcOutput[[4]]];
+
+
+		FCPrint[1,"PaXEvaluate: Converting to the Package-X notation.", FCDoControl->paxVerbose];
+		If[OptionValue[PaXVersion] < 2. ,
+			xList = Map[toPackageX[(#/.loopIntegral->Identity),q]&, fclcOutput[[4]]],
+			xList = Map[toPackageX2[(#/.loopIntegral->Identity),q]&, fclcOutput[[4]]]
+		];
 
 		(*  If the conversion is not complete, we need to warn the user *)
-		If [!FreeQ[xList,toPackageX],
-			Message[PaXEvaluate::convFail, Cases[xList,toPackageX[x_,_]:>x,Infinity]];
-			xList = xList/.{toPackageX[x_,_]:>x}
+		If [!FreeQ2[xList,{toPackageX,toPackageX2}],
+			Message[PaXEvaluate::convFail, Cases[xList,(toPackageX|toPackageX2)[x_,_]:>x,Infinity]];
+			xList = xList/.{(toPackageX|toPackageX2)[x_,_]:>x}
 		];
 
 		FCPrint[1,"PaXEvaluate: After toPackageX: ", xList, FCDoControl->paxVerbose];
@@ -261,7 +355,8 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 			(*ParallelEvaluate[Unprotect[System`Print]; System`Print=System`PrintTemporary&, kernel];*)
 
 			(* Start Package X *)
-			With[{startX=$LaunchPackageX},ParallelEvaluate[Get[startX], kernel]];
+			If[OptionValue[PaXVersion] < 2. ,
+			With[{startX="X`OneLoop`"},ParallelEvaluate[Get[startX], kernel]];
 			resultX = With[{
 					input=xList/. {
 							dim->4-2*Hold[ToExpression["X`OneLoop`\[Epsilon]"]],
@@ -273,7 +368,7 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 							Epsilon->Hold[ToExpression["X`OneLoop`\[Epsilon]"]] },
 						xEps=Hold[ToExpression["X`OneLoop`\[Epsilon]"]],
 						xMu = Hold[ToExpression["X`OneLoop`\[Mu]R"]],
-						xLDot = Hold[ToExpression["X`IndexAlg`LDot"]],
+						(*xLDot = Hold[ToExpression["X`IndexAlg`LDot"]],*)
 						xDiscExpOpt = OptionValue[PaXDiscExpand],
 						xKallenExpOpt = OptionValue[PaXKallenExpand],
 						xDiscB = Hold[ToExpression["X`OneLoop`DiscB"]],
@@ -283,8 +378,8 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 					ParallelEvaluate[((ToExpression["X`OneLoop`LoopRefine"][ReleaseHold[input],
 						ToExpression["X`OneLoop`ExplicitC0->All"]])/.{
 						ReleaseHold[xEps]->FeynHelpers`Private`eps,
-						ReleaseHold[xMu]->FeynHelpers`Private`mu,
-						ReleaseHold[xLDot]->FeynHelpers`Private`dot})//
+						ReleaseHold[xMu]->FeynHelpers`Private`mu(*,
+						ReleaseHold[xLDot]->FeynHelpers`Private`dot*)})//
 						If[xDiscExpOpt,ToExpression["X`OneLoop`DiscExpand"][#],#]&//
 						If[xKallenExpOpt,ToExpression["X`OneLoop`KallenExpand"][#],#]&//
 						ReplaceAll[#,{ReleaseHold[xDiscB]->FeynHelpers`Private`discB,
@@ -292,7 +387,47 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 							ReleaseHold[xDiLog]->FeynHelpers`Private`diLog
 
 							}]&
-					,kernel]];
+					,kernel]],
+
+
+
+			With[{input = Hold[ToExpression["BeginPackage[\"X`\"]"]]},ParallelEvaluate[ReleaseHold[input],kernel]];
+			ParallelEvaluate[Get[FileNameJoin[{$UserBaseDirectory, "Applications", "X", "OneLoop.m"}]], kernel];
+			With[{input = Hold[ToExpression["EndPackage[];"]]},ParallelEvaluate[ReleaseHold[input],kernel]];
+			resultX = With[{
+					input=xList/. {
+							dim->4-2*Hold[ToExpression["X`\[Epsilon]"]],
+							FCGV["D"]:>4-2*Hold[ToExpression["X`\[Epsilon]"]],
+							PaXpvA->Hold[ToExpression["X`PVA"]],
+							PaXpvB->Hold[ToExpression["X`PVB"]],
+							PaXpvC->Hold[ToExpression["X`PVC"]],
+							PaXpvD->Hold[ToExpression["X`PVD"]],
+							(*LDot->Hold[ToExpression["X`IndexAlg`LDot"]],*)
+							Epsilon->Hold[ToExpression["X`\[Epsilon]"]] },
+						xEps=Hold[ToExpression["X`\[Epsilon]"]],
+						xMu = Hold[ToExpression["X`\[Micro]"]],
+						(*xLDot = Hold[ToExpression["X`IndexAlg`LDot"]],*)
+						xDiscExpOpt = OptionValue[PaXDiscExpand],
+						xKallenExpOpt = OptionValue[PaXKallenExpand],
+						xDiscB = Hold[ToExpression["X`DiscB"]],
+						xKallenL = Hold[ToExpression["X`Kallen\[Lambda]"]],
+						xDiLog = Hold[ToExpression["X`DiLog"]],
+						xScalarD0 = Hold[ToExpression["X`ScalarD0"]]
+					},
+					ParallelEvaluate[((ToExpression["X`LoopRefine"][ReleaseHold[input],
+						ToExpression["X`ExplicitC0->All"]])/.{
+						ReleaseHold[xEps]->FeynHelpers`Private`eps,
+						ReleaseHold[xMu]->FeynHelpers`Private`mu})//
+						If[xDiscExpOpt,ToExpression["X`DiscExpand"][#],#]&//
+						If[xKallenExpOpt,ToExpression["X`KallenExpand"][#],#]&//
+						ReplaceAll[#,{ReleaseHold[xDiscB]->FeynHelpers`Private`discB,
+							ReleaseHold[xKallenL]->FeynHelpers`Private`kallenL,
+							ReleaseHold[xDiLog]->FeynHelpers`Private`diLog,
+							ReleaseHold[xScalarD0]->D0
+							}]&
+					,kernel]]
+
+			];
 			CloseKernels[kernel];
 
 			(* Sanity check: The output must be either {int1,int2,...} or {{int1,int2,...}}  *)
@@ -312,9 +447,7 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 			(* We need to convert Package X output into FeynCalc input *)
 			resultX = resultX/.{
 								FeynHelpers`Private`mu->ScaleMu,
-								FeynHelpers`Private`eps -> PaXEpsilonBar,
-								FeynHelpers`Private`dot[a_,b_]:>Pair[Momentum[a,dim],Momentum[b,dim]]} /.
-
+								FeynHelpers`Private`eps -> PaXEpsilonBar} /.
 								{
 								FeynHelpers`Private`discB -> PaXDiscB,
 								FeynHelpers`Private`kallenL -> PaXKallenLambda,
@@ -344,30 +477,27 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 		FCPrint[2,"PaXEvaluate: finalResult(w/o implicit prefactor): ", finalResult, FCDoControl->paxVerbose];
 
 
-		(* Protect the dimensions of vectors and Dirac matrices before the expansion *)
-
-		finalResult = finalResult /.
-			LorentzIndex[a_,dim] :> LorentzIndex[holddim[a,ToString[dim,InputForm]]] /.
-			Momentum[a_,dim] :> Momentum[holddim[a,ToString[dim,InputForm]]] /.
-			DiracGamma[a_,dim] :> DiracGamma[holddim[a,ToString[dim,InputForm]]] /.
-				{ConditionalExpression[a_,b__]:> holdcond[ToString[{a,b},InputForm]]} /. dim->4-2*Epsilon;
+		(* Protect the dimensions of vectors and Dirac matrices before the expansion. Same for conditionals. *)
+		finalResult = finalResult/. {ConditionalExpression[a_,b__]:> holdcond[ToString[{a,b},InputForm]]};
+		finalResult = FCReplaceD[finalResult,dim->4-2*Epsilon];
 
 		FCPrint[3,"PaXEvaluate: finalResult(w/o implicit prefactor) with protected dimensions: ",
 			finalResult, FCDoControl->paxVerbose];
 
-		(* 	Since the implicit prefactor or other coefficients in the expression may depends on D or Epsilon,
+		(* 	Since the implicit prefactor or other coefficients in the expression may depends fon D or Epsilon,
 			we need to expand around Epsilon=0 again here.
 			However, this is safe only if the final expression is free of loop integrals and EpsilonBar. *)
 
 		If[	FreeQ2[finalResult,{FeynAmpDenominator,q,PaXEpsilonBar}] &&
 			OptionValue[PaXExpandInEpsilon]  && FreeQ[finalResult,ConditionalExpression],
-			finalResult = Series[(OptionValue[PaXImplicitPrefactor] ChangeDimension[finalResult,4])/.dim->4-2Epsilon,{Epsilon,0,0}]//Normal,
+			finalResult = Series[(OptionValue[PaXImplicitPrefactor]/.dim->4-2Epsilon) finalResult,{Epsilon,0,0}]//Normal;
+			If[	OptionValue[ChangeDimension],
+				finalResult = ChangeDimension[finalResult,4]
+			],
 			finalResult = (OptionValue[PaXImplicitPrefactor] finalResult)
 		];
 
-
 		FCPrint[2,"PaXEvaluate: finalResult (with implicit prefactor): ", finalResult, FCDoControl->paxVerbose];
-
 
 		(* Before returning the final result it is useful to try to simplify the Epsilon-free pieces separately *)
 		If [ OptionValue[PaXSimplifyEpsilon] && FreeQ[finalResult,ConditionalExpression],
@@ -378,10 +508,7 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 
 		finalResult = finalResult /.
 		holdcond[str_String] :> holdcond[Sequence@@ToExpression[str]] /. holdcond->
-		ConditionalExpression /.
-		DiracGamma[holddim[a_,str_String]]:> DiracGamma[a,ToExpression[str]] /.
-		Momentum[holddim[a_,str_String]] :> Momentum[a,ToExpression[str]] /.
-		LorentzIndex[holddim[a_,str_String]] :> LorentzIndex[a,ToExpression[str]];
+		ConditionalExpression;
 
 		If[	OptionValue[Collect] && FreeQ[finalResult,ConditionalExpression],
 			finalResult = Collect2[finalResult, {Epsilon, Pair}]
