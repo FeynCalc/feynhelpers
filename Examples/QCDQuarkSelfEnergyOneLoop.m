@@ -44,7 +44,7 @@ Paint[diags = InsertFields[CreateTopologies[1, 1 -> 1,
 
 
 amps=FCFAConvert[CreateFeynAmp[diags, Truncated -> True,GaugeRules->{},PreFactor->-1],IncomingMomenta->{p},
-OutgoingMomenta->{p},LoopMomenta->{q},DropSumOver->True,UndoChiralSplittings->True,ChangeDimension->D,List->False]/.{SMP["m_u"]->M,GaugeXi[g]->GaugeXi}
+OutgoingMomenta->{p},LoopMomenta->{q},DropSumOver->True,UndoChiralSplittings->True,ChangeDimension->D,List->False,FinalSubstitutions->{FCGV["MU"]->M,GaugeXi[g]->GaugeXi}]
 
 
 ampsEval=amps//Contract//SUNSimplify//TID[#,q]&

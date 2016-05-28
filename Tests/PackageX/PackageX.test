@@ -20,5 +20,7 @@ Tests`PackageX`Generic = {
 {"PackageX-Generic-ID2",
 	"PaXEvaluate[ FAD[{l, 0}, {q + l, 0}], l, PaXSubstituteEpsilon -> True,
 	PaXImplicitPrefactor -> 1/(2 Pi)^(4 - 2 Epsilon)]",	"(I/16)/(Epsilon*Pi^2) - ((I/16)*(-2 + EulerGamma))/Pi^2 +
-	((I/16)*Log[(-4*Pi*ScaleMu^2)/Pair[Momentum[q, D], Momentum[q, D]]])/Pi^2"}
+	((I/16)*Log[(-4*Pi*ScaleMu^2)/Pair[Momentum[q, D], Momentum[q, D]]])/Pi^2"},
+{"PackageX-Generic-ID3",
+	"m^4/(4 Epsilon) - 1/8 m^4 (-3 + 2 EulerGamma + 2 Log[\[Pi]] - 2 Log[ScaleMu^2/m^2])"}
 };
