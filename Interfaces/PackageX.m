@@ -195,12 +195,23 @@ toPackageX2[pref_. PaVe[inds__, {mom1_}, {m1_, m2_}, opts:OptionsPattern[]], q_]
 	toPackageX[pref PaVe[inds, {mom1}, {m1, m2}, opts], q];
 
 (* 3-point functions, careful, here the convention in version 2 is different*)
+toPackageX2[pref_. PaVe[0,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPattern[]], q_]:=
+	(2 Pi)^(FCGV["D"]-4) pref PaXpvC[0, 0, 0, momConv[mom1], momConv[mom1min2], momConv[mom2],
+	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]]]/;
+	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex];
+
 toPackageX2[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(FCGV["D"]-4) pref PaXpvC[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], momConv[mom1], momConv[mom1min2], momConv[mom2],
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]]]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex] && (EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0);
 
 (* 4-point functions, new in version 2*)
+toPackageX2[pref_. PaVe[0,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_}, {m1_, m2_, m3_, m4_}, OptionsPattern[]], q_]:=
+	(2 Pi)^(FCGV["D"]-4) pref PaXpvD[0, 0, 0, 0,
+		momConv[mom1], momConv[mom1min2], momConv[mom2min3], momConv[mom3], momConv[mom2], momConv[mom1min3],
+	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m4]]]/;
+	FreeQ[pref,q] && FreeQ[{m1,m2,m3,m4}, Complex];
+
 toPackageX2[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_}, {m1_, m2_, m3_, m4_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(FCGV["D"]-4) pref PaXpvD[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], Count[{inds},3],
 		momConv[mom1], momConv[mom1min2], momConv[mom2min3], momConv[mom3], momConv[mom2], momConv[mom1min3],
@@ -327,7 +338,7 @@ PaXEvaluate[expr_,q_:Except[_?OptionQ], OptionsPattern[]]:=
 
 			FCPrint[1,"PaXEvaluate: Using Package-X 2.x.x.", FCDoControl->paxVerbose];
 			With[{input = Hold[ToExpression["BeginPackage[\"X`\"]"]]},ParallelEvaluate[ReleaseHold[input],kernel]];
-			ParallelEvaluate[Get[FileNameJoin[{OptionValue[PaXPath], "OneLoop.m"}]], kernel];
+			With[{startX=FileNameJoin[{OptionValue[PaXPath], "OneLoop.m"}]},ParallelEvaluate[Get[startX], kernel]];
 			With[{input = Hold[ToExpression["EndPackage[];"]]},ParallelEvaluate[ReleaseHold[input],kernel]];
 			resultX = With[{
 					input=xList/. {
