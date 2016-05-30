@@ -10,5 +10,5 @@ if [ -z ${MATH+x} ]; then MATH=math; else echo $MATH; fi
 
 
 #QCD Examples
-pwd
 $MATH -nopromt -script ../Examples/QCDQuarkSelfEnergyOneLoop.m
+$MATH -nopromt -script ../Examples/QCDGluonSelfEnergyOneLoop.m
