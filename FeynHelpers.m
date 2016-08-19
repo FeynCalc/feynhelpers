@@ -21,6 +21,9 @@ $FeynHelpersDirectory::usage=
 directory";
 
 Begin["`Package`"]
+
+
+
 End[]
 
 Begin["`FeynHelpers`Private`"];
@@ -40,6 +43,10 @@ EndPackage[]
 (* Print startup message *)
 If[ Global`$FeynCalcStartupMessages =!= False,
 	Print[Style["FeynHelpers ", "Text", Bold], Style[$FeynHelpersVersion <> " loaded.", "Text"]]
+];
+
+If[ !ValueQ[FeynHelpers`Package`paxLoaded],
+	FeynHelpers`Package`paxLoaded = False
 ];
 
 End[]
