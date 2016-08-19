@@ -28,7 +28,7 @@ End[]
 
 Begin["`FeynHelpers`Private`"];
 
-$FeynHelpersVersion="0.5.0";
+$FeynHelpersVersion="0.7.0";
 
 $FeynHelpersDirectory =
 ToFileName[{$FeynCalcDirectory, "AddOns", "FeynHelpers"}];
@@ -42,7 +42,19 @@ EndPackage[]
 
 (* Print startup message *)
 If[ Global`$FeynCalcStartupMessages =!= False,
-	Print[Style["FeynHelpers ", "Text", Bold], Style[$FeynHelpersVersion <> " loaded.", "Text"]]
+	Print[Style["FeynHelpers ", "Text", Bold], Style[$FeynHelpersVersion <> " loaded.", "Text"]];
+	Print[ Style["Have a look at the supplied ","Text"],
+
+	Style[DisplayForm@ButtonBox["examples.", BaseStyle -> "Hyperlink",	ButtonFunction :>
+							SystemOpen[FileNameJoin[{$FeynHelpersDirectory, "Examples"}]],
+							Evaluator -> Automatic, Method -> "Preemptive"], "Text"],
+	Style[" If you use FeynHelpers in your research, please cite","Text"]];
+	Print [Style[" \[Bullet] V. Shtabovenko, \"FeynHelpers: Connecting FeynCalc to FIRE and Package-X\", TUM-EFT 75/15, in preparation","Text"]];
+	Print[Style["Furthermore, remember to cite the authors of the tools that you are calling from FeynHelpers, which are","Text"]];
+	Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIRE",ButtonData :> {URL["http://science.sander.su/FIRE.htm"], None},BaseStyle -> "Hyperlink",
+				ButtonNote -> "http://science.sander.su/FIRE.htm"],"Text"], Style[" by A. Smirnov, if you are using the function FIREBurn.","Text"]];
+	Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Package-X",ButtonData :> {URL["https://packagex.hepforge.org"], None},BaseStyle -> "Hyperlink",
+				ButtonNote -> "https://packagex.hepforge.org"],"Text"], Style[" by H. Patel, if you are using the function PaXEvaluate.","Text"]];
 ];
 
 If[ !ValueQ[FeynHelpers`Package`paxLoaded],

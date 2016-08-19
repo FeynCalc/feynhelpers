@@ -12,7 +12,7 @@
 (* ------------------------------------------------------------------------ *)
 
 PaXEvaluate::usage="PaXEvaluate[expr,q] evaluates \
-scalar 1-loop integrals (up to 3-point functions) in expr that depend\
+scalar 1-loop integrals (up to 4-point functions) in expr that depend\
 on the loop momentum q in D dimensions. The evaluation is done on
 a parellel kernel using H. Patel's Package-X.";
 
@@ -40,7 +40,7 @@ that doesn't show up explicitly in the input expression, but is understood \
 to appear in fron of every 1-loop integral. For technical reasons, PaXImplicitPrefactor \
 shouldn't depend on the number of dimensions D. Instead you should explicitly specify \
 what D is (e.g. 4-2 Epsilon). The default value is 1. \
-If the standard prefactor 1/(2Pi)^D is implicit in your calculations then you set
+If the standard prefactor 1/(2Pi)^D is implicit in your calculations then you set \
 ImplicitPrefactor to 1/(2 Pi)^(4 - 2 Epsilon).";
 
 PaXpvA::usage=
@@ -78,16 +78,26 @@ PaXKallenExpand::usage =
 Package-X function KallenExpand will be applied to the output \
 of Package-X thus replacing KallenLambda by its explicit form.";
 
-PaxLoopRefineOptions::usage =
-"PaxLoopRefineOptions is an Option for PaXEvaluate. It allows \
+PaXC0Expand::usage =
+"PaXC0Expand is an Option for PaXEvaluate. If set to True, \
+Package-X function C0Expand will be applied to the output \
+of Package-X.";
+
+PaXD0Expand::usage =
+"PaXD0Expand is an Option for PaXEvaluate. If set to True, \
+Package-X function C0Expand will be applied to the output \
+of Package-X.";
+
+PaXLoopRefineOptions::usage =
+"PaXLoopRefineOptions is an Option for PaXEvaluate. It allows \
 you to directly specify the options supplied to LoopRefine, the \
 Package-X function which returns analytic expressions for loop \
 integrals. The options should be given using X` context, i.e. \
-PaxLoopRefineOptions -> {X`ExplicitC0 -> All};
+PaXLoopRefineOptions -> {X`ExplicitC0 -> All};
 ";
 
 PaXPath::usage=
-"PaXPath is an Option for PaXEvaluate. It specifies the
+"PaXPath is an Option for PaXEvaluate. It specifies the \
 directory, in which Package-X is installed";
 
 PaXEvaluate::convFail=
@@ -101,7 +111,7 @@ will be ignored, because PaxEvaluate operates only on 1-loop scalar \
 integrals with up to 3 propagators.";
 
 PaXEvaluate::gen=
-"PaXEvaluate has encountered an error and must abort the evaluation. The
+"PaXEvaluate has encountered an error and must abort the evaluation. The \
 error description reads: `1`";
 
 Begin["`Package`"]
@@ -125,10 +135,12 @@ Options[PaXEvaluate] = {
 	PaXExpandInEpsilon -> True,
 	PaXImplicitPrefactor -> 1,
 	PaXKallenExpand -> True,
+	PaXD0Expand -> False,
+	PaXC0Expand -> False,
 	PaXPath -> FileNameJoin[{$UserBaseDirectory, "Applications", "X"}],
 	PaXSimplifyEpsilon -> True,
 	PaXSubstituteEpsilon -> True,
-	PaxLoopRefineOptions -> {X`ExplicitC0 -> All}
+	PaXLoopRefineOptions -> {}
 };
 
 (* Typesetting *)
@@ -153,7 +165,7 @@ PaXDiLog /:
 momConv[x_] :=
 	FCE[ExpandScalarProduct[MomentumCombine[FCI[x]]]];
 
-toPackageX2[pref_, q_]:=
+toPackageX[pref_, q_]:=
 	pref /; FreeQ2[pref,Join[{q},FeynCalc`Package`PaVeHeadsList]];
 
 (* FeynCalc->Package-X conversion for A0, B0, B1, B00, B11 and C0.
@@ -169,43 +181,43 @@ toPackageX2[pref_, q_]:=
 *)
 
 (* 1-point functions *)
-toPackageX2[pref_. PaVe[0, {}, {m_}, OptionsPattern[]], q_]:=
+toPackageX[pref_. PaVe[0, {}, {m_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVA[0, PowerExpand[Sqrt[m]]]/;
 	FreeQ[pref,q] && FreeQ[m, Complex];
 
-toPackageX2[pref_. PaVe[inds__, {}, {m_}, OptionsPattern[]], q_]:=
+toPackageX[pref_. PaVe[inds__, {}, {m_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVA[Count[{inds},0]/2, PowerExpand[Sqrt[m]]]/;
 	FreeQ[pref,q] && FreeQ[m, Complex] && EvenQ[Count[{inds},0]] && {inds}=!={0};
 
 (* 2-point functions *)
-toPackageX2[pref_. PaVe[0, {mom1_}, {m1_, m2_}, OptionsPattern[]], q_]:=
+toPackageX[pref_. PaVe[0, {mom1_}, {m1_, m2_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVB[0, 0, momConv[mom1], PowerExpand[Sqrt[m1]],
 	PowerExpand[Sqrt[m2]]]/;FreeQ[pref,q] && FreeQ[{m1,m2}, Complex];
 
-toPackageX2[pref_. PaVe[inds__, {mom1_}, {m1_, m2_}, OptionsPattern[]], q_]:=
+toPackageX[pref_. PaVe[inds__, {mom1_}, {m1_, m2_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVB[Count[{inds},0]/2, Count[{inds},1], momConv[mom1], PowerExpand[Sqrt[m1]],
 	PowerExpand[Sqrt[m2]]]/;FreeQ[pref,q] && FreeQ[{m1,m2}, Complex] &&
 	(EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0) && {inds}=!={0};
 
 (* 3-point functions *)
-toPackageX2[pref_. PaVe[0,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPattern[]], q_]:=
+toPackageX[pref_. PaVe[0,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVC[0, 0, 0, momConv[mom1], momConv[mom1min2], momConv[mom2],
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]]]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex];
 
-toPackageX2[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPattern[]], q_]:=
+toPackageX[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVC[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], momConv[mom1], momConv[mom1min2], momConv[mom2],
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]]]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex] && (EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0);
 
 (* 4-point functions *)
-toPackageX2[pref_. PaVe[0,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_}, {m1_, m2_, m3_, m4_}, OptionsPattern[]], q_]:=
+toPackageX[pref_. PaVe[0,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_}, {m1_, m2_, m3_, m4_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVD[0, 0, 0, 0,
 		momConv[mom1], momConv[mom1min2], momConv[mom2min3], momConv[mom3], momConv[mom2], momConv[mom1min3],
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m4]]]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3,m4}, Complex];
 
-toPackageX2[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_}, {m1_, m2_, m3_, m4_}, OptionsPattern[]], q_]:=
+toPackageX[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_}, {m1_, m2_, m3_, m4_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVD[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], Count[{inds},3],
 		momConv[mom1], momConv[mom1min2], momConv[mom2min3], momConv[mom3], momConv[mom2], momConv[mom1min3],
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m4]]]/;
@@ -293,12 +305,12 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			{n1, n2, n3}]));
 
 		FCPrint[1,"PaXEvaluate: Converting to the Package-X notation.", FCDoControl->paxVerbose];
-		xList = Map[toPackageX2[(#/.loopIntegral->Identity),q]&, fclcOutput[[4]]];
+		xList = Map[toPackageX[(#/.loopIntegral->Identity),q]&, fclcOutput[[4]]];
 
 		(*  If the conversion is not complete, we need to warn the user *)
-		If [!FreeQ[xList,toPackageX2],
-			Message[PaXEvaluate::convFail, Cases[xList,toPackageX2[x_,_]:>x,Infinity]];
-			xList = xList/.{toPackageX2[x_,_]:>x}
+		If [!FreeQ[xList,toPackageX],
+			Message[PaXEvaluate::convFail, Cases[xList,toPackageX[x_,_]:>x,Infinity]];
+			xList = xList/.{toPackageX[x_,_]:>x}
 		];
 
 		FCPrint[1,"PaXEvaluate: After toPackageX: ", xList, FCDoControl->paxVerbose];
@@ -314,7 +326,15 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 			xList = xList/. { dim->4-2*(X`\[Epsilon]), Epsilon->(X`\[Epsilon]) };
 
-			resultX = X`LoopRefine[xList, Sequence@@OptionValue[PaxLoopRefineOptions]];
+			resultX = X`LoopRefine[xList, Sequence@@OptionValue[PaXLoopRefineOptions]];
+
+			If[	OptionValue[PaXC0Expand],
+				resultX = X`C0Expand[resultX];
+			];
+
+			If[	OptionValue[PaXD0Expand],
+				resultX = X`D0Expand[resultX];
+			];
 
 			If[	OptionValue[PaXDiscExpand],
 				resultX = X`DiscExpand[resultX];
@@ -331,7 +351,8 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 				X`DiscB -> PaXDiscB,
 				X`Kallen\[Lambda] -> PaXKallenLambda,
 				X`DiLog -> PaXDiLog,
-				X`ScalarD0 -> D0
+				X`ScalarD0 -> D0,
+				X`ScalarC0 -> C0
 			};
 
 			FCPrint[2,"PaXEvaluate: resultX (raw): ", resultX, FCDoControl->paxVerbose];
@@ -351,8 +372,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 				If[	!FreeQ[resultX,PaXEpsilonBar],
 					Message[PaXEvaluate::gen, "Failed to eliminate EpsilonBar."];
 					Abort[]
-				],
-				resultX = resultX//.PaXEpsilonBar->Epsilon
+				]
 			],
 			resultX={}
 		];
