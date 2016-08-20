@@ -12,8 +12,8 @@
 (* ------------------------------------------------------------------------ *)
 
 PaXEvaluate::usage="PaXEvaluate[expr,q] evaluates \
-scalar 1-loop integrals (up to 4-point functions) in expr that depend\
-on the loop momentum q in D dimensions. The evaluation is done on
+scalar 1-loop integrals (up to 4-point functions) in expr that depend \
+on the loop momentum q in D dimensions. The evaluation is done on \
 a parellel kernel using H. Patel's Package-X.";
 
 PaXSubstituteEpsilon::usage=
@@ -26,12 +26,12 @@ abbreviation to obtain the complete result.";
 PaXExpandInEpsilon::usage=
 "PaXExpandInEpsilon is an option for PaXEvaluate. If ImplicitPrefactor is \
 not unity and SubstituteEpsilon is set to True, then the value of ExpandInEpsilon \
-determines wheter the final result should be again expanded in Epsilon. Only the
+determines wheter the final result should be again expanded in Epsilon. Only the \
 1/Epsilon pole is kept. The default value is True.";
 
 PaXSimplifyEpsilon::usage=
-"PaXSimplifyEpsilon is an option for PaXEvaluate. When set to True, PaXEvaluate will
-attempt to simplify the final result by applying simplifications to the Epsilon-free parts
+"PaXSimplifyEpsilon is an option for PaXEvaluate. When set to True, PaXEvaluate will \
+attempt to simplify the final result by applying simplifications to the Epsilon-free parts \
 of the expression. The default value is True.";
 
 PaXImplicitPrefactor::usage=
