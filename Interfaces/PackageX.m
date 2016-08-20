@@ -13,8 +13,8 @@
 
 PaXEvaluate::usage="PaXEvaluate[expr,q] evaluates \
 scalar 1-loop integrals (up to 4-point functions) in expr that depend \
-on the loop momentum q in D dimensions. The evaluation is done on \
-a parellel kernel using H. Patel's Package-X.";
+on the loop momentum q in D dimensions. The evaluation is using \
+H. Patel's Package-X.";
 
 PaXSubstituteEpsilon::usage=
 "PaXSubstituteEpsilon is an option for PaXEvaluate. For brevity, \
