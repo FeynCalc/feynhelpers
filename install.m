@@ -70,9 +70,8 @@ Options[InstallFeynHelpers]={
 	AutoInstallPackageX->None,
 	AutoOverwriteFeynHelpersDirectory->None,
 	FeynHelpersDevelopmentVersionLink->"https://github.com/FeynCalc/feynhelpers/archive/master.zip",
-	(* This will be sort of stable version when Package-X 2 is released *)
-	FeynHelpersStableVersionLink->"https://github.com/FeynCalc/feynhelpers/archive/pax2.zip",
-	InstallFeynHelpersDevelopmentVersion->True,
+	FeynHelpersStableVersionLink->"https://github.com/FeynCalc/feynhelpers/archive/stable.zip",
+	InstallFeynHelpersDevelopmentVersion->False,
 	InstallFeynHelpersTo->FileNameJoin[{$FeynCalcDirectory, "AddOns","FeynHelpers"}]
 };
 
