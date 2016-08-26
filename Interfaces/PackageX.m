@@ -140,7 +140,9 @@ Options[PaXEvaluate] = {
 	PaXPath -> FileNameJoin[{$UserBaseDirectory, "Applications", "X"}],
 	PaXSimplifyEpsilon -> True,
 	PaXSubstituteEpsilon -> True,
-	PaXLoopRefineOptions -> {}
+	PaXLoopRefineOptions -> {},
+	PaVeAutoReduce -> True,
+	PaVeAutoOrder -> True
 };
 
 (* Typesetting *)
@@ -277,7 +279,8 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		];
 
 		(*	First of all, let us convert all the scalar integrals to PaVe functions:	*)
-		ex = expr//ToPaVe[#,q,PaVeAutoReduce->False]&//ToPaVe2;
+		ex = expr//ToPaVe[#,q,PaVeAutoReduce->False,
+					PaVeAutoOrder -> OptionValue[PaVeAutoOrder]]&//ToPaVe2;
 
 		(*	Since we care only for the scalar integrals, we need
 			only the second element from the list returned by FCLoopSplit *)
@@ -351,8 +354,16 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 				X`DiscB -> PaXDiscB,
 				X`Kallen\[Lambda] -> PaXKallenLambda,
 				X`DiLog -> PaXDiLog,
-				X`ScalarD0 -> D0,
-				X`ScalarC0 -> C0
+				(* Notice the differnence between mass conventions
+					in FeynCalc and Package-X	*)
+				X`ScalarC0[s1_,s12_,s2_,m0_,m1_,m2_] :>
+					PaVe[0,{s1,s12,s2},{m0^2,m1^2,m2^2},
+					PaVeAutoReduce -> OptionValue[PaVeAutoReduce],
+					PaVeAutoOrder -> OptionValue[PaVeAutoOrder]],
+				X`ScalarD0[s1_,s2_,s3_,s4_,s12_,s23_,m0_,m1_,m2_,m3_] :>
+					PaVe[0,{s1,s2,s3,s4,s12,s23},{m0^2,m1^2,m2^2,m3^2},
+					PaVeAutoReduce -> OptionValue[PaVeAutoReduce],
+					PaVeAutoOrder -> OptionValue[PaVeAutoOrder]]
 			};
 
 			FCPrint[2,"PaXEvaluate: resultX (raw): ", resultX, FCDoControl->paxVerbose];

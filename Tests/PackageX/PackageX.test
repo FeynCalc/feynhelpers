@@ -35,27 +35,23 @@ p])^(-1)"},
 PaXLoopRefineOptions\[Rule]{},PaXKallenExpand\[Rule]False,\
 PaXDiscExpand\[Rule]False,PaXSubstituteEpsilon\[Rule]False,\
 PaXExpandInEpsilon\[Rule]False]//PowerExpand//Collect2[#,{C0,\
-PaXKallenLambda,PaXDiscB,Log,PaXEpsilonBar}]&",
-"-1/(12*PaXEpsilonBar) + Log[2]/6 + Log[m]/6 + Log[Pi]/6 - \
-Log[ScaleMu]/6 - (C0[m^2, Pair[Momentum[p], Momentum[p]], \
-Pair[Momentum[p], Momentum[p]], m, m, m]*(m^2 - 2*Pair[Momentum[p], \
-Momentum[p]])*(m^4 - 4*m^2*Pair[Momentum[p], Momentum[p]] + \
-Pair[Momentum[p], Momentum[p]]^2))/(2*(m^2 - 4*Pair[Momentum[p], \
-Momentum[p]])^2) + (-11*m^4 + 9*Sqrt[3]*m^4*Pi + \
-82*m^2*Pair[Momentum[p], Momentum[p]] - \
-36*Sqrt[3]*m^2*Pi*Pair[Momentum[p], Momentum[p]] - \
-152*Pair[Momentum[p], Momentum[p]]^2 + \
-12*Sqrt[3]*Pi*Pair[Momentum[p], Momentum[p]]^2)/(36*(m^2 - \
-4*Pair[Momentum[p], Momentum[p]])^2) + ((2*m^4 - \
-7*m^2*Pair[Momentum[p], Momentum[p]] - Pair[Momentum[p], \
-Momentum[p]]^2)*PaXDiscB[Pair[Momentum[p], Momentum[p]], m, \
-m])/(3*(m^2 - 4*Pair[Momentum[p], Momentum[p]])^2)"},
+PaXKallenLambda,PaXDiscB,Log,PaXEpsilonBar}]&//FCE",
+"-(1/(12 PaXEpsilonBar)) + Log[2]/6 + Log[m]/6 + Log[\[Pi]]/6 -
+Log[ScaleMu]/6 + (
+PaXDiscB[SP[p, p], m, m] (2 m^4 - 7 m^2 SP[p, p] - SP[p, p]^2))/(
+3 (m^2 - 4 SP[p, p])^2) - (
+C0[m^2, SP[p, p], SP[p, p], m^2, m^2,
+m^2] (m^2 - 2 SP[p, p]) (m^4 - 4 m^2 SP[p, p] + SP[p, p]^2))/(
+2 (m^2 - 4 SP[p, p])^2) + (1/(
+36 (m^2 - 4 SP[p, p])^2))(-11 m^4 + 9 Sqrt[3] m^4 \[Pi] +
+82 m^2 SP[p, p] - 36 Sqrt[3] m^2 \[Pi] SP[p, p] - 152 SP[p, p]^2 +
+12 Sqrt[3] \[Pi] SP[p, p]^2)"},
 {"PackageX-Generic-ID5",
 "PaXEvaluate[D0[0,0,0,0,4\!\(\*SuperscriptBox[\(m\), \
 \(2\)]\),0,m^2,m^2,m^2,m^2]]", "1/(2*m^4)"},
 {"PackageX-Generic-ID6",
 "Assuming[{m>0},PaXEvaluate[C0[\!\(\*SuperscriptBox[\(m\), \
-\(2\)]\),s,s,m^2,m^2,m^2]]//Simplify]", "C0[m^2, s, s, m, m, m]"},
+\(2\)]\),s,s,m^2,m^2,m^2]]//Simplify]", "C0[m^2, s, s, m^2, m^2, m^2]"},
 {"PackageX-Generic-ID7",
 "PaXEvaluate[D0[0,0,0,0,s,t,m^2,m^2,m^2,m^2],PaXD0Expand\[Rule]\
 True]", "ConditionalExpression[(2*(-Pi^2/2 - Log[((1 + Sqrt[1 - \
@@ -91,5 +87,25 @@ Analytic\[Rule]True},PaXSubstituteEpsilon\[Rule]False,\
 PaXExpandInEpsilon\[Rule]False]//FullSimplify//Collect2[#,\
 PaXEpsilonBar]&",
 "-1/(2*m^2*PaXEpsilonBar) + (2 + 2*Log[2] + 2*Log[Pi] - \
-Log[ScaleMu^2/m^2])/(2*m^2)"}
+Log[ScaleMu^2/m^2])/(2*m^2)"},
+{"PackageX-Generic-ID10","PaXEvaluate[FAD[{k, m0}, {k - p, m1}, {k - q, m2}], k]//FCE",
+"I \[Pi]^2 C0[SPD[p, p], SPD[q, q],
+SPD[p, p] - 2 SPD[p, q] + SPD[q, q], m1^2, m0^2, m2^2]"},
+{"PackageX-Generic-ID11","PaXEvaluate[FAD[{k, m0}, {k - p, m1}, {k - q, m2}], k,
+PaVeAutoOrder -> False, PaVeAutoReduce -> False] // FCE","I \[Pi]^2 PaVe[
+0, {SPD[q, q], SPD[p, p], SPD[p, p] - 2 SPD[p, q] + SPD[q, q]}, {m2^2, m0^2, m1^2},
+PaVeAutoReduce -> False, PaVeAutoOrder -> False]"},
+{"PackageX-Generic-ID12","PaXEvaluate[FAD[{k, m0}, {k - p, m1}, {k - q, m2}, {-a + k, m3}],
+k] // FCE","I \[Pi]^2 D0[SPD[a, a], SPD[p, p],
+SPD[p, p] - 2 SPD[p, q] + SPD[q, q],
+SPD[a, a] - 2 SPD[a, q] + SPD[q, q],
+SPD[a, a] - 2 SPD[a, p] + SPD[p, p], SPD[q, q], m3^2, m0^2, m1^2,
+m2^2]"},
+{"PackageX-Generic-ID13","PaXEvaluate[FAD[{k, m0}, {k - p, m1}, {k - q, m2}, {-a + k, m3}], k,
+PaVeAutoOrder -> False, PaVeAutoReduce -> False] // FCE",
+"I \[Pi]^2 PaVe[
+0, {SPD[a, a], SPD[p, p], SPD[p, p] - 2 SPD[p, q] + SPD[q, q],
+SPD[a, a] - 2 SPD[a, q] + SPD[q, q],
+SPD[a, a] - 2 SPD[a, p] + SPD[p, p], SPD[q, q]}, {m3^2, m0^2, m1^2,
+	m2^2}, PaVeAutoReduce -> False, PaVeAutoOrder -> False]"}
 })
