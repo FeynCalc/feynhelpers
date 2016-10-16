@@ -484,7 +484,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			If [OptionValue[PaXSubstituteEpsilon],
 				(*Need a check that the expansion was done correctly!!!*)
 				resultX =  Expand2[resultX, PaXEpsilonBar]/.{1/PaXEpsilonBar^2 -> 1/Epsilon^2  +
-					(1/Epsilon)(-EulerGamma+Log[4 Pi]) + (EulerGamma^2)/2 - (Pi^2)/12 -
+					(1/Epsilon)(-EulerGamma+Log[4 Pi]) + (EulerGamma^2)/2 -
 					EulerGamma Log[4 Pi] + (1/2) Log[4 Pi]^2}/.{1/PaXEpsilonBar->1/Epsilon - EulerGamma + Log[4Pi]};
 				If[	!FreeQ[resultX,PaXEpsilonBar],
 					Message[PaXEvaluate::gen, "Failed to eliminate EpsilonBar."];
