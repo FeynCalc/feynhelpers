@@ -130,7 +130,7 @@ FIREBurn[expr_, qs_List/;qs=!={}, extMom_List, opts:OptionsPattern[]] :=
 
 		FCPrint[1,"FIREBurn: List of unique loop integrals: ", intsUnique,  FCDoControl->fbVerbose];
 
-		(* TODO Need to  loop integrals that do not require a reduction *)
+		(* TODO Must sort out loop integrals that do not require a reduction!!! *)
 
 
 		(*	Check that the propagators of each integral form a basis	*)
@@ -160,9 +160,10 @@ FIREBurn[expr_, qs_List/;qs=!={}, extMom_List, opts:OptionsPattern[]] :=
 
 
 
-		fireList= Map[Join[#[[1]],Thread[List[(FCE/@#[[2]]), 0, "DUMMY"]]]&,fireList]/.{SPD[a_,b_]:>a*b};
+		fireList= Map[Join[#[[1]],Thread[List[(FCE/@#[[2]]), 0, "DUMMY"]]]&,fireList];
 
 
+		fireList = fireList /. {ii_,jj_Integer,kk_} :> {ReplaceAll[ii,SPD->Times],jj,kk};
 
 		FCPrint[3,"FIREBurn: Fire list: ", fireList, " ", FCDoControl->fbVerbose];
 
@@ -184,17 +185,23 @@ FIREBurn[expr_, qs_List/;qs=!={}, extMom_List, opts:OptionsPattern[]] :=
 (*	Converts the output of FIRE into FeynCalc notation	*)
 fromFIRE[props_List,qs_List]:=
 	Block[{pow,tmp,res,list},
-		FCPrint[4,"fromFIRE: Entering with :", props , " | ", qs, " ", FCDoControl->fbVerbose];
+		FCPrint[4,"fromFIRE: Entering with: ", props , " | ", qs, " ", FCDoControl->fbVerbose];
 		tmp = Map[list@@#&,props];
 
-
-		tmp = Replace[tmp, list[_, i_, j_] :> Power[j,i], 1];
-
+		(* TODO: What if FAD appears with negative power -> need conversion*)
+		(* TODO: What if scalar product appears with  positive power -> need to handle it somehow...*)
+		tmp = Replace[tmp, {
+			list[_, i_, j_]/;Head[j]===FAD :> Power[j,i],
+			list[_, i_, j_]/;Head[j]===SPD :> Power[j,-i],
+			list[_, 0, "DUMMY"] :> 1
+			}, 1];
+		FCPrint[4,"fromFIRE: Converted propagators: ", tmp, FCDoControl->fbVerbose];
+		(*Global`XXX = tmp;
 		If[!FreeQ[tmp,list],
 			(*TODO some cross checks *)
 			Message["..."];
 			Abort[]
-		];
+		];*)
 
 		res = Times@@tmp;
 
@@ -316,8 +323,8 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 		WriteString[fireConfig1, "Get[\""<> firePath  <>"\"];\n"];
 		WriteString[fireConfig1, "Internal=" <> ToString[internal,InputForm] <> ";\n"];
 		WriteString[fireConfig1, "External=" <> ToString[external,InputForm] <> ";\n"];
-		WriteString[fireConfig1, "Propagators=" <> ToString[propagators,InputForm] <> ";\n"];
-		WriteString[fireConfig1, StringReplace["Replacements=" <> ToString[replacements,InputForm] <> ";\n",{"SPD"->"FeynCalc`SPD"}]];
+		WriteString[fireConfig1, StringReplace["Propagators=" <> ToString[propagators,InputForm] <> ";\n",{"SPD"->"FeynCalc`SPD","SMP"->"FeynCalc`SMP"}]];
+		WriteString[fireConfig1, StringReplace["Replacements=" <> ToString[replacements,InputForm] <> ";\n",{"SPD"->"FeynCalc`SPD","SMP"->"FeynCalc`SMP"}]];
 		WriteString[fireConfig1, "PrepareIBP[];\n"];
 		WriteString[fireConfig1, "Prepare[AutoDetectRestrictions -> True];\n"];
 		WriteString[fireConfig1, "SaveStart["<> ToString[startFile,InputForm]  <>"];\n"];
@@ -333,8 +340,9 @@ prepareFIRE[qs_List,ext_List,props_List,OptionsPattern[FIREBurn]]:=
 		WriteString[fireConfig2, "Get[\""<> firePath  <>"\"];\n"];
 		WriteString[fireConfig2, "LoadStart[" <> ToString[startFile,InputForm] <> ",1];\n"];
 		WriteString[fireConfig2, "Burn[];\n"];
-		WriteString[fireConfig2, StringReplace["prs="<> ToString[prs,InputForm]  <>";\n",{"SPD"->"FeynCalc`SPD","FAD"->"FeynCalc`FAD"}]];
-		WriteString[fireConfig2, "F@@" <> ToString[integral,InputForm] <> "\n"];
+		WriteString[fireConfig2, StringReplace["prs="<> ToString[prs,InputForm]  <>";\n",{"SPD"->"FeynCalc`SPD","FAD"->"FeynCalc`FAD","SMP"->"FeynCalc`SMP"}]];
+		WriteString[fireConfig2, "FeynCalc`FIRE`Private`feynhelpersFIREResult =  F@@" <> ToString[integral,InputForm] <> "\n"];
+		WriteString[fireConfig2, "FeynCalc`FIRE`Private`feynhelpersFIREResult /. {G -> FeynCalc`FIRE`Private`feynHelpersG, d -> FeynCalc`FIRE`Private`feynHelpersDim} \n"];
 		Close[fireConfig2];
 
 	];
@@ -399,7 +407,7 @@ RunFIRE[{fireConfigPath1_,fireConfigPath2_},OptionsPattern[FIREBurn]]:=
 
 		outFIRE = With[{file1=fireConfigPath2}
 
-						,ParallelEvaluate[Get[file1],kernel]]/.{ToExpression["Global`G"]->g,ToExpression["Global`d"]->System`D(*,
+						,ParallelEvaluate[Get[file1],kernel]]/.{FeynCalc`FIRE`Private`feynHelpersG->g,FeynCalc`FIRE`Private`feynHelpersDim->System`D(*,
 		ToExpression["Global`FCGV"]->fcgv*)};
 		CloseKernels[kernel];
 
