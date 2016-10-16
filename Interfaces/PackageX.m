@@ -16,6 +16,18 @@ scalar 1-loop integrals (up to 4-point functions) in expr that depend \
 on the loop momentum q in D dimensions. The evaluation is using \
 H. Patel's Package-X.";
 
+PaXEvaluateIR::usage="PaXEvaluateIR[expr,q] is like PaXEvaluate \
+but with the difference that it returns only the IR-divergent part
+of the result.";
+
+PaXEvaluateUV::usage="PaXEvaluateUV[expr,q] is like PaXEvaluate \
+but with the difference that it returns only the UV-divergent part
+of the result.";
+
+PaXEvaluateUVIRSplit::usage="PaXEvaluateUVIRSplit[expr,q] is like PaXEvaluate, \
+but with the difference that it explicilty distinguishes between UV- and \
+IR-divergenves.";
+
 PaXSubstituteEpsilon::usage=
 "PaXSubstituteEpsilon is an option for PaXEvaluate. For brevity, \
 Package-X normally abbreviates 1/Epsilon - EulerGamma + Log[4Pi] \
@@ -69,17 +81,17 @@ PaXDiLog::usage =
 "PaXDiLog corresponds to DiLog in Package-X.";
 
 PaXDiscExpand::usage =
-"PaXDiscExpand is an Option for PaXEvaluate. If set to True, \
+"PaXDiscExpand is an option for PaXEvaluate. If set to True, \
 Package-X function DiscExpand will be applied to the output \
 of Package-X thus replacing DiscB by its explicit form.";
 
 PaXKallenExpand::usage =
-"PaXKallenExpand is an Option for PaXEvaluate. If set to True, \
+"PaXKallenExpand is an option for PaXEvaluate. If set to True, \
 Package-X function KallenExpand will be applied to the output \
 of Package-X thus replacing KallenLambda by its explicit form.";
 
 PaXC0Expand::usage =
-"PaXC0Expand is an Option for PaXEvaluate. If set to True, \
+"PaXC0Expand is an option for PaXEvaluate. If set to True, \
 Package-X function C0Expand will be applied to the output \
 of Package-X.";
 
@@ -89,15 +101,26 @@ Package-X function C0Expand will be applied to the output \
 of Package-X.";
 
 PaXLoopRefineOptions::usage =
-"PaXLoopRefineOptions is an Option for PaXEvaluate. It allows \
+"PaXLoopRefineOptions is an option for PaXEvaluate. It allows \
 you to directly specify the options supplied to LoopRefine, the \
 Package-X function which returns analytic expressions for loop \
 integrals. The options should be given using X` context, i.e. \
 PaXLoopRefineOptions -> {X`ExplicitC0 -> All};
 ";
 
+PaXSeries::usage =
+"PaXSeries is an option for PaXEvaluate. It allows \
+to expand Passarino-Veltman functions around given variables. \
+The expansion is done by LoopRefineSeries and the syntax is \
+the same as with the ordinary Series, e.g. \
+PaXSeries -> {{m0,0,2}} or PaXSeries -> {{SPD[p1,p1],pp1,0},{SPD[p2,p2],pp2,0}}.";
+
+PaXAnalytic::usage =
+"PaXAnalytic is an option for PaXEvaluate. If set to True,
+LoopRefine and LoopRefineSeries will be called with Analyic->True.";
+
 PaXPath::usage=
-"PaXPath is an Option for PaXEvaluate. It specifies the \
+"PaXPath is an option for PaXEvaluate. It specifies the \
 directory, in which Package-X is installed";
 
 PaXEvaluate::convFail=
@@ -114,6 +137,9 @@ PaXEvaluate::gen=
 "PaXEvaluate has encountered an error and must abort the evaluation. The \
 error description reads: `1`";
 
+
+
+
 Begin["`Package`"]
 
 paxLoaded::usage="";
@@ -126,23 +152,28 @@ paxVerbose::usage="";
 dummyLoopMom::usage="";
 
 Options[PaXEvaluate] = {
+	ChangeDimension -> False,
 	Collect -> True,
 	Dimension -> D,
-	ChangeDimension -> False,
 	FCVerbose -> False,
 	FinalSubstitutions -> {},
+	PaVeAutoOrder -> True,
+	PaVeAutoReduce -> True,
+	PaXC0Expand -> False,
+	PaXD0Expand -> False,
 	PaXDiscExpand -> True,
 	PaXExpandInEpsilon -> True,
+	(*PaXIRDivergent -> False,*)
 	PaXImplicitPrefactor -> 1,
 	PaXKallenExpand -> True,
-	PaXD0Expand -> False,
-	PaXC0Expand -> False,
+	PaXLoopRefineOptions -> {},
 	PaXPath -> FileNameJoin[{$UserBaseDirectory, "Applications", "X"}],
 	PaXSimplifyEpsilon -> True,
 	PaXSubstituteEpsilon -> True,
-	PaXLoopRefineOptions -> {},
-	PaVeAutoReduce -> True,
-	PaVeAutoOrder -> True
+	(*PaXUVDivergent -> False,*)
+	PaXSeries -> False,
+	PaXAnalytic -> False,
+	PaXExplictUVIR -> False
 };
 
 (* Typesetting *)
@@ -225,14 +256,75 @@ toPackageX[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m4]]]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3,m4}, Complex] && (EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0);
 
+
+PaXEvaluateUVIRSplit[expr_, opts:OptionsPattern[]]:=
+	PaXEvaluateUVIRSplit[expr, dummyLoopMom, opts];
+
+PaXEvaluateUVIRSplit[expr_, q:Except[_?OptionQ], opts:OptionsPattern[]]:=
+	Block[{resFull,resUV,resIRAndFinite,resFinal},
+		resUV = PaXEvaluateUV[expr, q, opts]/. EpsilonUV->Epsilon;
+		resFull = PaXEvaluate[expr, q, opts];
+		(*TODO Checks!!!*)
+		resIRAndFinite = Collect2[resFull-resUV,{Epsilon}]/. Epsilon->EpsilonIR;
+		resUV = resUV/. Epsilon -> EpsilonUV;
+		resFinal = resUV + resIRAndFinite;
+		If[ Factor[(resFinal/.(EpsilonUV|EpsilonIR)->Epsilon)-resFull]=!=0,
+			Message[PaXEvaluate::gen, "Splitting into UV and IR pieces failed."];
+			Abort[]
+		];
+		resFinal
+	];
+
+PaXEvaluateIR[expr_, opts:OptionsPattern[]]:=
+	PaXEvaluateIR[expr, dummyLoopMom, opts];
+
+PaXEvaluateIR[expr_, q:Except[_?OptionQ], opts:OptionsPattern[]]:=
+	Block[{loopRefineOpts, newOpts, res},
+		loopRefineOpts = OptionValue[PaXEvaluate,{opts},PaXLoopRefineOptions];
+		loopRefineOpts = Join[{Part->X`IRDivergent},loopRefineOpts];
+		newOpts = Flatten[Join[{PaXLoopRefineOptions->loopRefineOpts},
+			FilterRules[{opts}, Except[PaXLoopRefineOptions]]]];
+		res = PaXEvaluate[expr, q, newOpts];
+		(* If we care only for the pole, the finite part is not needed *)
+		res = FCSplit[res,{Epsilon}][[2]] /. Epsilon -> EpsilonIR;
+		res
+	];
+
+PaXEvaluateUV[expr_, opts:OptionsPattern[]]:=
+	PaXEvaluateUV[expr, dummyLoopMom, opts];
+
+PaXEvaluateUV[expr_, q:Except[_?OptionQ], opts:OptionsPattern[]]:=
+	Block[{loopRefineOpts, newOpts, res},
+		loopRefineOpts = OptionValue[PaXEvaluate,{opts},PaXLoopRefineOptions];
+		loopRefineOpts = Join[{Part->X`UVDivergent},loopRefineOpts];
+		newOpts = Flatten[Join[{PaXLoopRefineOptions->loopRefineOpts},
+			FilterRules[{opts}, Except[PaXLoopRefineOptions]]]];
+		res = PaXEvaluate[expr, q, newOpts];
+		(* If we care only for the pole, the finite part is not needed *)
+		res = FCSplit[res,{Epsilon}][[2]] /. Epsilon -> EpsilonUV;
+		res
+	];
+
+
 PaXEvaluate[expr_, opts:OptionsPattern[]]:=
 	PaXEvaluate[expr, dummyLoopMom, opts];
 
 PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 	Block[{	ex,kernel,temp,resultX,finalResult,xList,ints,fclsOutput,fclcOutput,
-			dim,epsFree,epsNotFree, holddim,paxVer},
+			dim,epsFree,epsNotFree, holddim,paxVer, paxOptions={}, paxSeries, paxSeriesVars={}},
 
 		dim = OptionValue[Dimension];
+		paxSeries = OptionValue[PaXSeries];
+		paxOptions = Join[OptionValue[PaXLoopRefineOptions],paxOptions] ;
+
+		If[ OptionValue[PaXAnalytic],
+			paxOptions = Join[paxOptions, {Analytic->True}]
+		];
+
+		(* Variables, in which PaVe functions will be expanded *)
+		If[ MatchQ[paxSeries, {{_, _, _Integer} ..}],
+			paxSeriesVars = Cases[paxSeries, {x_, _, _Integer} :> x]
+		];
 
 		If [OptionValue[FCVerbose]===False,
 			paxVerbose=$VeryVerbose,
@@ -282,24 +374,33 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		ex = expr//ToPaVe[#,q,PaVeAutoReduce->False,
 					PaVeAutoOrder -> OptionValue[PaVeAutoOrder]]&//ToPaVe2;
 
+
 		(*	Since we care only for the scalar integrals, we need
-			only the second element from the list returned by FCLoopSplit *)
+			only the second element from the list returned by FCLoopSplit.
+			Notice that we also single out variables in which PaVe functions
+			should be expanded. This is necessary, since otherwise things
+			like 1/p.p B0[p.p,m^2,m^2] will be expanded in a wrong way *)
 
 		FCPrint[1,"PaXEvaluate: Applying FCLoopSplit.", FCDoControl->paxVerbose];
-		fclsOutput  = FCLoopSplit[ex,{q}];
+		fclsOutput  = FCLoopSplit[ex,Join[{q}],PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD}]];
 		If [fclsOutput[[3]]=!=0 || fclsOutput[[4]]=!=0,
 			Message[PaXEvaluate::tens]
 		];
+		FCPrint[3,"PaXEvaluate: After FCLoopSplit:",fclsOutput, FCDoControl->paxVerbose];
+
 
 		(*	FCLoopCanonicalize is of course an overkill for purely scalar integrals,
 			but it is better to use it than to implement own functions every time...	*)
 
 		FCPrint[1,"PaXEvaluate: Applying FCLoopIsolate.", FCDoControl->paxVerbose];
-		ints=FCLoopIsolate[fclsOutput[[2]], {q}, FCI->True, Head->loopIntegral];
+		ints=FCLoopIsolate[fclsOutput[[2]], {q}, FCI->True, Head->loopIntegral,
+			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD},paxSeriesVars]];
+		FCPrint[3,"PaXEvaluate: After FCLoopIsolate:",ints, FCDoControl->paxVerbose];
 
 		(*	The 4th element in fclcOutput is our list of unique scalar integrals that
 			need to be computed. But first we need to convert them to the Pacakge X input *)
-		fclcOutput = FCLoopCanonicalize[ints, q, loopIntegral,FCI->True];
+		fclcOutput = FCLoopCanonicalize[ints, q, loopIntegral,FCI->True,
+			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD}]];
 
 		FCPrint[1,"PaXEvaluate: Checking the version of Package-X.", FCDoControl->paxVerbose];
 
@@ -329,7 +430,12 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 			xList = xList/. { dim->4-2*(X`\[Epsilon]), Epsilon->(X`\[Epsilon]) };
 
-			resultX = X`LoopRefine[xList, Sequence@@OptionValue[PaXLoopRefineOptions]];
+
+			If[ Head[paxSeries]===List,
+				xList = Normal[X`LoopRefineSeries[xList, Sequence@@paxSeries, Sequence@@paxOptions]]
+			];
+
+			resultX = X`LoopRefine[xList, Sequence@@paxOptions];
 
 			If[	OptionValue[PaXC0Expand],
 				resultX = X`C0Expand[resultX];
@@ -423,6 +529,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			finalResult = Simplify[epsNotFree] + (Simplify[epsFree]/. {Log[x_Integer] :>
 				PowerExpand[Log[x]]}/. Log[4 Pi x_] :> Log[4 Pi] + Log[x]);
 		];
+
 
 		finalResult = finalResult /.
 		holdcond[str_String] :> holdcond[Sequence@@ToExpression[str]] /. holdcond->
