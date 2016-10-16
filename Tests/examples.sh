@@ -15,3 +15,6 @@ $MATH -nopromt -script ../Examples/QED/QEDElectronGMinusTwoOneLoop.m
 #QCD Examples
 $MATH -nopromt -script ../Examples/QCD/QCDQuarkSelfEnergyOneLoop.m
 $MATH -nopromt -script ../Examples/QCD/QCDGluonSelfEnergyOneLoop.m
+
+#Other Examples
+$MATH -nopromt -script ../Examples/UVCheck.m
