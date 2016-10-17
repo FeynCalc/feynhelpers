@@ -152,7 +152,6 @@ paxVerbose::usage="";
 dummyLoopMom::usage="";
 
 Options[PaXEvaluate] = {
-	ChangeDimension -> False,
 	Collect -> True,
 	Dimension -> D,
 	FCVerbose -> False,
@@ -163,17 +162,14 @@ Options[PaXEvaluate] = {
 	PaXD0Expand -> False,
 	PaXDiscExpand -> True,
 	PaXExpandInEpsilon -> True,
-	(*PaXIRDivergent -> False,*)
 	PaXImplicitPrefactor -> 1,
 	PaXKallenExpand -> True,
 	PaXLoopRefineOptions -> {},
 	PaXPath -> FileNameJoin[{$UserBaseDirectory, "Applications", "X"}],
 	PaXSimplifyEpsilon -> True,
 	PaXSubstituteEpsilon -> True,
-	(*PaXUVDivergent -> False,*)
 	PaXSeries -> False,
-	PaXAnalytic -> False,
-	PaXExplictUVIR -> False
+	PaXAnalytic -> False
 };
 
 (* Typesetting *)
@@ -514,10 +510,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		If[	FreeQ2[finalResult,{FeynAmpDenominator,q,PaXEpsilonBar}] &&
 			OptionValue[PaXExpandInEpsilon]  && FreeQ[finalResult,ConditionalExpression],
-			finalResult = Series[(OptionValue[PaXImplicitPrefactor]/.dim->4-2Epsilon) finalResult,{Epsilon,0,0}]//Normal;
-			If[	OptionValue[ChangeDimension],
-				finalResult = ChangeDimension[finalResult,4]
-			],
+			finalResult = Series[(OptionValue[PaXImplicitPrefactor]/.dim->4-2Epsilon) finalResult,{Epsilon,0,0}]//Normal,
 			finalResult = (OptionValue[PaXImplicitPrefactor] finalResult)
 		];
 
