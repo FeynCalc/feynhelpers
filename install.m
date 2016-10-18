@@ -150,7 +150,8 @@ InstallFeynHelpers[OptionsPattern[]]:=
 		gitzip = OptionValue[FeynHelpersDevelopmentVersionLink];
 		zipDir = "feynhelpers-master",
 		gitzip = OptionValue[FeynHelpersStableVersionLink];
-		zipDir = "feynhelpers-stable"
+		(* TODO: Change this when there is a stable version.*)
+		zipDir = "feynhelpers-master"
 	];
 	xInstalled=False;
 
