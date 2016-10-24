@@ -25,7 +25,6 @@ AutoOverwriteFeynHelpersDirectory::usage="AutoOverwriteFeynHelpersDirectory is a
 set to True, the existing FeynHelpers directory will be deleted without any further notice. The default
 value None means that the user will be asked by a dialog. False means that the directory will be overwritten.";
 
-
 AutoOverwritePackageXDirectory::usage="AutoOverwritePackageXDirectory is an option of InstallPackageX. If \
 set to True, the existing Package-X directory will be deleted without any further notice. The default
 value None means that the user will be asked by a dialog. False means that the directory will be overwritten.";
@@ -35,13 +34,6 @@ set to True, warning messages for notebooks that were created with a newer Mathe
 This is needed to use FeynHelpers documentation in Mathematica 8 and 9, since otherwise the warning message will appear every \
 time one opens a help page for a FeynHelpers function. The default value None means that the user will be asked by a dialog. \
 False means that the warning will not be disabled.";
-
-FeynArtsMirrorLink::usage="FeynArtsMirrorLink is an option of InstallFeynHelpers. It specifies the url \
-to the mirror repository of FeynArts. This repository is maintained by FeynHelpers developers and tries to follow \
-the development of FeynArts using git. It is also used to install FeynArts with InstallFeynHelpers.";
-
-AutoInstallFeynArts::usage="AutoInstallFeynArts is an option of InstallFeynHelpers. If \
-set to True, FeynArts will be installed automatically.";
 
 FeynHelpersDevelopmentVersionLink::usage="FeynHelpersDevelopmentVersionLink is an option of InstallFeynHelpers. It specifies the url \
 to the main repository of FeynHelpers. This repository is used to install the development version of FeynHelpers.";
@@ -56,6 +48,12 @@ Otherwise it will install the latest stable version.";
 InstallFeynHelpersTo::usage="InstallFeynHelpersTo is an option of InstallFeynHelpers. It specifies, the full path \
 to the directory where FeynHelpers will be installed.";
 
+AutoInstallPackageX::usage="AutoInstallPackageX is an option of InstallFeynHelpers. If \
+set to True, Package-X will be installed automatically.";
+
+AutoInstallFIRE::usage="AutoInstallFIRE is an option of InsInstallFeynHelpers. If \
+set to True, Package-X will be installed automatically.";
+
 If[  $VersionNumber == 8,
 (*To use FetchURL in MMA8 we need to load URLTools first *)
 Needs["Utilities`URLTools`"];
@@ -68,6 +66,7 @@ If [Needs["FeynCalc`"]===$Failed,
 
 Options[InstallFeynHelpers]={
 	AutoInstallPackageX->None,
+	AutoInstallFIRE->None,
 	AutoOverwriteFeynHelpersDirectory->None,
 	FeynHelpersDevelopmentVersionLink->"https://github.com/FeynCalc/feynhelpers/archive/master.zip",
 	(* There is no stable version at the moment*)
@@ -80,6 +79,12 @@ Options[InstallPackageX]={
 	AutoOverwritePackageXDirectory -> None,
 	PackageXLink->"http://www.hepforge.org/archive/packagex/X-2.0.0.zip",
 	InstallPackageXTo->FileNameJoin[{$UserBaseDirectory, "Applications","X"}]
+};
+
+Options[InstallFIRE]={
+	AutoOverwriteFIREDirectory -> None,
+	FIRELink->"https://bitbucket.org/feynmanIntegrals/fire/downloads/FIRE5.2.tar.gz",
+	InstallFIRETo->FileNameJoin[{$UserBaseDirectory, "Applications","FIRE5"}]
 };
 
 InstallPackageX[OptionsPattern[]]:=
@@ -124,7 +129,7 @@ files or add-ons that are located in that directory, please backup them in advan
 
 		(* Extract to the content	*)
 		WriteString["stdout", "Package-X zip file was saved to ", tmpzip,".\n"];
-		WriteString["stdout", "Extracting Package-X zip file to ", packageDir, " ..."];
+		WriteString["stdout", "Extracting Package-X zip file to ", unzipDir, " ..."];
 		ExtractArchive[tmpzip, unzipDir];
 		WriteString["stdout", "done! \n"];
 
@@ -141,10 +146,69 @@ files or add-ons that are located in that directory, please backup them in advan
 
 	];
 
+InstallFIRE[OptionsPattern[]]:=
+	Module[{tmpzip,zip,FCGetUrl,unzipDir,packageDir,packageName,strOverwriteFCdit},
+		(* Install PackageX	*)
+
+		packageDir=OptionValue[InstallFIRETo];
+		zip = OptionValue[FIRELink];
+		packageName = "FIRE";
+
+strOverwriteFCdit="Looks like " <> packageName <> " is already installed. Do you want to replace the content \
+of " <> packageDir <> " with the downloaded version of " <> packageName <> "? If you are using any custom configuration \
+files or add-ons that are located in that directory, please backup them in advance.";
+
+		If[$VersionNumber == 8,
+			(*To use FetchURL in MMA8 we need to load URLTools first *)
+			FCGetUrl[x_]:= Utilities`URLTools`FetchURL[x],
+			FCGetUrl[x_]:= URLSave[x,CreateTemporary[]]
+		];
+
+		(* If the package directory already exists, ask the user about overwriting *)
+		If[ DirectoryQ[packageDir],
+
+		If[ OptionValue[AutoOverwriteFIREDirectory],
+
+			Quiet@DeleteDirectory[packageDir, DeleteContents -> True],
+
+			Null,
+			If[ ChoiceDialog[strOverwriteFCdit,{"Yes, overwrite the " <> packageName <>" directory"->True,
+				"No! I need to do a backup first."->False}],
+				Quiet@DeleteDirectory[packageDir, DeleteContents -> True],
+				Abort[]
+			]
+		]
+	];
+
+
+		WriteString["stdout", "Downloading FIRE from ", zip," ..."];
+		tmpzip=FCGetUrl[zip];
+		unzipDir= tmpzip<>".dir";
+		WriteString["stdout", "done! \n"];
+
+		(* Extract to the content	*)
+		WriteString["stdout", "FIRE tarball was saved to ", tmpzip,".\n"];
+		WriteString["stdout", "Extracting FIRE tarball to ", unzipDir, " ..."];
+		ExtractArchive[First[ExtractArchive[tmpzip, tmpzip<>".tmp"]], unzipDir];
+		WriteString["stdout", "done! \n"];
+
+		(* Move the files to the final destination	*)
+		WriteString["stdout", "Copying FIRE to ", packageDir, " ..."];
+		CopyDirectory[FileNameJoin[{unzipDir,"fire","FIRE5"}],packageDir];
+		WriteString["stdout", "done! \n"];
+
+		(* Delete the downloaded file	*)
+		Quiet@DeleteFile[tmpzip];
+
+		(* Delete the extracted archive *)
+		Quiet@DeleteDirectory[unzipDir, DeleteContents -> True];
+
+	];
+
 InstallFeynHelpers[OptionsPattern[]]:=
 	Module[{	unzipDir, tmpzip, gitzip, packageName, packageDir,
-				strPackageX,FCGetUrl,
-				strOverwriteFCdit, xInstalled, zipDir},
+				strPackageX,strFIRE,FCGetUrl,
+				strOverwriteFCdit, xInstalled, fireInstalled, zipDir},
 
 	If[OptionValue[InstallFeynHelpersDevelopmentVersion],
 		gitzip = OptionValue[FeynHelpersDevelopmentVersionLink];
@@ -154,6 +218,7 @@ InstallFeynHelpers[OptionsPattern[]]:=
 		zipDir = "feynhelpers-master"
 	];
 	xInstalled=False;
+	fireInstalled=False;
 
 	packageName = "FeynHelpers";
 	packageDir = OptionValue[InstallFeynHelpersTo];
@@ -163,6 +228,12 @@ Mathematica package for 1-loop calculations written by Hiren Patel (packagex.hep
 a library of analytic expression for Passarino-Veltman functions that can be accessed via FeynHelpers. This allows you to \
 evaluate such integrals directly in your FeynCalc session. Without Package-X you cannot use FeynHelpers' PaXEvaluate function. \
 Before you proceed, please look at the license of Package-X and make sure that you understand it and that you agree with it.";
+
+strFIRE="Do you want to install FIRE 5.2 from "<> OptionValue[InstallFIRE,FIRELink] <> "? FIRE is a \
+Mathematica package for IBP reduction of loop integrals developed by Alexander Smirnov (bitbucket.org/feynmanIntegrals/fire, \
+arXiv:1408.2372). The capabilities of FIRE can be accessed via FeynHelpers. This allows you to IBP-reduce loop integrals directly \
+in your FeynCalc session. Without FIRE you cannot use FeynHelpers' FIREBurn function. Before you proceed, please look at the license of \
+FIRE and make sure that you understand it and that you agree with it.";
 
 strOverwriteFCdit="Looks like FeynHelpers is already installed. Do you want to replace the content \
 of " <> packageDir <> " with the downloaded version of FeynHelpers? If you are using any custom configuration \
@@ -222,13 +293,22 @@ files or add-ons that are located in that directory, please backup them in advan
 	WriteString["stdout", "done! \n"];
 
 	If[ OptionValue[AutoInstallPackageX],
-
 		xInstalled=True;
 		InstallPackageX[],
 		Null,
 		If[ ChoiceDialog[strPackageX],
 			xInstalled=True;
 			InstallPackageX[]
+		]
+	];
+
+	If[ OptionValue[AutoInstallFIRE],
+		fireInstalled=True;
+		InstallFIRE[],
+		Null,
+		If[ ChoiceDialog[strFIRE],
+			fireInstalled=True;
+			InstallFIRE[]
 		]
 	];
 
