@@ -77,7 +77,7 @@ Options[InstallFeynHelpers]={
 
 Options[InstallPackageX]={
 	AutoOverwritePackageXDirectory -> None,
-	PackageXLink->"http://www.hepforge.org/archive/packagex/X-2.0.0.zip",
+	PackageXLink->"http://www.hepforge.org/archive/packagex/X-2.0.1.zip",
 	InstallPackageXTo->FileNameJoin[{$UserBaseDirectory, "Applications","X"}]
 };
 
@@ -160,8 +160,8 @@ files or add-ons that are located in that directory, please backup them in advan
 
 		If[$VersionNumber == 8,
 			(*To use FetchURL in MMA8 we need to load URLTools first *)
-			FCGetUrl[x_]:= Utilities`URLTools`FetchURL[x],
-			FCGetUrl[x_]:= URLSave[x,CreateTemporary[]]
+			FCGetUrl[x__]:= Utilities`URLTools`FetchURL[x],
+			FCGetUrl[x__]:= URLSave[x,CreateTemporary[]]
 		];
 
 		(* If the package directory already exists, ask the user about overwriting *)
@@ -182,7 +182,12 @@ files or add-ons that are located in that directory, please backup them in advan
 
 
 		WriteString["stdout", "Downloading FIRE from ", zip," ..."];
-		tmpzip=FCGetUrl[zip];
+
+		If[$VersionNumber == 8,
+			(* https://mathematica.stackexchange.com/questions/129519/urlsave-and-bitbucket *)
+			tmpzip=Utilities`URLTools`FetchURL[zip, Utilities`URLTools`FileFilters -> {}, "RequestHeaderFields" -> {"Content-Type" -> ""}],
+			tmpzip=URLSave[zip, CreateTemporary[], "Headers" -> {"Content-Type" -> ""}]
+		];
 		unzipDir= tmpzip<>".dir";
 		WriteString["stdout", "done! \n"];
 
