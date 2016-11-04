@@ -526,8 +526,8 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		(* Before returning the final result it is useful to try to simplify the Epsilon-free pieces separately *)
 		If [ OptionValue[PaXSimplifyEpsilon] && FreeQ[finalResult,ConditionalExpression],
 			{epsFree,epsNotFree} = FCSplit[finalResult,{Epsilon}];
-			finalResult = Simplify[epsNotFree] + (Simplify[epsFree]/. {Log[x_Integer] :>
-				PowerExpand[Log[x]]}/. Log[4 Pi x_] :> Log[4 Pi] + Log[x]);
+			finalResult = Simplify[epsNotFree] + (Simplify[epsFree](*/. {Log[x_Integer] :>
+				PowerExpand[Log[x]]}*)/. Log[4 Pi x_] :> Log[4 Pi] + Log[x]);
 		];
 
 
