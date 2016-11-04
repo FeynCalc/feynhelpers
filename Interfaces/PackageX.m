@@ -297,7 +297,9 @@ PaXEvaluateUV[expr_, q:Except[_?OptionQ], opts:OptionsPattern[]]:=
 			FilterRules[{opts}, Except[PaXLoopRefineOptions]]]];
 		res = PaXEvaluate[expr, q, newOpts];
 		(* If we care only for the pole, the finite part is not needed *)
+
 		res = FCSplit[res,{Epsilon}][[2]] /. Epsilon -> EpsilonUV;
+
 		res
 	];
 
@@ -426,12 +428,16 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 			xList = xList/. { dim->4-2*(X`\[Epsilon]), Epsilon->(X`\[Epsilon]) };
 
-
 			If[ Head[paxSeries]===List,
-				xList = Normal[X`LoopRefineSeries[xList, Sequence@@paxSeries, Sequence@@paxOptions]]
+				FCPrint[1,"PaXEvaluate: Applying LoopRefineSerie.", FCDoControl->paxVerbose];
+				xList = Normal[X`LoopRefineSeries[xList, Sequence@@paxSeries, Sequence@@paxOptions]];
+				FCPrint[3,"PaXEvaluate: xList (after LoopRefineSeries): ", xList, FCDoControl->paxVerbose]
 			];
 
+
 			resultX = X`LoopRefine[xList, Sequence@@paxOptions];
+
+			FCPrint[2,"PaXEvaluate: resultX (preliminary): ", resultX, FCDoControl->paxVerbose];
 
 			If[	OptionValue[PaXC0Expand],
 				resultX = X`C0Expand[resultX];
