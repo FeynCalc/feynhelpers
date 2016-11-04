@@ -492,6 +492,13 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		FCPrint[2,"PaXEvaluate: resultX (converted): ", resultX, FCDoControl->paxVerbose];
 
+		(* Series expansion for the piece free of loop integrals*)
+		If[ Head[paxSeries]===List,
+			fclsOutput[[1]]= Series[fclsOutput[[1]],Sequence@@paxSeries]//Normal;
+			FCPrint[2,"PaXEvaluate:  After series expansion of the loop-free part: ", fclsOutput[[1]], FCDoControl->paxVerbose]
+		];
+
+
 		(* Now we create the final substitution list *)
 		finalResult = fclsOutput[[1]] + fclsOutput[[3]] + fclsOutput[[4]] + ints/.FCLoopSolutionList[fclcOutput,resultX];
 		FCPrint[2,"PaXEvaluate: finalResult(w/o implicit prefactor): ", finalResult, FCDoControl->paxVerbose];
