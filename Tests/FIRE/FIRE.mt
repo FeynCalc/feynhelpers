@@ -1,11 +1,11 @@
-(* :Title: FIRE.mt														*)
+(* :Title: FIRE.mt															*)
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015 Vladyslav Shtabovenko
+	Copyright (C) 2015-2016 Vladyslav Shtabovenko
 *)
 
-(* :Summary:  Unit tests for the interace to FIRE									*)
+(* :Summary:  Unit tests for the interace to FIRE							*)
 
 (* ------------------------------------------------------------------------ *)
 

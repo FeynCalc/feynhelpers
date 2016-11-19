@@ -131,7 +131,7 @@ be handled by Package X: `1`";
 PaXEvaluate::tens=
 "Warning! Your input contains tensor loop integrals. Those integrals \
 will be ignored, because PaxEvaluate operates only on 1-loop scalar \
-integrals with up to 3 propagators.";
+integrals with up to 4 propagators.";
 
 PaXEvaluate::gen=
 "PaXEvaluate has encountered an error and must abort the evaluation. The \
@@ -152,6 +152,7 @@ paxVerbose::usage="";
 dummyLoopMom::usage="";
 
 Options[PaXEvaluate] = {
+	FCE -> False,
 	Collect -> True,
 	Dimension -> D,
 	FCVerbose -> False,
@@ -547,6 +548,10 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		If[	OptionValue[FinalSubstitutions]=!={},
 			finalResult = finalResult /. OptionValue[FinalSubstitutions]
+		];
+
+		If[	OptionValue[FCE],
+			finalResult = FCE[finalResult]
 		];
 
 		FCPrint[2,"PaXEvaluate: Last finalResult (simplified): ", finalResult, FCDoControl->paxVerbose];

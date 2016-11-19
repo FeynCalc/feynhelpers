@@ -14,10 +14,10 @@
 (* ------------------------------------------------------------------------ *)
 
 $FeynHelpersVersion::usage=
-"$FVProjectionVersion is the string that represents the version of FVProjection";
+"$FeynHelpersVersion is the string that represents the version of $FeynHelpersVersion";
 
 $FeynHelpersDirectory::usage=
-"$FVProjectionDirectory is the string that represents the full path to the FVProjection \
+"$FeynHelpersDirectory is the string that represents the full path to the FeynHelpersDirectory \
 directory";
 
 Begin["`Package`"]
