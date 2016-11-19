@@ -28,7 +28,7 @@ End[]
 
 Begin["`FeynHelpers`Private`"];
 
-$FeynHelpersVersion="0.7.0";
+$FeynHelpersVersion="1.0.0";
 
 $FeynHelpersDirectory =
 ToFileName[{$FeynCalcDirectory, "AddOns", "FeynHelpers"}];
