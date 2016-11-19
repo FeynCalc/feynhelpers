@@ -43,28 +43,29 @@ Paint[diags = InsertFields[CreateTopologies[1, 1 -> 1,
 		SheetHeader -> False,SheetHeader->None,Numbering -> None,ImageSize->{256,256}];
 
 
-amps=FCFAConvert[CreateFeynAmp[diags, Truncated -> True,GaugeRules->{},PreFactor->-1],IncomingMomenta->{p},
-OutgoingMomenta->{p},LoopMomenta->{q},DropSumOver->True,UndoChiralSplittings->True,ChangeDimension->D,List->False,FinalSubstitutions->{FCGV["MU"]->M,GaugeXi[g]->GaugeXi}]
+amps=FCFAConvert[CreateFeynAmp[diags, Truncated -> True,GaugeRules->{},PreFactor->1],IncomingMomenta->{p},
+OutgoingMomenta->{p},LoopMomenta->{q},DropSumOver->True,UndoChiralSplittings->True,ChangeDimension->D,List->False,
+FinalSubstitutions->{FCGV["MU"]->M,GaugeXi[g]->GaugeXi}]//SUNSimplify//Contract
 
 
-ampsEval=amps//Contract//SUNSimplify//TID[#,q]&
+ampsEval=TID[amps,q,ToPaVe->True]
 
 
-res1=PaXEvaluate[ampsEval,q,PaXImplicitPrefactor->1/(2Pi)^(4-2 Epsilon)]
+res1=PaXEvaluate[ampsEval,q,PaXImplicitPrefactor->1/(2Pi)^D]
 
 
 (* ::Text:: *)
 (*This is I*Sigma (divergent part only)*)
 
 
-quarkSelfEnergy=-SelectNotFree[res1,Epsilon]//Expand
+quarkSelfEnergy=SelectNotFree2[res1,Epsilon]//Expand//Simplify
 
 
 (* ::Text:: *)
 (*We can compare this result to Eq. 2.5.138 in Foundations of QCD by T. Muta.*)
 
 
-quarSelfEnergyMuta=I*(-SMP["g_s"]^2/(4Pi)^2 CF*(3+GaugeXi)(1/Epsilon)*M+GS[p]*SMP["g_s"]^2/(4Pi)^2*
+quarSelfEnergyMuta=I*(-SMP["g_s"]^2/(4Pi)^2 CF*(3+GaugeXi)(1/Epsilon)*M+GSD[p]*SMP["g_s"]^2/(4Pi)^2*
 		CF*GaugeXi*(1/Epsilon))SDF[Col1,Col2]//FCI;
 Print["Check with Muta, Eq 2.5.138: ",
 			If[Simplify[quarkSelfEnergy-FCI[quarSelfEnergyMuta]]===0, "CORRECT.", "!!! WRONG !!!"]];
@@ -77,6 +78,6 @@ Print["Check with Muta, Eq 2.5.138: ",
 quarkSelfEnergyMassless=quarkSelfEnergy/.{M->0,GaugeXi->1}
 
 
-ampsSingMasslessPeskin=I*SMP["g_s"]^2/(4Pi)^2*GS[p]*CF*(1/Epsilon)SDF[Col1,Col2]//FCI;
+ampsSingMasslessPeskin=I*SMP["g_s"]^2/(4Pi)^2*GSD[p]*CF*(1/Epsilon)SDF[Col1,Col2]//FCI;
 Print["Check with Peskin and Schroeder, Eq 16.76: ",
 			If[Simplify[quarkSelfEnergyMassless-FCI[ampsSingMasslessPeskin]]===0, "CORRECT.", "!!! WRONG !!!"]];
