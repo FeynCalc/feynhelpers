@@ -2,19 +2,15 @@
 
 FeynHelpers is a collection of interfaces that allow you to use other HEP-related tools from your FeynCalc session.
 
-# Warning
-
-In the present state FeynHelpers is **NOT READY** for productive use. In particular, you should **NEVER** rely on the results that were obtained solely with FeynHelpers but not checked with any other tools or by hand. However, you are encouraged to report bugs and suggest improvements.
-
 # Requirements
 
-FeynHelpers is designed as an add-on for FeynCalc. To use it you need at least FeynCalc 9 and Mathematica 8.
+FeynHelpers is designed as an add-on for FeynCalc. To use it you need at least FeynCalc 9.2 and Mathematica 8.
 
 # Supported tools
 
 Tools that are currently supported are
- * FIRE
- * Package-X
+ * FIRE 5.2
+ * Package-X 2.0
 
 # Installation
 
@@ -33,14 +29,8 @@ Tools that are currently supported are
     ImportString[URLFetch["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]]
     InstallFeynCalc[]
     ```
-* The automatic installer can also install Package-X for you. It will offer you this possiblity at the end of the installation process
+* The automatic installer can also install Package-X and FIRE for you. It will offer you this possiblity at the end of the installation process
 
-* If you want to use FIRE, you will need to install the package by hand. It should be possible to load FIRE via
-
-	```
-	<< FIRE5`
-	```
-	
 ## Manual installation
 
 * Create a directory _FeynHelpers_ inside
@@ -65,36 +55,7 @@ Tools that are currently supported are
 
 # Usage
 
-## Loading the add-on
-
-To load FeynHelpers with FeynCalc, use
-
-```
-$LoadAddOns={"FeynHelpers"};
-<< FeynCalc`
-```
-
-## PaXEvaluate
-
-* PaXEvaluate is a function that fetches analytic expressions for Passarino-Veltman coefficient and scalar functions with up to 3-legs from Package-X.
-
-* The syntax is `PaxEvaluate[expr,q]`, where `expr` is the expression that you want to evaluate and `l` denotes the loop momentum
-* There are also some options, from which `PaXImplicitPrefactor` is the most important one. It denotes an implicit prefactor of the loop integral, i.e. a prefactor that is not written explicitly but understood. For example, using `FAD[{q, m}]` with `PaXImplicitPrefactor -> 1/(2 Pi)^(4 - 2 Epsilon)` corresponds to entering  the integral `\[Integral] d q^D / (2Pi)^D 1/(q^2 - m^2)`, i.e. the usual 1-loop tadpole integral with the "textbook" prefactor.
-
-Here is an example of evaluating a tadpole integral
-
-```
-PaXEvaluate[FAD[{q, m}], q, PaXImplicitPrefactor -> 1/(2 Pi)^(4 - 2 Epsilon)]
-
-```
-
-## FIREBurn
-
-Here is an example of IBP-reducing a bubble with propagators in powers
-
-```
-FIREBurn[FAD[{q, m0, 2}, {q - p, m1, 3}], {q}, {p}]
-```
+For usage information see the accompanying paper and supplied examples.
 
 # Acknowledgments
 

@@ -2,7 +2,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015 Vladyslav Shtabovenko
+	Copyright (C) 2015-2016 Vladyslav Shtabovenko
 *)
 
 (* :Summary:  Framework independent unit tests for FeynHelpers				*)
@@ -14,25 +14,32 @@ Tests`FIRE`Generic = ({
 {"FIRE-Generic-ID2", "FIREBurn[x,{q},{}]", "x"},
 {"FIRE-Generic-ID3", "FIREBurn[0,{},{}]//FCE",
 "FIREBurn[0, {}, {}]"},
-{"FIRE-Generic-ID4", "FIREBurn[FAD[{q1,m}],{q},{}]",
-"FeynAmpDenominator[PropagatorDenominator[Momentum[q1, D], m]]"},
-{"FIRE-Generic-ID5", "FIREBurn[FAD[{q,1}],{q},{}]//FCE",
+{"FIRE-Generic-ID4", "FIREBurn[FAD[{q1,m}],{q},{}, FCE -> True, Timing->False]",
+"FAD[{q1,m}]"},
+{"FIRE-Generic-ID5", "FIREBurn[FAD[{q,1}],{q},{}, FCE -> True, Timing->False]",
 "FAD[{q, 1}]"},
-{"FIRE-Generic-ID6", "FIREBurn[FAD[{q,-3}],{q},{}]//FCE",
+{"FIRE-Generic-ID6", "FIREBurn[FAD[{q,-3}],{q},{}, FCE -> True, Timing->False]",
 "FAD[{q, -3}]"},
-{"FIRE-Generic-ID7", "FIREBurn[FAD[{q,I}],{q},{}]//FCE",
+{"FIRE-Generic-ID7", "FIREBurn[FAD[{q,I}],{q},{}, FCE -> True, Timing->False]",
 "FAD[{q, I}]"},
-{"FIRE-Generic-ID8", "FIREBurn[FAD[{q,2+I}],{q},{}]//FCE",
+{"FIRE-Generic-ID8", "FIREBurn[FAD[{q,2+I}],{q},{}, FCE -> True, Timing->False]",
 "FAD[{q, 2 + I}]"},
-{"FIRE-Generic-ID9", "FIREBurn[FAD[{q,I m}],{q},{}]//FCE",
+{"FIRE-Generic-ID9", "FIREBurn[FAD[{q,I m}],{q},{}, FCE -> True, Timing->False]",
 "FAD[{q, I*m}]"},
-{"FIRE-Generic-ID10", "FIREBurn[FAD[{q,a+I b}],{q},{}]//FCE",
+{"FIRE-Generic-ID10", "FIREBurn[FAD[{q,a+I b}],{q},{}, FCE -> True, Timing->False]",
 "FAD[{q, a + I*b}]"},
 {"FIRE-Generic-ID11",
-"FIREBurn[FAD[{q1,a+I b},{q,m,2}],{q},{}]//FCE",
-"((-2 + D)*FAD[{q, m}]*FAD[{q1, a + I*b}])/(2*m^2)"}
+"FIREBurn[FAD[{q1,a+I b},{q,m,2}],{q},{}, FCE -> True, Timing->False]",
+"((-2 + D)*FAD[{q, m}]*FAD[{q1, a + I*b}])/(2*m^2)"},
+{"FIRE-Generic-ID12",
+"FIREBurn[FAD[q, q, q - p], {q}, {p}, FCE -> True, Timing->False]",
+"-(((-3 + D) FAD[q, -p + q])/SPD[p, p])"},
+{"FIRE-Generic-ID13",
+"FIREBurn[FAD[{q, 0, 2}, {q - p - k}], {q}, {p, k},
+FIREAddPropagators -> {SPD[q, k] - m}, FCE -> True, Timing->False]",
+"-(((-3 + D) FAD[q, -k - p + q])/(SPD[k, k] + 2 SPD[k, p] + SPD[p, p]))"}
 });
-
+(*
 Tests`FIRE`GenericWithFermat = ({
 {"FIREGeneric-GenericWithFermat-ID1",
 "FIREBurn[0,{q},{},FIREUsingFermat\[Rule]True]", "0"},
@@ -67,3 +74,4 @@ Tests`FIRE`GenericWithFermat = ({
 b},{q,m,2}],{q},{},FIREUsingFermat\[Rule]True]//FCE",
 "((-2 + D)*FAD[{q, m}]*FAD[{q1, a + I*b}])/(2*m^2)"}
 })
+*)
