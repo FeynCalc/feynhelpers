@@ -69,8 +69,7 @@ Options[InstallFeynHelpers]={
 	AutoInstallFIRE->None,
 	AutoOverwriteFeynHelpersDirectory->None,
 	FeynHelpersDevelopmentVersionLink->"https://github.com/FeynCalc/feynhelpers/archive/master.zip",
-	(* There is no stable version at the moment*)
-	FeynHelpersStableVersionLink->"https://github.com/FeynCalc/feynhelpers/archive/master.zip",
+	FeynHelpersStableVersionLink->"https://github.com/FeynCalc/feynhelpers/archive/stable.zip",
 	InstallFeynHelpersDevelopmentVersion->False,
 	InstallFeynHelpersTo->FileNameJoin[{$FeynCalcDirectory, "AddOns","FeynHelpers"}]
 };
@@ -219,8 +218,7 @@ InstallFeynHelpers[OptionsPattern[]]:=
 		gitzip = OptionValue[FeynHelpersDevelopmentVersionLink];
 		zipDir = "feynhelpers-master",
 		gitzip = OptionValue[FeynHelpersStableVersionLink];
-		(* TODO: Change this when there is a stable version.*)
-		zipDir = "feynhelpers-master"
+		zipDir = "feynhelpers-stable"
 	];
 	xInstalled=False;
 	fireInstalled=False;
