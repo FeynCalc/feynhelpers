@@ -61,7 +61,7 @@ For usage information see the accompanying paper and supplied examples.
 
 If you use FeynHelpers in you work, please cite
 
-* V. Shtabovenko, "FeynHelpers: Connecting FeynCalc to FIRE and Package-X", TUM-EFT 75/15, in preparation
+* V. Shtabovenko, "FeynHelpers: Connecting FeynCalc to FIRE and Package-X", TUM-EFT 75/15, arXiv:1611.06793
 
 Also don't forget to cite the authors of the tools that you are calling from FeynHelpers, which are
 
