@@ -18,6 +18,7 @@ $MATH -nopromt -script ../Examples/QED/MasslessQEDSelfEnergiesTwoLoops.m
 $MATH -nopromt -script ../Examples/QCD/QCDQuarkSelfEnergyOneLoop.m
 $MATH -nopromt -script ../Examples/QCD/QCDGluonSelfEnergyOneLoop.m
 $MATH -nopromt -script ../Examples/QCD/NRQCDVertexMatchingInTheTwoQuarkSectorOneLoop.m
+$MATH -nopromt -script ../Examples/QCD/QCDThreeGluonVertexOneLoop.m
 
 #EW Examples
 $MATH -nopromt -script ../Examples/EW/EWHiggsToTwoGluonsOneLoop.m
