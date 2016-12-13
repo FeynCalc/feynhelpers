@@ -76,7 +76,7 @@ Options[InstallFeynHelpers]={
 
 Options[InstallPackageX]={
 	AutoOverwritePackageXDirectory -> None,
-	PackageXLink->"http://www.hepforge.org/archive/packagex/X-2.0.2.zip",
+	PackageXLink->"http://www.hepforge.org/archive/packagex/X-2.0.3.zip",
 	InstallPackageXTo->FileNameJoin[{$UserBaseDirectory, "Applications","X"}]
 };
 
