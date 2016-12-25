@@ -107,5 +107,19 @@ PaVeAutoOrder -> False, PaVeAutoReduce -> False] // FCE",
 0, {SPD[a, a], SPD[p, p], SPD[p, p] - 2 SPD[p, q] + SPD[q, q],
 SPD[a, a] - 2 SPD[a, q] + SPD[q, q],
 SPD[a, a] - 2 SPD[a, p] + SPD[p, p], SPD[q, q]}, {m3^2, m0^2, m1^2,
-	m2^2}, PaVeAutoReduce -> False, PaVeAutoOrder -> False]"}
+	m2^2}, PaVeAutoReduce -> False, PaVeAutoOrder -> False]"},
+{"PackageX-Generic-ID14","(PaXEvaluateUV[TID[SPD[2 p - k] FAD[k, {p - k, m}], k], k,
+PaXImplicitPrefactor -> 1/(2 Pi)^D, FCE -> True] /. {1/EpsilonUV -> 2/EpsilonUV})",
+"(I m^2)/(8 EpsilonUV \[Pi]^2) + (I SPD[p, p])/(4 EpsilonUV \[Pi]^2)"},
+{"PackageX-Generic-ID15","(PaXEvaluateUV[TID[FVD[2 k - p, mu] FVD[2 k - p, nu] FAD[{k, m}, {k - p, m}] -
+2 MTD[mu, nu] FAD[{k, m}], k], k, PaXImplicitPrefactor -> 1/(2 Pi)^D, FCE -> True] /.
+1/EpsilonUV -> 2/EpsilonUV)","(I FVD[p, mu] FVD[p, nu])/(24 EpsilonUV \[Pi]^2) - (
+I MTD[mu, nu] SPD[p, p])/(24 EpsilonUV \[Pi]^2)"},
+{"PackageX-Generic-ID16","PaXEvaluate[FAD[{q, 0, 2}, q - p], q,
+PaXImplicitPrefactor -> 1/(2 Pi)^D] // FCE","(-I/16)/(Epsilon*Pi^2*SPD[p, p]) +
+((I/16)*EulerGamma)/(Pi^2*SPD[p, p]) - ((I/16)*Log[(-4*Pi*ScaleMu^2)/SPD[p, p]])/(Pi^2*SPD[p, p])"},
+{"PackageX-Generic-ID17","SP[p, p] = pp; \n tmp = (PaXEvaluate[16 Pi^4 OneLoop[k, 1/(I Pi^2) FAD[{p - k}, {k, mW}] GSD[k]],
+PaXImplicitPrefactor -> 1/(2 Pi)^D,	PaXSeries -> {{pp, 0, 0}}] /. {ScaleMu^2 ->	ScaleMu^2 E^EulerGamma/(4 Pi),
+1/Epsilon -> 2/Epsilon}) //Simplify // FCE; \n FCClearScalarProducts[]; \n tmp",
+"(GS[p] (4 + 3 Epsilon + 2 Epsilon Log[ScaleMu^2/mW^2]))/(4 Epsilon)"}
 })

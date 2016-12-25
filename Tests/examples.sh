@@ -25,3 +25,5 @@ $MATH -nopromt -script ../Examples/EW/EWHiggsToTwoGluonsOneLoop.m
 
 #Other Examples
 $MATH -nopromt -script ../Examples/UVCheck.m
+
+notify-send "Finished running examples for FeynHelpers."

@@ -37,7 +37,14 @@ Tests`FIRE`Generic = ({
 {"FIRE-Generic-ID13",
 "FIREBurn[FAD[{q, 0, 2}, {q - p - k}], {q}, {p, k},
 FIREAddPropagators -> {SPD[q, k] - m}, FCE -> True, Timing->False]",
-"-(((-3 + D) FAD[q, -k - p + q])/(SPD[k, k] + 2 SPD[k, p] + SPD[p, p]))"}
+"-(((-3 + D) FAD[q, -k - p + q])/(SPD[k, k] + 2 SPD[k, p] + SPD[p, p]))"},
+{"FIRE-Generic-ID14",
+"FIREBurn[FAD[{q1, m, 2}, {q1 + q3, m}, {q2 \[Minus] q3}, {q2, 0,2}], {q1, q2, q3}, {},
+FIREAddPropagators -> {SPD[q1, q2], SPD[q1, q3]},FCE->True]",
+"-(((-3 + D) (-10 + 3 D) (-8 + 3 D) FAD[{q1, m}, q2,
+q2 - q3, {q1 + q3, m}])/(16 (-7 + 2 D) m^4))"},
+{"FIRE-Generic-ID15", "FIREBurn[TID[FAD[{l, mf}, {l, mf}, {l, mf}] (4 mf FVD[l, mu] FVD[l, nu] +
+	mf^3 MTD[mu, nu] - mf MTD[mu, nu] SPD[l, l]), l], {l}, {}]", "0"}
 });
 (*
 Tests`FIRE`GenericWithFermat = ({
