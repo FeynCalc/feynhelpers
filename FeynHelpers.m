@@ -40,6 +40,18 @@ Get/@FileNames[{"*.m"},ToFileName[{$FeynHelpersDirectory,"Interfaces"}]];
 EndPackage[]
 
 
+fcVersion = StringSplit[$FeynCalcVersion, "."];
+tooOldString = "Your FeynCalc version is too old. FeynHelpers "<> $FeynHelpersVersion <> " requires at least FeynCalc 9.2.0";
+
+If[ fcVersion[[1]]<9,
+	Print[tooOldString];
+	Abort[],
+	If[ fcVersion[[2]]<2,
+		Print[tooOldString];
+		Abort[]
+	];
+];
+
 (* Print startup message *)
 If[ Global`$FeynCalcStartupMessages =!= False,
 	Print[Style["FeynHelpers ", "Text", Bold], Style[$FeynHelpersVersion <> " loaded.", "Text"]];
