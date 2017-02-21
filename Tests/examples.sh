@@ -22,6 +22,7 @@ $MATH -nopromt -script ../Examples/QCD/QCDThreeGluonVertexOneLoop.m
 
 #EW Examples
 $MATH -nopromt -script ../Examples/EW/EWHiggsToTwoGluonsOneLoop.m
+$MATH -nopromt -script ../Examples/EW/EWHiggsDecayControversy.m
 
 #Other Examples
 $MATH -nopromt -script ../Examples/UVCheck.m
