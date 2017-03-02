@@ -13,6 +13,7 @@ $MATH -nopromt -script ../Examples/QED/QEDABJAxialAnomaly.m
 $MATH -nopromt -script ../Examples/QED/QEDElectronGMinusTwoOneLoop.m
 $MATH -nopromt -script ../Examples/QED/QEDRenormalizationOneLoop.m
 $MATH -nopromt -script ../Examples/QED/MasslessQEDSelfEnergiesTwoLoops.m
+$MATH -nopromt -script ../Examples/QED/QEDToEulerHeisenbergLagrangianMatching.m
 
 #QCD Examples
 $MATH -nopromt -script ../Examples/QCD/QCDQuarkSelfEnergyOneLoop.m
