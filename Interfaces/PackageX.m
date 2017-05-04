@@ -442,18 +442,22 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 			If[	OptionValue[PaXC0Expand],
 				resultX = X`C0Expand[resultX];
+				FCPrint[3,"PaXEvaluate: resultX after C0Expand: ", resultX, FCDoControl->paxVerbose]
 			];
 
 			If[	OptionValue[PaXD0Expand],
 				resultX = X`D0Expand[resultX];
+				FCPrint[3,"PaXEvaluate: resultX after D0Expand: ", resultX, FCDoControl->paxVerbose]
 			];
 
 			If[	OptionValue[PaXDiscExpand],
 				resultX = X`DiscExpand[resultX];
+				FCPrint[3,"PaXEvaluate: resultX after DiscExpand: ", resultX, FCDoControl->paxVerbose]
 			];
 
 			If[	OptionValue[PaXKallenExpand],
 				resultX = X`KallenExpand[resultX];
+				FCPrint[3,"PaXEvaluate: resultX after KallenExpand: ", resultX, FCDoControl->paxVerbose]
 			];
 
 			(* We need to convert Package X output into FeynCalc input *)
