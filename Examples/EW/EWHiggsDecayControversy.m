@@ -48,7 +48,7 @@ int2=-MTD[mu,nu]SPD[k]FAD[{k,m,3}]
 
 
 (* ::Subsection:: *)
-(*Do tensor decomposition and partional fractioning*)
+(*Do tensor decomposition and partial fractioning*)
 
 
 int1Eval=TID[int1,k]//Factor
