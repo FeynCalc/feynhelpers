@@ -29,7 +29,7 @@ If[ $FrontEnd === Null,
 $LoadAddOns={"FeynHelpers"};
 $LoadFeynArts= True;
 << FeynCalc`
-$FAVerbose = 0
+$FAVerbose = 0;
 
 
 (* ::Subsection:: *)
