@@ -427,7 +427,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			(* If the integral list is not empty, go on. *)
 			FCPrint[1,"PaXEvaluate: Preparing the evaluation.", FCDoControl->paxVerbose];
 
-			xList = xList/. { dim->4-2*(X`\[Epsilon]), Epsilon->(X`\[Epsilon]) };
+			xList = FCE[xList]/. { dim->4-2*(X`\[Epsilon]), Epsilon->(X`\[Epsilon]) };
 
 			If[ Head[paxSeries]===List,
 				FCPrint[1,"PaXEvaluate: Applying LoopRefineSerie.", FCDoControl->paxVerbose];
@@ -436,7 +436,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			];
 
 
-			resultX = X`LoopRefine[xList, Sequence@@paxOptions];
+			resultX = X`LoopRefine[xList, Sequence@@paxOptions]//FCI;
 
 			FCPrint[2,"PaXEvaluate: resultX (preliminary): ", resultX, FCDoControl->paxVerbose];
 
