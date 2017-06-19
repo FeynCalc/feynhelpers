@@ -121,5 +121,8 @@ PaXImplicitPrefactor -> 1/(2 Pi)^D] // FCE","(-I/16)/(Epsilon*Pi^2*SPD[p, p]) +
 {"PackageX-Generic-ID17","SP[p, p] = pp; \n tmp = (PaXEvaluate[16 Pi^4 OneLoop[k, 1/(I Pi^2) FAD[{p - k}, {k, mW}] GSD[k]],
 PaXImplicitPrefactor -> 1/(2 Pi)^D,	PaXSeries -> {{pp, 0, 0}}] /. {ScaleMu^2 ->	ScaleMu^2 E^EulerGamma/(4 Pi),
 1/Epsilon -> 2/Epsilon}) //Simplify // FCE; \n FCClearScalarProducts[]; \n tmp",
-"(GS[p] (4 + 3 Epsilon + 2 Epsilon Log[ScaleMu^2/mW^2]))/(4 Epsilon)"}
+"(GS[p] (4 + 3 Epsilon + 2 Epsilon Log[ScaleMu^2/mW^2]))/(4 Epsilon)"},
+{"PackageX-Generic-ID18","PaXEvaluate[B0[pp, m^2, m^2]/(pp + SPD[p1, p2]),
+PaXSeries -> {{pp, 0, 0}}]//FCE",
+"1/(Epsilon SPD[p1, p2]) - (EulerGamma - Log[ScaleMu^2/(m^2 \[Pi])])/SPD[p1, p2]"}
 })
