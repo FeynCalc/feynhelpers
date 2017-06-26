@@ -287,7 +287,7 @@ files or add-ons that are located in that directory, please backup them in advan
 
 	(* Move the files to the final destination	*)
 	WriteString["stdout", "Copying "<>packageName<>" to ", packageDir, " ..."];
-	Print[FileNameJoin[{unzipDir,zipDir}]];
+
 	CopyDirectory[FileNameJoin[{unzipDir,zipDir}],packageDir];
 	WriteString["stdout", "done! \n"];
 	(* Delete the extracted archive *)
