@@ -6,7 +6,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2016 Vladyslav Shtabovenko
+	Copyright (C) 2015-2018 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Interfaces between FeynCalc and other useful HEP package	*)
@@ -61,7 +61,7 @@ If[ Global`$FeynCalcStartupMessages =!= False,
 							SystemOpen[FileNameJoin[{$FeynHelpersDirectory, "Examples"}]],
 							Evaluator -> Automatic, Method -> "Preemptive"], "Text"],
 	Style[" If you use FeynHelpers in your research, please cite","Text"]];
-	Print [Style[" \[Bullet] V. Shtabovenko, \"FeynHelpers: Connecting FeynCalc to FIRE and Package-X\", TUM-EFT 75/15, arXiv:1611.06793","Text"]];
+	Print [Style[" \[Bullet] V. Shtabovenko, \"FeynHelpers: Connecting FeynCalc to FIRE and Package-X\", Comput. Phys. Commun., 218, 48-65, 2017, arXiv:1611.06793","Text"]];
 	Print[Style["Furthermore, remember to cite the authors of the tools that you are calling from FeynHelpers, which are","Text"]];
 	Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIRE",ButtonData :> {URL["http://science.sander.su/FIRE.htm"], None},BaseStyle -> "Hyperlink",
 				ButtonNote -> "http://science.sander.su/FIRE.htm"],"Text"], Style[" by A. Smirnov, if you are using the function FIREBurn.","Text"]];

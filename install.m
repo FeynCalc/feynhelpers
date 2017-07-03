@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2014-2016 Vladyslav Shtabovenko
+	Copyright (C) 2014-2018 Vladyslav Shtabovenko
 *)
 
 (* :Summary:  Installs FeynHelpers *)
