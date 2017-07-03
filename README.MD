@@ -55,13 +55,13 @@ Tools that are currently supported are
 
 # Usage
 
-For usage information see the accompanying paper and supplied examples.
+For usage information see the accompanying paper [arXiv:1611.06793](https://arxiv.org/abs/1611.06793) and the supplied examples.
 
 # Acknowledgments
 
 If you use FeynHelpers in you work, please cite
 
-* V. Shtabovenko, "FeynHelpers: Connecting FeynCalc to FIRE and Package-X", TUM-EFT 75/15, arXiv:1611.06793
+* V. Shtabovenko, "FeynHelpers: Connecting FeynCalc to FIRE and Package-X", Comput. Phys. Commun., 218, 48-65, 2017, arXiv:1611.06793
 
 Also don't forget to cite the authors of the tools that you are calling from FeynHelpers, which are
 
