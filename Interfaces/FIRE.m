@@ -75,7 +75,7 @@ FIREBurn::badconfig2=
 propagators, that must be specified as \"Propagators={...};\"";
 
 FIREBurn::failmsg =
-"Error! TID has encountered a fatal problem and must abort the computation. \
+"Error! FIREBurn has encountered a fatal problem and must abort the computation. \
 The problem reads: `1`"
 
 Begin["`Package`"]
@@ -315,7 +315,7 @@ batchFIRE[qs_List,ext_List,props_List,id_, {file1_String, file2_String, file3_St
 (* Generates batch files to run FIRE *)
 prepareFIRE[qs_List,ext_List,props_List, {fireFile1_String,fireFile2_String, fireFile3_String, fireStartFile_String}]:=
 	Block[{	internal,external,prs,propagators,replacements,
-			integral,tmp,fireConfig, listHead,spd,abbreviations,spHead},
+			integral,tmp,fireConfig, listHead,spd,abbreviations,spHead, sps},
 
 		FCPrint[2,"FIREBurn: prepareFIRE: Entering with:", qs, " | ",  ext, " | ", props, " ", FCDoControl->fbVerbose];
 
@@ -328,7 +328,14 @@ prepareFIRE[qs_List,ext_List,props_List, {fireFile1_String,fireFile2_String, fir
 		(*	unique propagators	*)
 		propagators= prs/.{a_,_Integer,_}:>a;
 
-		abbreviations = FCAbbreviate[propagators,internal,external,Head->spHead];
+		sps = Flatten[Outer[spd, ext, ext]] // Sort // DeleteDuplicates // ReplaceAll[#, spd -> SPD]&;
+		sps = Select[sps,(Head[#]=!=SPD)&];
+
+
+		abbreviations = FCAbbreviate[Join[propagators,sps],internal,external,Head->spHead];
+
+		FCPrint[3,"FIREBurn: prepareFIRE: abbreviations :", abbreviations, FCDoControl->fbVerbose];
+
 		replacements = abbreviations[[1]]/.spHead->Times;
 
 		propagators = propagators/.Flatten[abbreviations];
