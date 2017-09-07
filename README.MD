@@ -10,7 +10,7 @@ FeynHelpers is designed as an add-on for FeynCalc. To use it you need at least F
 
 Tools that are currently supported are
  * FIRE 5.2
- * Package-X 2.0
+ * Package-X 2.1
 
 # Installation
 
@@ -18,14 +18,14 @@ Tools that are currently supported are
 
 * Run the following instruction in a Kernel or Notebook session of Mathematica
 
-    ``` 
+    ```
     Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
     InstallFeynHelpers[]
     ```
 
   If the above code fails with `URLFetch::invhttp: SSL connect error` (e.g. on Mathematica 9 under OS X), try
 
-    ``` 
+    ```
     ImportString[URLFetch["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]]
     InstallFeynCalc[]
     ```
@@ -39,7 +39,7 @@ Tools that are currently supported are
 	FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns"}]
 	```
 
-	and put the source code there. 
+	and put the source code there.
 
 * Install Package-X and FIRE packages.  It should be possible to load Package-X via
 
@@ -70,5 +70,5 @@ Also don't forget to cite the authors of the tools that you are calling from Fey
 
 # License
 
-* The code of FeynHelpers is licensed under GNU GPLv3. 
+* The code of FeynHelpers is licensed under GNU GPLv3.
 * This __does not__ apply to the packages for which FeynHelpers provides an interface to FeynCalc. For the licensing of those packages please check the informations provided by the respective authors.
