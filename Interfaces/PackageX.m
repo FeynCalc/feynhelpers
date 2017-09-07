@@ -212,43 +212,43 @@ toPackageX[pref_, q_]:=
 
 (* 1-point functions *)
 toPackageX[pref_. PaVe[0, {}, {m_}, OptionsPattern[]], q_]:=
-	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVA[0, PowerExpand[Sqrt[m]]]/;
+	(2 Pi)^(-2*(X`Eps)) pref X`PVA[0, PowerExpand[Sqrt[m]]]/;
 	FreeQ[pref,q] && FreeQ[m, Complex];
 
 toPackageX[pref_. PaVe[inds__, {}, {m_}, OptionsPattern[]], q_]:=
-	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVA[Count[{inds},0]/2, PowerExpand[Sqrt[m]]]/;
+	(2 Pi)^(-2*(X`Eps)) pref X`PVA[Count[{inds},0]/2, PowerExpand[Sqrt[m]]]/;
 	FreeQ[pref,q] && FreeQ[m, Complex] && EvenQ[Count[{inds},0]] && {inds}=!={0};
 
 (* 2-point functions *)
 toPackageX[pref_. PaVe[0, {mom1_}, {m1_, m2_}, OptionsPattern[]], q_]:=
-	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVB[0, 0, momConv[mom1], PowerExpand[Sqrt[m1]],
+	(2 Pi)^(-2*(X`Eps)) pref X`PVB[0, 0, momConv[mom1], PowerExpand[Sqrt[m1]],
 	PowerExpand[Sqrt[m2]]]/;FreeQ[pref,q] && FreeQ[{m1,m2}, Complex];
 
 toPackageX[pref_. PaVe[inds__, {mom1_}, {m1_, m2_}, OptionsPattern[]], q_]:=
-	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVB[Count[{inds},0]/2, Count[{inds},1], momConv[mom1], PowerExpand[Sqrt[m1]],
+	(2 Pi)^(-2*(X`Eps)) pref X`PVB[Count[{inds},0]/2, Count[{inds},1], momConv[mom1], PowerExpand[Sqrt[m1]],
 	PowerExpand[Sqrt[m2]]]/;FreeQ[pref,q] && FreeQ[{m1,m2}, Complex] &&
 	(EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0) && {inds}=!={0};
 
 (* 3-point functions *)
 toPackageX[pref_. PaVe[0,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPattern[]], q_]:=
-	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVC[0, 0, 0, momConv[mom1], momConv[mom1min2], momConv[mom2],
+	(2 Pi)^(-2*(X`Eps)) pref X`PVC[0, 0, 0, momConv[mom1], momConv[mom1min2], momConv[mom2],
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]]]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex];
 
 toPackageX[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPattern[]], q_]:=
-	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVC[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], momConv[mom1], momConv[mom1min2], momConv[mom2],
+	(2 Pi)^(-2*(X`Eps)) pref X`PVC[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], momConv[mom1], momConv[mom1min2], momConv[mom2],
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]]]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex] && (EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0);
 
 (* 4-point functions *)
 toPackageX[pref_. PaVe[0,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_}, {m1_, m2_, m3_, m4_}, OptionsPattern[]], q_]:=
-	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVD[0, 0, 0, 0,
+	(2 Pi)^(-2*(X`Eps)) pref X`PVD[0, 0, 0, 0,
 		momConv[mom1], momConv[mom1min2], momConv[mom2min3], momConv[mom3], momConv[mom2], momConv[mom1min3],
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m4]]]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3,m4}, Complex];
 
 toPackageX[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_}, {m1_, m2_, m3_, m4_}, OptionsPattern[]], q_]:=
-	(2 Pi)^(-2*(X`\[Epsilon])) pref X`PVD[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], Count[{inds},3],
+	(2 Pi)^(-2*(X`Eps)) pref X`PVD[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], Count[{inds},3],
 		momConv[mom1], momConv[mom1min2], momConv[mom2min3], momConv[mom3], momConv[mom2], momConv[mom1min3],
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m4]]]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3,m4}, Complex] && (EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0);
@@ -340,8 +340,8 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			paxVer = (ToExpression/@(Identity@@StringReplace[paxVer, n1__ ~~ "." ~~ n2__ ~~ "." ~~ n3__ :>
 				{n1, n2, n3}]));
 
-			If[paxVer[[1]] < 2. ,
-				Message[PaXEvaluate::gen, "Package-X versions earlier than 2.0 are not supported."];
+			If[	!(paxVer[[1]] >= 2. && paxVer[[2]] >= 1.),
+				Message[PaXEvaluate::gen, "Package-X versions earlier than 2.1.0 are not supported."];
 				Abort[]
 			];
 
@@ -428,7 +428,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			FCPrint[1,"PaXEvaluate: Evaluating the Passarino-Veltman function via Package-X.", FCDoControl->paxVerbose];
 			time=AbsoluteTime[];
 
-			xList = FCE[xList]/. { dim->4-2*(X`\[Epsilon]), Epsilon->(X`\[Epsilon]) };
+			xList = FCE[xList]/. { dim->4-2*(X`Eps), Epsilon->(X`Eps) };
 
 			If[ Head[paxSeries]===List,
 				FCPrint[1,"PaXEvaluate: Applying LoopRefineSerie.", FCDoControl->paxVerbose];
@@ -465,8 +465,8 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 			(* We need to convert Package X output into FeynCalc input *)
 			resultX = resultX /. {
-				X`\[Epsilon] -> PaXEpsilonBar,
-				X`\[Micro] -> ScaleMu,
+				X`Eps -> PaXEpsilonBar,
+				X`Mu -> ScaleMu,
 				X`DiscB -> PaXDiscB,
 				X`Kallen\[Lambda] -> PaXKallenLambda,
 				X`DiLog -> PaXDiLog,
