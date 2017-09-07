@@ -310,7 +310,7 @@ PaXEvaluate[expr_, opts:OptionsPattern[]]:=
 
 PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 	Block[{	ex,kernel,temp,resultX,finalResult,xList,ints,fclsOutput,fclcOutput,
-			dim,epsFree,epsNotFree, holddim,paxVer, paxOptions={}, paxSeries, paxSeriesVars={}},
+			dim,epsFree,epsNotFree, holddim,paxVer, paxOptions={}, paxSeries, paxSeriesVars={}, time},
 
 		dim = OptionValue[Dimension];
 		paxSeries = OptionValue[PaXSeries];
@@ -425,7 +425,8 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		If[	xList=!={},
 			(* If the integral list is not empty, go on. *)
-			FCPrint[1,"PaXEvaluate: Preparing the evaluation.", FCDoControl->paxVerbose];
+			FCPrint[1,"PaXEvaluate: Evaluating the Passarino-Veltman function via Package-X.", FCDoControl->paxVerbose];
+			time=AbsoluteTime[];
 
 			xList = FCE[xList]/. { dim->4-2*(X`\[Epsilon]), Epsilon->(X`\[Epsilon]) };
 
@@ -435,8 +436,10 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 				FCPrint[3,"PaXEvaluate: xList (after LoopRefineSeries): ", xList, FCDoControl->paxVerbose]
 			];
 
-
 			resultX = X`LoopRefine[xList, Sequence@@paxOptions]//FCI;
+
+			FCPrint[1, "PaXEvaluate: Evaluation finished, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose];
+
 
 			FCPrint[2,"PaXEvaluate: resultX (preliminary): ", resultX, FCDoControl->paxVerbose];
 
