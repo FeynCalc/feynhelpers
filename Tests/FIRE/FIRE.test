@@ -44,7 +44,11 @@ FIREAddPropagators -> {SPD[q1, q2], SPD[q1, q3]},FCE->True]",
 "-(((-3 + D) (-10 + 3 D) (-8 + 3 D) FAD[{q1, m}, q2,
 q2 - q3, {q1 + q3, m}])/(16 (-7 + 2 D) m^4))"},
 {"FIRE-Generic-ID15", "FIREBurn[TID[FAD[{l, mf}, {l, mf}, {l, mf}] (4 mf FVD[l, mu] FVD[l, nu] +
-	mf^3 MTD[mu, nu] - mf MTD[mu, nu] SPD[l, l]), l], {l}, {}]", "0"}
+	mf^3 MTD[mu, nu] - mf MTD[mu, nu] SPD[l, l]), l], {l}, {}]", "0"},
+{"FIRE-Generic-ID16", "FCClearScalarProducts[]; \n SPD[p1, p1] = 0; \n SPD[p2, p2] = 0; \n SPD[p3, p3] = 0; \n
+SPD[p1, p2] = s/2; \n SPD[p1, p3] = -(s + t)/2; \n SPD[p2, p3] = t/2; \n
+FIREBurn[FAD[q, q - p1 - p2, q - p1 - p2 - p3], {q}, {p1, p2, p3}] // FCE",
+"-((2 (-3 + D) FAD[q, -p1 - p2 + q])/((-4 + D) s))"}
 });
 (*
 Tests`FIRE`GenericWithFermat = ({
