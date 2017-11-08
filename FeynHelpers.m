@@ -14,10 +14,10 @@
 (* ------------------------------------------------------------------------ *)
 
 $FeynHelpersVersion::usage=
-"$FeynHelpersVersion is the string that represents the version of $FeynHelpersVersion";
+"$FeynHelpersVersion is the string that represents the version of FeynHelpers";
 
 $FeynHelpersDirectory::usage=
-"$FeynHelpersDirectory is the string that represents the full path to the FeynHelpersDirectory \
+"$FeynHelpersDirectory is the string that represents the full path to the FeynHelpers \
 directory";
 
 Begin["`Package`"]
@@ -53,7 +53,7 @@ If[ fcVersion[[1]]<9,
 ];
 
 (* Print startup message *)
-If[ Global`$FeynCalcStartupMessages =!= False,
+If[ $FeynCalcStartupMessages =!= False,
 	Print[Style["FeynHelpers ", "Text", Bold], Style[$FeynHelpersVersion <> " loaded.", "Text"]];
 	Print[ Style["Have a look at the supplied ","Text"],
 
