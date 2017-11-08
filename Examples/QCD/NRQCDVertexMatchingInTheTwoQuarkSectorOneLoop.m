@@ -123,8 +123,8 @@ Collect2[#,{SMP["Delta_UV"],SMP["Delta_IR"],q2},Factoring->FullSimplify,FCFactor
 
 
 scalarPart[expr_,fo_:1]:=((expr//SelectNotFree2[#,DiracSigma]&)/
-FCI[I SMP["g_s"]SUNT[Glu2](I/(2m))FCI[SpinorUBarD[p2,m]. DiracSigma[GAD[Lor1],
-GSD[p2-p1]].SpinorUD[p1,m]]])//Collect2[#,{SMP["Delta_UV"],SMP["Delta_IR"],q2},
+FCI[-I SMP["g_s"]SUNT[Glu2](I/(2m))FCI[SpinorUBarD[p2,m]. DiracSigma[GAD[Lor1],
+GSD[p1-p2]].SpinorUD[p1,m]]])//Collect2[#,{SMP["Delta_UV"],SMP["Delta_IR"],q2},
 Factoring->FullSimplify,FCFactorOut->fo]&;
 
 

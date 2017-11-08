@@ -65,7 +65,7 @@ AbsoluteTiming[ampsVacuumPol1=(ampsVacuumPol/.DiracTrace->Tr)//FCMultiLoopTID[#,
 (*Simplification of the loop integrals using shifts in the loop momenta*)
 
 
-ampsVacuumPol2=ampsVacuumPol1//FDS[#,l1,l2]&
+ampsVacuumPol2=ampsVacuumPol1//FDS[#,l1,l2]&//ApartFF[#,{l1,l2}]&
 
 
 (* ::Text:: *)
@@ -122,14 +122,14 @@ AbsoluteTiming[ampsSE1=(ampsSE/.DiracTrace->Tr)//FCMultiLoopTID[#,{l1,l2}]&//Dir
 (*Simplification of the loop integrals using shifts in the loop momenta*)
 
 
-ampsSE2=ampsSE1//FDS[#,l1,l2]&
+ampsSE2=ampsSE1//FDS[#,l1,l2]&//ApartFF[#,{l1,l2}]&
 
 
 (* ::Text:: *)
 (*IBP-Reduction using FIRE*)
 
 
-ampsSE3=FIREBurn[ampsSE2,{l1,l2},{p}]//FDS[#,l1,l2]&
+ampsSE3=FIREBurn[ampsSE2,{l1,l2},{p},FCVerbose->0]//FDS[#,l1,l2]&
 
 
 (* ::Text:: *)

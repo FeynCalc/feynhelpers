@@ -48,7 +48,7 @@ OutgoingMomenta->{p},LoopMomenta->{q},DropSumOver->True,UndoChiralSplittings->Tr
 FinalSubstitutions->{FCGV["MU"]->M,GaugeXi[g]->GaugeXi}]//SUNSimplify//Contract
 
 
-ampsEval=TID[amps,q,ToPaVe->True]
+ampsEval=TID[amps,q,ToPaVe->True]//DiracSimplify
 
 
 res1=PaXEvaluate[ampsEval,q,PaXImplicitPrefactor->1/(2Pi)^D]

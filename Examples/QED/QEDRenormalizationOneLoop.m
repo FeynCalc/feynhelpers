@@ -96,7 +96,7 @@ Zpsi->SMP["Z_psi"],SMP["e"]->Sqrt[4Pi SMP["alpha_fs"]]}]]&/@{diagElectronSE,diag
 (*Tensor reduction allows us to express the electron self-energy in tems of the Passarino-Veltman coefficient functions.*)
 
 
-ampElectronSE1=TID[ampElectronSE,l,ToPaVe->True]
+ampElectronSE1=TID[ampElectronSE,l,ToPaVe->True]//DiracSimplify
 
 
 (* ::Text:: *)
