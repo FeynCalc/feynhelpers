@@ -138,7 +138,7 @@ FCI[FAD[{k,SMP["m_e"],2},{k-p1,SMP["m_e"]}]]->FCI[FAD[{k,SMP["m_e"],2},{k,SMP["m
 }
 
 
-tmp1=FIREBurn[Eq1QEDeval1/.rule,{k},{p1,p2},FCLoopIBPReducableQ->True]//FDS[#,k]&;
+tmp1=FIREBurn[Eq1QEDeval1,{k},{p1,p2},FCLoopIBPReducableQ->True]//FDS[#,k]&;
 tmp2=FIREBurn[Eq2QEDeval1/.rule,{k},{p1,p2},FCLoopIBPReducableQ->True]//FDS[#,k]&;
 
 
@@ -174,10 +174,6 @@ sols=Solve[{(Eq1EH/.D->4)==Eq1QEDeval2,
 
 coeff1=(c1/.First[sols])
 coeff2=(c2/.First[sols])
-
-
-(* ::Text:: *)
-(*The result should be twice Eq. 19.59 in Peskin and Schroeder*)
 
 
 coeff1Pich=-SMP["alpha_fs"]^2/36;
