@@ -18,7 +18,7 @@ If [!StringQ[FeynCalc`$FeynHelpersDirectory],
 	"FeynHelpers"}, "FeynHelpers.m"];
 	EndPackage[]
 ]
-
+$FCAdvice=False;
 ClearAll[tests];
 tests = FileNames["*.test",FileNameJoin[{$FeynHelpersDirectory, "Tests", "PackageX"}]]
 Get/@tests;

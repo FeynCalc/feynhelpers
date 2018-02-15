@@ -137,8 +137,11 @@ PaXEvaluate::gen=
 "PaXEvaluate has encountered an error and must abort the evaluation. The \
 error description reads: `1`";
 
-
-
+PaXEvaluate::C0D0=
+"The explicit result for the occuring `1` function(s) is expected to be very \
+complicated. Please rerun PaXEvaluate with the option `2` \
+to show the result nevertheless. Please set $FCAdvice=False if you do not want \
+to see this message in future.";
 
 Begin["`Package`"]
 
@@ -464,6 +467,15 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			];
 
 			(* We need to convert Package X output into FeynCalc input *)
+
+			If[	!FreeQ[resultX,X`ScalarC0] && $FCAdvice,
+				Message[PaXEvaluate::C0D0,"C0","PaXC0Expand->True"]
+			];
+
+			If[	!FreeQ[resultX,X`ScalarD0] && $FCAdvice,
+				Message[PaXEvaluate::C0D0,"D0","PaXD0Expand->True"]
+			];
+
 			resultX = resultX /. {
 				X`Eps -> PaXEpsilonBar,
 				X`Mu -> ScaleMu,
