@@ -30,13 +30,12 @@ Begin["`FeynHelpers`Private`"];
 
 $FeynHelpersVersion="1.1.0";
 
-$FeynHelpersDirectory =
-ToFileName[{$FeynCalcDirectory, "AddOns", "FeynHelpers"}];
+$FeynHelpersDirectory = FileNameJoin[{$FeynCalcDirectory, "AddOns", "FeynHelpers"}];
 
 (* Load the intefaces *)
 BeginPackage["FeynCalc`"];
-FCDeclareHeader/@FileNames[{"*.m"},ToFileName[{$FeynHelpersDirectory,"Interfaces"}]];
-Get/@FileNames[{"*.m"},ToFileName[{$FeynHelpersDirectory,"Interfaces"}]];
+FCDeclareHeader/@FileNames[{"*.m"}, FileNameJoin[{$FeynHelpersDirectory,"Interfaces"}]];
+Get/@FileNames[{"*.m"}, FileNameJoin[{$FeynHelpersDirectory,"Interfaces"}]];
 EndPackage[]
 
 

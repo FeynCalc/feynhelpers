@@ -12,10 +12,8 @@
 
 If [!StringQ[FeynCalc`$FeynHelpersDirectory],
 	BeginPackage["FeynCalc`"];
-	FCDeclareHeader@ToFileName[{$FeynCalcDirectory, "AddOns",
-	"FeynHelpers"}, "FeynHelpers.m"];
-	Get@ToFileName[{$FeynCalcDirectory, "AddOns",
-	"FeynHelpers"}, "FeynHelpers.m"];
+	FCDeclareHeader@FileNameJoin[{$FeynCalcDirectory, "AddOns", "FeynHelpers", "FeynHelpers.m"}];
+	Get@FileNameJoin[{$FeynCalcDirectory, "AddOns", "FeynHelpers", "FeynHelpers.m"}];
 	EndPackage[]
 ]
 
