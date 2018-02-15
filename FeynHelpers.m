@@ -51,9 +51,12 @@ If[ fcVersion[[1]]<9,
 	];
 ];
 
-(* Print startup message *)
+(* Print the startup message *)
 If[ $FeynCalcStartupMessages =!= False,
-	Print[Style["FeynHelpers ", "Text", Bold], Style[$FeynHelpersVersion <> " loaded.", "Text"]];
+	Print[Style["FeynHelpers ", "Text", Bold], Style[$FeynHelpersVersion <> ", for more information see the accompanying ", "Text"],
+			Style[DisplayForm@ButtonBox["publication.", BaseStyle -> "Hyperlink",	ButtonFunction :>
+				SystemOpen[FileNameJoin[{$FeynHelpersDirectory,"Documentation","1611.06793.pdf"}]],
+				Evaluator -> Automatic, Method -> "Preemptive"], "Text"]];
 	Print[ Style["Have a look at the supplied ","Text"],
 
 	Style[DisplayForm@ButtonBox["examples.", BaseStyle -> "Hyperlink",	ButtonFunction :>
