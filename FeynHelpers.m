@@ -69,10 +69,16 @@ If[ $FeynCalcStartupMessages =!= False,
 				ButtonNote -> "http://science.sander.su/FIRE.htm"],"Text"], Style[" by A. Smirnov, if you are using the function FIREBurn.","Text"]];
 	Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Package-X",ButtonData :> {URL["https://packagex.hepforge.org"], None},BaseStyle -> "Hyperlink",
 				ButtonNote -> "https://packagex.hepforge.org"],"Text"], Style[" by H. Patel, if you are using the function PaXEvaluate.","Text"]];
+	(*Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["QGRAF",ButtonData :> {URL["http://cfif.ist.utl.pt/~paulo/qgraf.html"], None},BaseStyle -> "Hyperlink",
+				ButtonNote -> "http://cfif.ist.utl.pt/~paulo/qgraf.html"],"Text"], Style[" by P. Nogueira, if you are using functions that start with QG*.","Text"]];*)
 ];
 
 If[ !ValueQ[FeynHelpers`Package`paxLoaded],
 	FeynHelpers`Package`paxLoaded = False
+];
+
+If[ !ValueQ[FeynHelpers`Package`qgCommonInsertionsLoaded],
+	FeynHelpers`Package`qgCommonInsertionsLoaded = False
 ];
 
 End[]
