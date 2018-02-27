@@ -124,5 +124,10 @@ PaXImplicitPrefactor -> 1/(2 Pi)^D,	PaXSeries -> {{pp, 0, 0}}] /. {ScaleMu^2 ->	
 "(GS[p] (4 + 3 Epsilon + 2 Epsilon Log[ScaleMu^2/mW^2]))/(4 Epsilon)"},
 {"PackageX-Generic-ID18","PaXEvaluate[B0[pp, m^2, m^2]/(pp + SPD[p1, p2]),
 PaXSeries -> {{pp, 0, 0}}]//FCE",
-"1/(Epsilon SPD[p1, p2]) - (EulerGamma - Log[ScaleMu^2/(m^2 \[Pi])])/SPD[p1, p2]"}
+"1/(Epsilon SPD[p1, p2]) - (EulerGamma - Log[ScaleMu^2/(m^2 \[Pi])])/SPD[p1, p2]"},
+{"PackageX-Generic-ID19",
+"PaXEvaluate[1/(D - 4) A0[m^2]]",
+"-m^2/(2*Epsilon^2) - (m^2*(EulerGamma + Log[Pi])*
+(-2 + EulerGamma + Log[Pi] - 2*Log[ScaleMu^2/m^2]))/4 +
+(m^2*(-1 + EulerGamma + Log[Pi] - Log[ScaleMu^2/m^2]))/(2*Epsilon)"}
 })

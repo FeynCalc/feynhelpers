@@ -391,9 +391,11 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		(*	FCLoopCanonicalize is of course an overkill for purely scalar integrals,
 			but it is better to use it than to implement own functions every time...	*)
 
+		fclsOutput[[2]] = FCReplaceD[fclsOutput[[2]],dim->4-2*Epsilon];
+
 		FCPrint[1,"PaXEvaluate: Applying FCLoopIsolate.", FCDoControl->paxVerbose];
 		ints=FCLoopIsolate[fclsOutput[[2]], {q}, FCI->True, Head->loopIntegral,
-			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD},paxSeriesVars]];
+			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD, Epsilon},paxSeriesVars]];
 		FCPrint[3,"PaXEvaluate: After FCLoopIsolate:",ints, FCDoControl->paxVerbose];
 
 		(*	The 4th element in fclcOutput is our list of unique scalar integrals that
@@ -511,7 +513,6 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			fclsOutput[[1]]= Series[fclsOutput[[1]],Sequence@@paxSeries]//Normal;
 			FCPrint[2,"PaXEvaluate:  After series expansion of the loop-free part: ", fclsOutput[[1]], FCDoControl->paxVerbose]
 		];
-
 
 		(* Now we create the final substitution list *)
 		finalResult = fclsOutput[[1]] + fclsOutput[[3]] + fclsOutput[[4]] + ints/.FCLoopSolutionList[fclcOutput,resultX];
