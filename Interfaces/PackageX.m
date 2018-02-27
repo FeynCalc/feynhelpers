@@ -310,7 +310,7 @@ PaXEvaluate[expr_, opts:OptionsPattern[]]:=
 
 PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 	Block[{	ex,kernel,temp,resultX,finalResult,xList,ints,fclsOutput,fclcOutput,
-			dim,epsFree,epsNotFree, holddim,paxVer, paxOptions={}, paxSeries, paxSeriesVars={}, time},
+			dim,epsFree,epsNotFree, holddim,paxVer, paxOptions={}, paxSeries, paxSeriesVars={}, time, tmp},
 
 		dim = OptionValue[Dimension];
 		paxSeries = OptionValue[PaXSeries];
@@ -391,12 +391,23 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		(*	FCLoopCanonicalize is of course an overkill for purely scalar integrals,
 			but it is better to use it than to implement own functions every time...	*)
 
-		fclsOutput[[2]] = FCReplaceD[fclsOutput[[2]],dim->4-2*Epsilon];
+		FCPrint[1,"PaXEvaluate: Applying FCLoopIsolate.", FCDoControl->paxVerbose];
+		tmp=FCLoopIsolate[FCReplaceD[fclsOutput[[2]],dim->4-2*Epsilon], {q}, FCI->True, Head->loopIntegral,
+			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD, Epsilon},paxSeriesVars]];
+		FCPrint[3,"PaXEvaluate: After FCLoopIsolate:",tmp, FCDoControl->paxVerbose];
+
+
+		Quiet[tmp = Cases2[tmp, loopIntegral] /. Epsilon -> 0, Power::infy];
+		If[!FreeQ[tmp,ComplexInfinity],
+			Message[PaXEvaluate::gen, "PaXEvaluate cannot handle PaVe functions multiplied by 1/Epsilon poles."];
+			Abort[]
+		];
 
 		FCPrint[1,"PaXEvaluate: Applying FCLoopIsolate.", FCDoControl->paxVerbose];
 		ints=FCLoopIsolate[fclsOutput[[2]], {q}, FCI->True, Head->loopIntegral,
-			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD, Epsilon},paxSeriesVars]];
+			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD},paxSeriesVars]];
 		FCPrint[3,"PaXEvaluate: After FCLoopIsolate:",ints, FCDoControl->paxVerbose];
+
 
 		(*	The 4th element in fclcOutput is our list of unique scalar integrals that
 			need to be computed. But first we need to convert them to the Pacakge X input *)
