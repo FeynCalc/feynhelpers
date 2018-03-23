@@ -352,13 +352,13 @@ prepareFIRE[qs_List,ext_List,props_List, {fireFile1_String,fireFile2_String, fir
 		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's F integral :", StandardForm[integral], FCDoControl->fbVerbose];
 
 		fireConfig = OpenWrite[fireFile1];
-		WriteString[fireConfig, "FIREPath=\""<> DirectoryName[firePath] <>"\";\n"];
+		WriteString[fireConfig, "FIREPath="<> ToString[DirectoryName[firePath],InputForm] <>";\n"];
 
 		If[	fireUsingFermat,
 			WriteString[fireConfig, "UsingFermat=True;\n"];
 		];
 		WriteString[fireConfig, "(* Generated on "<> DateString[] <>" *)\n"];
-		WriteString[fireConfig, "Get[\""<> firePath  <>"\"];\n"];
+		WriteString[fireConfig, "Get["<> ToString[firePath,InputForm]  <>"];\n"];
 		WriteString[fireConfig, "Internal=" <> ToString[internal,InputForm] <> ";\n"];
 		WriteString[fireConfig, "External=" <> ToString[external,InputForm] <> ";\n"];
 		WriteString[fireConfig, "Propagators=" <> ToString[propagators,InputForm] <> ";\n"];
@@ -369,14 +369,14 @@ prepareFIRE[qs_List,ext_List,props_List, {fireFile1_String,fireFile2_String, fir
 		Close[fireConfig];
 
 		fireConfig = OpenWrite[fireFile2];
-		WriteString[fireConfig, "FIREPath=\""<> DirectoryName[firePath] <>"\";\n"];
+		WriteString[fireConfig, "FIREPath="<> ToString[DirectoryName[firePath],InputForm] <>";\n"];
 
 		If[	fireUsingFermat,
 			WriteString[fireConfig, "UsingFermat=True;\n"];
 		];
 
 		WriteString[fireConfig, "(* Generated on "<> DateString[] <>" *)\n"];
-		WriteString[fireConfig, "Get[\""<> firePath  <>"\"];\n"];
+		WriteString[fireConfig, "Get["<> ToString[firePath,InputForm]  <>"];\n"];
 		WriteString[fireConfig, "LoadStart[" <> ToString[fireStartFile,InputForm] <> ",1];\n"];
 		WriteString[fireConfig, "Burn[];\n"];
 		WriteString[fireConfig, "FeynCalc`FIRE`Private`feynhelpersFIREResult =  F@@" <> ToString[integral,InputForm] <> "\n"];
