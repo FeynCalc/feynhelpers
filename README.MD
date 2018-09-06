@@ -9,6 +9,7 @@ FeynHelpers is designed as an add-on for FeynCalc. To use it you need at least F
 # Supported tools
 
 Tools that are currently supported are
+
  * FIRE 5.2
  * Package-X 2.1
 
@@ -17,6 +18,7 @@ Tools that are currently supported are
 ## Automatic installation
 
 * Run the following instruction in a Kernel or Notebook session of Mathematica
+
 
     ```
     Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
@@ -29,6 +31,7 @@ Tools that are currently supported are
     ImportString[URLFetch["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]]
     InstallFeynCalc[]
     ```
+
 * The automatic installer can also install Package-X and FIRE for you. It will offer you this possiblity at the end of the installation process
 
 ## Manual installation
@@ -52,6 +55,15 @@ Tools that are currently supported are
 	```
 	<< FIRE5`
 	```
+
+## Development version
+
+If you like the bleeding edge and you are already using the development version of FeynCalc, you can also install the development version of FeynHelpers
+
+```
+Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
+InstallFeynHelpers[InstallFeynHelpersDevelopmentVersion->True]
+```
 
 # Usage
 
