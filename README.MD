@@ -29,7 +29,7 @@ Tools that are currently supported are
 
     ```
     ImportString[URLFetch["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]]
-    InstallFeynCalc[]
+    InstallFeynHelpers[]
     ```
 
 * The automatic installer can also install Package-X and FIRE for you. It will offer you this possiblity at the end of the installation process
