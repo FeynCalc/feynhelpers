@@ -1,6 +1,10 @@
-# Description
+# FeynHelpers
 
-FeynHelpers is a collection of interfaces that allow you to use other HEP-related tools from your FeynCalc session.
+[![license: GPLv3](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)](https://github.com/FeynCalc/feynhelpers/LICENSE)
+[![latest release](https://img.shields.io/github/release/FeynCalc/feynhelpers.svg)](https://github.com/FeynCalc/feynhelpers/releases)
+![compatibility](https://img.shields.io/badge/Mathematica-8.x_9.x_10.x_11.x-brightgreen.svg)
+
+FeynHelpers is a collection of interfaces that allow you to use other HEP-related tools from your [FeynCalc](http://www.feyncalc.org/) session.
 
 # Requirements
 
@@ -10,8 +14,8 @@ FeynHelpers is designed as an add-on for FeynCalc. To use it you need at least F
 
 Tools that are currently supported are
 
- * FIRE 5.2
- * Package-X 2.1
+ * [FIRE 5.2](https://bitbucket.org/feynmanIntegrals/fire)
+ * [Package-X 2.1](https://packagex.hepforge.org)
 
 # Installation
 
@@ -82,5 +86,5 @@ Also don't forget to cite the authors of the tools that you are calling from Fey
 
 # License
 
-* The code of FeynHelpers is licensed under GNU GPLv3.
+* The code of FeynHelpers is covered by the GNU General Public License 3.
 * This __does not__ apply to the packages for which FeynHelpers provides an interface to FeynCalc. For the licensing of those packages please check the informations provided by the respective authors.
