@@ -124,5 +124,89 @@ PaXImplicitPrefactor -> 1/(2 Pi)^D,	PaXSeries -> {{pp, 0, 0}}] /. {ScaleMu^2 ->	
 "(GS[p] (4 + 3 Epsilon + 2 Epsilon Log[ScaleMu^2/mW^2]))/(4 Epsilon)"},
 {"PackageX-Generic-ID18","PaXEvaluate[B0[pp, m^2, m^2]/(pp + SPD[p1, p2]),
 PaXSeries -> {{pp, 0, 0}}]//FCE",
-"1/(Epsilon SPD[p1, p2]) - (EulerGamma - Log[ScaleMu^2/(m^2 \[Pi])])/SPD[p1, p2]"}
+"1/(Epsilon SPD[p1, p2]) - (EulerGamma - Log[ScaleMu^2/(m^2 \[Pi])])/SPD[p1, p2]"},
+{"PackageX-Generic-ID19","PaXEvaluate[
+PaVe[3, 3, {0, 2 SPD[p1, p2],
+2 SPD[p1, p2] + 2 SPD[p1, p3] + 2 SPD[p2, p3], 2 SPD[p2, p3], 0,
+0}, {0, 0, 0, 0}],FCE->True]","-(1/(4 Epsilon (SPD[p1, p3] + SPD[p2, p3])^2)) + (-2 + EulerGamma +
+2 Log[2 \[Pi]] - Log[4 \[Pi]])/(4 (SPD[p1, p3] + SPD[p2, p3])^2) -
+Log[-(ScaleMu^2/(2 SPD[p2, p3]))]/(2 (SPD[p1, p3] + SPD[p2, p3])^2) +
+Log[-(ScaleMu^2/(2 (SPD[p1, p2] + SPD[p1, p3] + SPD[p2, p3])))]/(
+4 (SPD[p1, p3] + SPD[p2, p3])^2) - (\[Pi]^2 SPD[p1, p2])/(
+12 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (
+Log[-(ScaleMu^2/(2 SPD[p1, p2]))] SPD[p1, p2])/(
+4 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (
+Log[-(ScaleMu^2/(2 SPD[p1, p2]))]^2 SPD[p1, p2])/(
+4 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2) + (
+Log[-(ScaleMu^2/(2 SPD[p1, p2]))] Log[-(ScaleMu^2/(
+	2 SPD[p2, p3]))] SPD[p1, p2])/(
+2 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (
+Log[-(ScaleMu^2/(2 SPD[p2, p3]))]^2 SPD[p1, p2])/(
+4 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2) + (
+Log[-(ScaleMu^2/(2 (SPD[p1, p2] + SPD[p1, p3] + SPD[p2, p3])))] SPD[
+p1, p2])/(4 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (
+PaXDiLog[-((SPD[p1, p2] + SPD[p1, p3])/SPD[p2, p3]),
+SPD[p1, p2] + SPD[p1, p3]] SPD[p1, p2])/(
+2 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (
+PaXDiLog[-((SPD[p1, p3] + SPD[p2, p3])/SPD[p1, p2]),
+SPD[p1, p3] + SPD[p2, p3]] SPD[p1, p2])/(
+2 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (\[Pi]^2 SPD[p1,
+p2])/(24 SPD[p2, p3] (SPD[p1, p3] + SPD[p2, p3])^2) + (
+Log[-(ScaleMu^2/SPD[p1, p2])] SPD[p1, p2])/(
+4 Epsilon SPD[p2,
+p3] (SPD[p1, p3] + SPD[p2, p3])^2) - ((EulerGamma -
+	Log[4 \[Pi]]) Log[-(ScaleMu^2/SPD[p1, p2])] SPD[p1, p2])/(
+4 SPD[p2,
+p3] (SPD[p1, p3] + SPD[p2, p3])^2) - ((-1 + 2 Log[2 \[Pi]]) Log[-(
+	ScaleMu^2/(2 SPD[p1, p2]))] SPD[p1, p2])/(
+4 SPD[p2, p3] (SPD[p1, p3] + SPD[p2, p3])^2) + (
+Log[-(ScaleMu^2/(2 SPD[p1, p2]))] Log[-(ScaleMu^2/(
+	2 SPD[p2, p3]))] SPD[p1, p2])/(
+4 SPD[p2, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (
+Log[-(ScaleMu^2/(2 SPD[p2, p3]))]^2 SPD[p1, p2])/(
+8 SPD[p2, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (
+Log[-(ScaleMu^2/(SPD[p1, p2] + SPD[p1, p3] + SPD[p2, p3]))] SPD[p1,
+p2])/(4 Epsilon SPD[p2,
+p3] (SPD[p1, p3] + SPD[p2, p3])^2) + ((EulerGamma -
+	Log[4 \[Pi]]) Log[-(ScaleMu^2/(
+	SPD[p1, p2] + SPD[p1, p3] + SPD[p2, p3]))] SPD[p1, p2])/(
+4 SPD[p2,
+p3] (SPD[p1, p3] + SPD[p2, p3])^2) + ((-1 + Log[4] +
+	2 Log[\[Pi]]) Log[-(ScaleMu^2/(
+	2 (SPD[p1, p2] + SPD[p1, p3] + SPD[p2, p3])))] SPD[p1, p2])/(
+4 SPD[p2, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (
+Log[-(ScaleMu^2/(
+	2 (SPD[p1, p2] + SPD[p1, p3] + SPD[p2, p3])))]^2 SPD[p1, p2])/(
+8 SPD[p2, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (
+PaXDiLog[-((SPD[p1, p2] + SPD[p1, p3])/SPD[p2, p3]),
+SPD[p1, p2] + SPD[p1, p3]] SPD[p1, p2])/(
+4 SPD[p2, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (
+PaXDiLog[-((SPD[p1, p3] + SPD[p2, p3])/SPD[p1, p2]),
+SPD[p1, p3] + SPD[p2, p3]] SPD[p1, p2])/(
+4 SPD[p2, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - SPD[p1, p3]/(
+4 Epsilon SPD[p2,
+p3] (SPD[p1, p3] + SPD[p2, p3])^2) + ((-2 + EulerGamma +
+	2 Log[2 \[Pi]] - Log[4 \[Pi]]) SPD[p1, p3])/(
+4 SPD[p2, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (
+Log[-(ScaleMu^2/(2 SPD[p2, p3]))] SPD[p1, p3])/(
+4 SPD[p2, p3] (SPD[p1, p3] + SPD[p2, p3])^2) - (\[Pi]^2 SPD[p1,
+p2] SPD[p2, p3])/(
+24 SPD[p1, p3]^2 (SPD[p1, p3] + SPD[p2, p3])^2) - (
+Log[-(ScaleMu^2/(2 SPD[p1, p2]))]^2 SPD[p1, p2] SPD[p2, p3])/(
+8 SPD[p1, p3]^2 (SPD[p1, p3] + SPD[p2, p3])^2) + (
+Log[-(ScaleMu^2/(2 SPD[p1, p2]))] Log[-(ScaleMu^2/(
+	2 SPD[p2, p3]))] SPD[p1, p2] SPD[p2, p3])/(
+4 SPD[p1, p3]^2 (SPD[p1, p3] + SPD[p2, p3])^2) - (
+Log[-(ScaleMu^2/(2 SPD[p2, p3]))]^2 SPD[p1, p2] SPD[p2, p3])/(
+8 SPD[p1, p3]^2 (SPD[p1, p3] + SPD[p2, p3])^2) - (
+PaXDiLog[-((SPD[p1, p2] + SPD[p1, p3])/SPD[p2, p3]),
+SPD[p1, p2] + SPD[p1, p3]] SPD[p1, p2] SPD[p2, p3])/(
+4 SPD[p1, p3]^2 (SPD[p1, p3] + SPD[p2, p3])^2) - (
+PaXDiLog[-((SPD[p1, p3] + SPD[p2, p3])/SPD[p1, p2]),
+SPD[p1, p3] + SPD[p2, p3]] SPD[p1, p2] SPD[p2, p3])/(
+4 SPD[p1, p3]^2 (SPD[p1, p3] + SPD[p2, p3])^2) - (
+Log[-(ScaleMu^2/(2 SPD[p2, p3]))] SPD[p2, p3])/(
+4 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2) + (
+Log[-(ScaleMu^2/(2 (SPD[p1, p2] + SPD[p1, p3] + SPD[p2, p3])))] SPD[
+p2, p3])/(4 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2)"}
 })

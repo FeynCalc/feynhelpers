@@ -90,6 +90,11 @@ PaXKallenExpand::usage =
 Package-X function KallenExpand will be applied to the output \
 of Package-X thus replacing KallenLambda by its explicit form.";
 
+PaXKibbleExpand::usage =
+"PaXKibbleExpand is an option for PaXEvaluate. If set to True, \
+Package-X function KibbleExpand will be applied to the output \
+of Package-X thus replacing Kibble\[Phi] by its explicit form.";
+
 PaXC0Expand::usage =
 "PaXC0Expand is an option for PaXEvaluate. If set to True, \
 Package-X function C0Expand will be applied to the output \
@@ -168,6 +173,7 @@ Options[PaXEvaluate] = {
 	PaXExpandInEpsilon -> True,
 	PaXImplicitPrefactor -> 1,
 	PaXKallenExpand -> True,
+	PaXKibbleExpand -> True,
 	PaXLoopRefineOptions -> {},
 	PaXPath -> FileNameJoin[{$UserBaseDirectory, "Applications", "X"}],
 	PaXSimplifyEpsilon -> True,
@@ -460,23 +466,43 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			FCPrint[2,"PaXEvaluate: resultX (preliminary): ", resultX, FCDoControl->paxVerbose];
 
 			If[	OptionValue[PaXC0Expand],
+				time=AbsoluteTime[];
+				FCPrint[1, "PaXEvaluate: Applying C0Expand.", FCDoControl->paxVerbose];
 				resultX = X`C0Expand[resultX];
+				FCPrint[1, "PaXEvaluate: Done applying C0Expand, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose];
 				FCPrint[3,"PaXEvaluate: resultX after C0Expand: ", resultX, FCDoControl->paxVerbose]
 			];
 
 			If[	OptionValue[PaXD0Expand],
+				time=AbsoluteTime[];
+				FCPrint[1, "PaXEvaluate: Applying D0Expand.", FCDoControl->paxVerbose];
 				resultX = X`D0Expand[resultX];
+				FCPrint[1, "PaXEvaluate: Done applying D0Expand, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose];
 				FCPrint[3,"PaXEvaluate: resultX after D0Expand: ", resultX, FCDoControl->paxVerbose]
 			];
 
 			If[	OptionValue[PaXDiscExpand],
+				time=AbsoluteTime[];
+				FCPrint[1, "PaXEvaluate: Applying DiscExpand.", FCDoControl->paxVerbose];
 				resultX = X`DiscExpand[resultX];
+				FCPrint[1, "PaXEvaluate: Done applying DiscExpand, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose];
 				FCPrint[3,"PaXEvaluate: resultX after DiscExpand: ", resultX, FCDoControl->paxVerbose]
 			];
 
 			If[	OptionValue[PaXKallenExpand],
+				time=AbsoluteTime[];
+				FCPrint[1, "PaXEvaluate: Applying KallenExpand.", FCDoControl->paxVerbose];
 				resultX = X`KallenExpand[resultX];
+				FCPrint[1, "PaXEvaluate: Done applying KallenExpand, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose];
 				FCPrint[3,"PaXEvaluate: resultX after KallenExpand: ", resultX, FCDoControl->paxVerbose]
+			];
+
+			If[	OptionValue[PaXKibbleExpand],
+				time=AbsoluteTime[];
+				FCPrint[1, "PaXEvaluate: Applying KibbleExpand.", FCDoControl->paxVerbose];
+				resultX = X`KibbleExpand[resultX];
+				FCPrint[1, "PaXEvaluate: Done applying KibbleExpand, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose];
+				FCPrint[3,"PaXEvaluate: resultX after KibbleExpand: ", resultX, FCDoControl->paxVerbose]
 			];
 
 			(* We need to convert Package X output into FeynCalc input *)
@@ -517,6 +543,9 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 			(* Do we need to replace 1/Eps by 1/Eps - g_E + Log(4Pi) ? *)
 			If [OptionValue[PaXSubstituteEpsilon],
+
+				time=AbsoluteTime[];
+				FCPrint[1, "PaXEvaluate: Substituting 1/Eps - EulerGamma + Log[4Pi].", FCDoControl->paxVerbose];
 				(*Need a check that the expansion was done correctly!!!*)
 				resultX =  Expand2[resultX, PaXEpsilonBar]/.{1/PaXEpsilonBar^2 -> 1/Epsilon^2  +
 					(1/Epsilon)(-EulerGamma+Log[4 Pi]) + (EulerGamma^2)/2 -
@@ -524,7 +553,9 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 				If[	!FreeQ[resultX,PaXEpsilonBar],
 					Message[PaXEvaluate::gen, "Failed to eliminate EpsilonBar."];
 					Abort[]
-				]
+				];
+				FCPrint[1, "PaXEvaluate: Done sibstituting Substituting 1/Eps - EulerGamma + Log[4Pi], timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose]
+
 			],
 			resultX={}
 		];
@@ -533,13 +564,19 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		(* Series expansion for the piece free of loop integrals*)
 		If[ Head[paxSeries]===List,
+			time=AbsoluteTime[];
+			FCPrint[1, "PaXEvaluate: Performing series expansion w.r.t ",paxSeries, FCDoControl->paxVerbose];
 			fclsOutput[[1]]= Series[fclsOutput[[1]],Sequence@@paxSeries]//Normal;
+			FCPrint[1, "PaXEvaluate: Done performing series expansion, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose];
 			FCPrint[2,"PaXEvaluate:  After series expansion of the loop-free part: ", fclsOutput[[1]], FCDoControl->paxVerbose]
 		];
 
 
 		(* Now we create the final substitution list *)
+		time=AbsoluteTime[];
+		FCPrint[1, "PaXEvaluate: Creating the final substition list", FCDoControl->paxVerbose];
 		finalResult = fclsOutput[[1]] + fclsOutput[[3]] + fclsOutput[[4]] + ints/.FCLoopSolutionList[fclcOutput,resultX];
+		FCPrint[1, "PaXEvaluate: Done creating the final substitution list, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose];
 		FCPrint[2,"PaXEvaluate: finalResult(w/o implicit prefactor): ", finalResult, FCDoControl->paxVerbose];
 
 
@@ -556,17 +593,24 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		If[	FreeQ2[finalResult,{FeynAmpDenominator,q,PaXEpsilonBar}] &&
 			OptionValue[PaXExpandInEpsilon]  && FreeQ[finalResult,ConditionalExpression],
+
+			time=AbsoluteTime[];
+			FCPrint[1, "PaXEvaluate: Expanding around Epsilon=0", FCDoControl->paxVerbose];
 			finalResult = Series[(OptionValue[PaXImplicitPrefactor]/.dim->4-2Epsilon) finalResult,{Epsilon,0,0}]//Normal,
-			finalResult = (OptionValue[PaXImplicitPrefactor] finalResult)
+			finalResult = (OptionValue[PaXImplicitPrefactor] finalResult);
+			FCPrint[1, "PaXEvaluate: Done expanding around Epsilon=0, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose];
 		];
 
 		FCPrint[2,"PaXEvaluate: finalResult (with implicit prefactor): ", finalResult, FCDoControl->paxVerbose];
 
 		(* Before returning the final result it is useful to try to simplify the Epsilon-free pieces separately *)
 		If [ OptionValue[PaXSimplifyEpsilon] && FreeQ[finalResult,ConditionalExpression],
+
+			time=AbsoluteTime[];
+			FCPrint[1, "PaXEvaluate: Simplifying the result", FCDoControl->paxVerbose];
 			{epsFree,epsNotFree} = FCSplit[finalResult,{Epsilon}];
-			finalResult = Simplify[epsNotFree] + (Simplify[epsFree](*/. {Log[x_Integer] :>
-				PowerExpand[Log[x]]}*)/. Log[4 Pi x_] :> Log[4 Pi] + Log[x]);
+			finalResult = Simplify[epsNotFree] + (Simplify[epsFree] /. Log[4 Pi x_] :> Log[4 Pi] + Log[x]);
+			FCPrint[1, "PaXEvaluate: Done simplifying the result, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose];
 		];
 
 
@@ -575,7 +619,10 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		ConditionalExpression;
 
 		If[	OptionValue[Collect] && FreeQ[finalResult,ConditionalExpression],
-			finalResult = Collect2[finalResult, {Epsilon, Pair}]
+			time=AbsoluteTime[];
+			FCPrint[1, "PaXEvaluate: Applying Collect2", FCDoControl->paxVerbose];
+			finalResult = Collect2[finalResult, {Epsilon, Pair}];
+			FCPrint[1, "PaXEvaluate: Done applying Collect2, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose]
 		];
 
 		If[	OptionValue[FinalSubstitutions]=!={},
