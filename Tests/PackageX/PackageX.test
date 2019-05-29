@@ -208,5 +208,20 @@ SPD[p1, p3] + SPD[p2, p3]] SPD[p1, p2] SPD[p2, p3])/(
 Log[-(ScaleMu^2/(2 SPD[p2, p3]))] SPD[p2, p3])/(
 4 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2) + (
 Log[-(ScaleMu^2/(2 (SPD[p1, p2] + SPD[p1, p3] + SPD[p2, p3])))] SPD[
-p2, p3])/(4 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2)"}
+p2, p3])/(4 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2)"},
+{"PackageX-Generic-ID20","PaXEvaluate[PaVe[0, {0, mH2 - s - t, 0, t, 0, mH2}, {0, mZ2, 0, mZ2}],
+PaXD0Expand -> True]","(Log[mZ2/(mZ2 - t)] + Log[mZ2/(-mH2 + mZ2 + s + t)])/(Epsilon*(-(mH2*mZ2) + mZ2*s + mH2*t - s*t - t^2)) -
+(X`ContinuedDiLog[{-(mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] - 2*mZ2)/(2*mZ2), -mH2/2 - Sqrt[mH2*(mH2 - 4*mZ2)]/2 + mZ2 +
+	(2*mZ2^2)/(mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] - 2*mZ2)}, {mZ2/(-mH2 + mZ2 + s + t), mH2 - s - t}] -
+X`ContinuedDiLog[{-(mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] - 2*mZ2)/(2*mZ2), -mH2/2 - Sqrt[mH2*(mH2 - 4*mZ2)]/2 + mZ2 +
+	(2*mZ2^2)/(mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] - 2*mZ2)}, {1 - t/mZ2, -t}] +
+X`ContinuedDiLog[{(-mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] + 2*mZ2)/(2*mZ2), -mH2/2 + Sqrt[mH2*(mH2 - 4*mZ2)]/2 + mZ2 -
+	(2*mZ2^2)/(-mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] + 2*mZ2)}, {mZ2/(-mH2 + mZ2 + s + t), mH2 - s - t}] -
+X`ContinuedDiLog[{(-mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] + 2*mZ2)/(2*mZ2), -mH2/2 + Sqrt[mH2*(mH2 - 4*mZ2)]/2 + mZ2 -
+	(2*mZ2^2)/(-mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] + 2*mZ2)}, {1 - t/mZ2, -t}] +
+2*X`ContinuedDiLog[{(-mH2 + mZ2 + s + t)/mZ2, -mH2 + s + t}, {1 - t/mZ2, -t}] + EulerGamma*Log[mZ2/(mZ2 - t)] +
+2*Log[2*Pi]*Log[mZ2/(mZ2 - t)] - Log[4*Pi]*Log[mZ2/(mZ2 - t)] - Log[ScaleMu^2/mZ2]*Log[mZ2/(mZ2 - t)] +
+EulerGamma*Log[mZ2/(-mH2 + mZ2 + s + t)] + 2*Log[2*Pi]*Log[mZ2/(-mH2 + mZ2 + s + t)] -
+Log[4*Pi]*Log[mZ2/(-mH2 + mZ2 + s + t)] - Log[ScaleMu^2/mZ2]*Log[mZ2/(-mH2 + mZ2 + s + t)] + 2*PaXDiLog[-(t/(mZ2 - t)), -t] -
+2*PaXDiLog[-((-mH2 + s + t)/mZ2), mH2 - s - t])/(-(mH2*mZ2) + mZ2*s + mH2*t - s*t - t^2)"}
 })

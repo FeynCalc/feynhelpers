@@ -319,7 +319,8 @@ PaXEvaluate[expr_, opts:OptionsPattern[]]:=
 
 PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 	Block[{	ex,kernel,temp,resultX,finalResult,xList,ints,fclsOutput,fclcOutput,
-			dim,epsFree,epsNotFree, holddim,paxVer, paxOptions={}, paxSeries, paxSeriesVars={}, time, tmp},
+			dim,epsFree,epsNotFree, holddim,paxVer, paxOptions={}, paxSeries, paxSeriesVars={}, time, tmp,
+			rootsum},
 
 		dim = OptionValue[Dimension];
 		paxSeries = OptionValue[PaXSeries];
@@ -547,9 +548,19 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 				time=AbsoluteTime[];
 				FCPrint[1, "PaXEvaluate: Substituting 1/Eps - EulerGamma + Log[4Pi].", FCDoControl->paxVerbose];
 				(*Need a check that the expansion was done correctly!!!*)
+
+				If[!FreeQ[resultX,RootSum],
+					resultX  = resultX /. RootSum->rootsum
+				];
+
 				resultX =  Expand2[resultX, PaXEpsilonBar]/.{1/PaXEpsilonBar^2 -> 1/Epsilon^2  +
 					(1/Epsilon)(-EulerGamma+Log[4 Pi]) + (EulerGamma^2)/2 -
 					EulerGamma Log[4 Pi] + (1/2) Log[4 Pi]^2}/.{1/PaXEpsilonBar->1/Epsilon - EulerGamma + Log[4Pi]};
+
+				If[!FreeQ[resultX,rootsum],
+					resultX  = resultX /. rootsum->RootSum
+				];
+
 				If[	!FreeQ[resultX,PaXEpsilonBar],
 					Message[PaXEvaluate::gen, "Failed to eliminate EpsilonBar."];
 					Abort[]
