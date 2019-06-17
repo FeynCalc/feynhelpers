@@ -160,27 +160,33 @@ paxVerbose::usage="";
 dummyLoopMom::usage="";
 
 Options[PaXEvaluate] = {
-	FCE -> False,
-	Collecting -> True,
-	Dimension -> D,
-	FCVerbose -> False,
-	FinalSubstitutions -> {},
-	PaVeAutoOrder -> True,
-	PaVeAutoReduce -> True,
-	PaXC0Expand -> False,
-	PaXD0Expand -> False,
-	PaXDiscExpand -> True,
-	PaXExpandInEpsilon -> True,
-	PaXImplicitPrefactor -> 1,
-	PaXKallenExpand -> True,
-	PaXKibbleExpand -> True,
-	PaXLoopRefineOptions -> {},
-	PaXPath -> FileNameJoin[{$UserBaseDirectory, "Applications", "X"}],
-	PaXSimplifyEpsilon -> True,
-	PaXSubstituteEpsilon -> True,
-	PaXSeries -> False,
-	PaXAnalytic -> False
+	Collecting 				-> True,
+	Dimension 				-> D,
+	FCE 					-> False,
+	FCVerbose 				-> False,
+	Factoring 				-> {Factor, 5000},
+	FinalSubstitutions		-> {},
+	PaVeAutoOrder			-> True,
+	PaVeAutoReduce			-> True,
+	PaXAnalytic				-> False,
+	PaXC0Expand				-> False,
+	PaXD0Expand				-> False,
+	PaXDiscExpand			-> True,
+	PaXExpandInEpsilon		-> True,
+	PaXImplicitPrefactor	-> 1,
+	PaXKallenExpand 		-> True,
+	PaXKibbleExpand 		-> True,
+	PaXLoopRefineOptions 	-> {},
+	PaXPath 				-> FileNameJoin[{$UserBaseDirectory, "Applications", "X"}],
+	PaXSeries				-> False,
+	PaXSimplifyEpsilon		-> {Automatic, 5000},
+	PaXSubstituteEpsilon	-> True,
+	TimeConstrained 		-> 3
 };
+
+Options[PaXEvaluateUVIRSplit] = Options[PaXEvaluate];
+Options[PaXEvaluateUV] = Options[PaXEvaluate];
+Options[PaXEvaluateIR] = Options[PaXEvaluate];
 
 (* Typesetting *)
 
@@ -271,7 +277,7 @@ PaXEvaluateUVIRSplit[expr_, q:Except[_?OptionQ], opts:OptionsPattern[]]:=
 		resUV = PaXEvaluateUV[expr, q, opts]/. EpsilonUV->Epsilon;
 		resFull = PaXEvaluate[expr, q, opts];
 		(*TODO Checks!!!*)
-		resIRAndFinite = Collect2[resFull-resUV,{Epsilon}]/. Epsilon->EpsilonIR;
+		resIRAndFinite = Collect2[resFull-resUV,{Epsilon}, Factoring->OptionValue[Factoring],TimeConstrained->OptionValue[TimeConstrained]]/. Epsilon->EpsilonIR;
 		resUV = resUV/. Epsilon -> EpsilonUV;
 		resFinal = resUV + resIRAndFinite;
 		If[ Factor[(resFinal/.(EpsilonUV|EpsilonIR)->Epsilon)-resFull]=!=0,
@@ -320,11 +326,25 @@ PaXEvaluate[expr_, opts:OptionsPattern[]]:=
 PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 	Block[{	ex,kernel,temp,resultX,finalResult,xList,ints,fclsOutput,fclcOutput,
 			dim,epsFree,epsNotFree, holddim,paxVer, paxOptions={}, paxSeries, paxSeriesVars={}, time, tmp,
-			rootsum},
+			rootsum, optPaXSimplifyEpsilon},
 
 		dim = OptionValue[Dimension];
 		paxSeries = OptionValue[PaXSeries];
 		paxOptions = Join[OptionValue[PaXLoopRefineOptions],paxOptions] ;
+
+		optPaXSimplifyEpsilon = Switch[
+			OptionValue[PaXSimplifyEpsilon],
+				{Automatic, _Integer},
+					{True, OptionValue[PaXSimplifyEpsilon][[2]]},
+				True,
+					{True, Infinity},
+				False,
+					{False, 0},
+				_,
+				Message[PaXEvaluate::gen, "Unknown value for the option PaXSimplifyEpsilon."];
+				Abort[]
+		];
+
 
 		If[ OptionValue[PaXAnalytic],
 			paxOptions = Join[paxOptions, {Analytic->True}]
@@ -615,7 +635,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		FCPrint[2,"PaXEvaluate: finalResult (with implicit prefactor): ", finalResult, FCDoControl->paxVerbose];
 
 		(* Before returning the final result it is useful to try to simplify the Epsilon-free pieces separately *)
-		If [ OptionValue[PaXSimplifyEpsilon] && FreeQ[finalResult,ConditionalExpression],
+		If [ optPaXSimplifyEpsilon[[1]] && LeafCount[finalResult]<optPaXSimplifyEpsilon[[2]] && FreeQ[finalResult,ConditionalExpression],
 
 			time=AbsoluteTime[];
 			FCPrint[1, "PaXEvaluate: Simplifying the result", FCDoControl->paxVerbose];
@@ -632,7 +652,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		If[	OptionValue[Collecting] && FreeQ[finalResult,ConditionalExpression],
 			time=AbsoluteTime[];
 			FCPrint[1, "PaXEvaluate: Applying Collect2", FCDoControl->paxVerbose];
-			finalResult = Collect2[finalResult, {Epsilon, Pair}];
+			finalResult = Collect2[finalResult, {Epsilon, Pair}, Factoring->OptionValue[Factoring],TimeConstrained->OptionValue[TimeConstrained]];
 			FCPrint[1, "PaXEvaluate: Done applying Collect2, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose]
 		];
 
