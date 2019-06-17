@@ -161,7 +161,7 @@ dummyLoopMom::usage="";
 
 Options[PaXEvaluate] = {
 	FCE -> False,
-	Collect -> True,
+	Collecting -> True,
 	Dimension -> D,
 	FCVerbose -> False,
 	FinalSubstitutions -> {},
@@ -629,7 +629,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		holdcond[str_String] :> holdcond[Sequence@@ToExpression[str]] /. holdcond->
 		ConditionalExpression;
 
-		If[	OptionValue[Collect] && FreeQ[finalResult,ConditionalExpression],
+		If[	OptionValue[Collecting] && FreeQ[finalResult,ConditionalExpression],
 			time=AbsoluteTime[];
 			FCPrint[1, "PaXEvaluate: Applying Collect2", FCDoControl->paxVerbose];
 			finalResult = Collect2[finalResult, {Epsilon, Pair}];
