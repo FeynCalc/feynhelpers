@@ -375,7 +375,7 @@ PaXEvaluateUVIRSplit[tmp[15]/.{FCI[SPD[p1,p2]]->SMP["m_e"]^2},PaXImplicitPrefact
 tmp[16]=Cancel[DotSimplify[(tmp[14]/.p2->p1)]/FCI[SpinorUBarD[p1,SMP["m_e"]]. GAD[Lor1].SpinorUD[p1,SMP["m_e"]]]]
 
 
-tmp[17]=PaXEvaluateUVIRSplit[tmp[16],PaXImplicitPrefactor->1/(2Pi)^D]//FCHideEpsilon
+tmp[17]=PaXEvaluateUVIRSplit[tmp[16],PaXImplicitPrefactor->1/(2Pi)^D,PaXAnalytic->True]//FCHideEpsilon
 
 
 (* ::Text:: *)
