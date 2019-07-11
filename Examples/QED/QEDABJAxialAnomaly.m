@@ -61,7 +61,7 @@ ampDotted=Contract[I*FVD[k+p,mu](amp1+amp2)]
 (*prescription.*)
 
 
-$BreitMaison=True;
+FCSetDiracGammaScheme["BMHV"];
 ampDotted2=ampDotted/.DiracTrace->Tr
 
 
