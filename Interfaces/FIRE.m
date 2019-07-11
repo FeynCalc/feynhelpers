@@ -114,7 +114,7 @@ FIREBurn[expr_, qs_List/;qs=!={}, extMom_List, OptionsPattern[]] :=
 
 		If [OptionValue[FCVerbose]===False,
 			fbVerbose=$VeryVerbose,
-			If[MatchQ[OptionValue[FCVerbose], _Integer?Positive | 0],
+			If[MatchQ[OptionValue[FCVerbose], _Integer],
 				fbVerbose=OptionValue[FCVerbose]
 			];
 		];

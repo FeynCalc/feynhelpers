@@ -357,7 +357,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		If [OptionValue[FCVerbose]===False,
 			paxVerbose=$VeryVerbose,
-			If[MatchQ[OptionValue[FCVerbose], _Integer?Positive | 0],
+			If[MatchQ[OptionValue[FCVerbose], _Integer],
 				paxVerbose=OptionValue[FCVerbose]
 			];
 		];
