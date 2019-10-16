@@ -25,8 +25,7 @@ If[ $FrontEnd === Null,
 		Print["Computation of the total decay rate for the decay of a Higgs into 2 gluons via a top-loop."];
 ];
 If[$Notebooks === False, $FeynCalcStartupMessages = False];
-$LoadAddOns={"FeynHelpers"};
-$LoadFeynArts= True;
+$LoadAddOns={"FeynArtsLoader","FeynHelpers"};
 <<FeynCalc`
 $FAVerbose = 0;
 

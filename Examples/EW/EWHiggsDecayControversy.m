@@ -9,9 +9,9 @@
 	Copyright (C) 2014-2019 Vladyslav Shtabovenko
 *)
 
-(* :Summary: Correct computation of a particular loop integral 
-			 that enters the decay of a Higgs into two photons, 
-			 as explained in arXiv:1402.4407 by Stefan Weinzierl. *)
+(* :Summary: Correct computation of a particular loop integral
+			that enters the decay of a Higgs into two photons,
+			as explained in arXiv:1402.4407 by Stefan Weinzierl. *)
 
 (* ------------------------------------------------------------------------ *)
 
@@ -32,7 +32,7 @@ $FAVerbose = 0;
 
 
 (* ::Section:: *)
-(*Automatic calculation of a tensor integral from the H->gamma gamma decay*)
+(*Automatic calculation of a tensor integral from the H-> Ga Ga decay*)
 
 
 (* ::Subsection:: *)
@@ -79,5 +79,5 @@ total=Factor[int1Final+int2Final]
 
 
 Print["Check with Eq. 11 in arXiv:1402.4407: ",
-			If[Simplify[(total-1/2 Pair[LorentzIndex[mu,D],LorentzIndex[nu,D]])]===0, 
+			If[Simplify[(total-1/2 Pair[LorentzIndex[mu,D],LorentzIndex[nu,D]])]===0,
 			"CORRECT.", "!!! WRONG !!!"]];

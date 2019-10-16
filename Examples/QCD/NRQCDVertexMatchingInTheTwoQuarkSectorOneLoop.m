@@ -33,8 +33,7 @@ If[ $FrontEnd === Null,
 		Print["Computation of the QCD side of the QCD/NRQCD matching in the 
 two quark sector by expanding quark-gluon vertex in the relative momentum"];
 ];
-$LoadAddOns={"FeynHelpers"};
-$LoadFeynArts = True;
+$LoadAddOns={"FeynArtsLoader","FeynHelpers"};
 <<FeynCalc`
 $FAVerbose=0;
 

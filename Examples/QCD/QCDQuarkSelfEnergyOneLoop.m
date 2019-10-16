@@ -26,8 +26,7 @@ If[ $FrontEnd === Null,
 		$FeynCalcStartupMessages = False;
 		Print["Computation of the quark self-energy in QCD at 1-loop"];
 ];
-$LoadAddOns={"FeynHelpers"};
-$LoadFeynArts = True;
+$LoadAddOns={"FeynArtsLoader","FeynHelpers"};
 <<FeynCalc`
 $FAVerbose=0;
 

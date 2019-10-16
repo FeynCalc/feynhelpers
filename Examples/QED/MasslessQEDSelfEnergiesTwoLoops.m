@@ -26,8 +26,7 @@ If[ $FrontEnd === Null,
 		$FeynCalcStartupMessages = False;
 		Print["Computation of the 2-loop self-energies in massless QED"];
 ];
-$LoadAddOns={"FeynHelpers"};
-$LoadFeynArts= True;
+$LoadAddOns={"FeynArtsLoader","FeynHelpers"};
 << FeynCalc`
 $FAVerbose = 0;
 
