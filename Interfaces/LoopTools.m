@@ -24,13 +24,19 @@ LToolsUnLoadLibrary::usage=
 unloads the LoopTools library.";
 
 LToolsEvaluate::usage=
-"";
+"LToolsEvaluate[expr,q] evaluates \
+Passarino-Veltman functions in expr nuimerically. The evaluation is using \
+T. Hahn's LoopTools.";
 
-LToolsExplicitPrefactor::usage=
-"";
+LToolsImplicitPrefactor::usage=
+"LToolsImplicitPrefactor is an option for LToolsEvaluate. It specifies a prefactor \
+that doesn't show up explicitly in the input expression, but is understood \
+to appear in fron of every Passarino-Veltman function. LToolsEvaluate does not
+expand the result in Epsilon..";
 
 LToolsPath::usage=
-"";
+"LToolsPath is an option for LToolsLoadLibrary. It specifies the \
+full path, to the LoopTools MathLink executable.";
 
 LToolsFullResult::usage=
 "LToolsFullResult is an option for LToolsEvaluate, LToolsEvaluateUV,
@@ -332,7 +338,7 @@ Options[LToolsLoadLibrary] = {
 
 Options[LToolsEvaluate] = {
 	LToolsFullResult 		-> True,
-	LToolsExplicitPrefactor -> 1,
+	LToolsImplicitPrefactor -> 1,
 	LToolsSetMudim 			-> 1.,
 	LToolsSetLambda 		-> 0,
 	LToolsSetDelta 			-> -EulerGamma- Log[Pi],
@@ -433,7 +439,7 @@ LToolsEvaluate[expr_, opts:OptionsPattern[]]:=
 LToolsEvaluate[expr_, q:Except[_?OptionQ], OptionsPattern[]]:=
 	Block[	{ex, fclsOutput, loopIntegral, ints, fcleOutput,
 			resultLT,resEps2,resEps1,resFinitePart,
-			lambda, mudim, delta, repRule, res, optLToolsExplicitPrefactor,
+			lambda, mudim, delta, repRule, res, optLToolsImplicitPrefactor,
 			optInitialSubstitutions},
 
 		If [OptionValue[FCVerbose]===False,
@@ -443,8 +449,8 @@ LToolsEvaluate[expr_, q:Except[_?OptionQ], OptionsPattern[]]:=
 			];
 		];
 
-		optLToolsExplicitPrefactor = OptionValue[LToolsExplicitPrefactor];
-		optInitialSubstitutions = OptionValue[InitialSubstitutions];
+		optLToolsImplicitPrefactor	= OptionValue[LToolsImplicitPrefactor];
+		optInitialSubstitutions 	= OptionValue[InitialSubstitutions];
 
 		If[!ltLoaded,
 			LToolsLoadLibrary[];
@@ -509,12 +515,12 @@ LToolsEvaluate[expr_, q:Except[_?OptionQ], OptionsPattern[]]:=
 			resFinitePart = ints /.loopIntegral->Identity /. PaVe -> LToolsPaVe;
 			FCPrint[3,"LToolsEvaluate: finite part: ", resFinitePart, " ", FCDoControl->ltVerbose];
 
-			resultLT = optLToolsExplicitPrefactor*((resEps2/. failed[_] -> 0)/Epsilon^2 + (resEps1/. failed[_] -> 0)/Epsilon + resFinitePart),
+			resultLT = optLToolsImplicitPrefactor*((resEps2/. failed[_] -> 0)/Epsilon^2 + (resEps1/. failed[_] -> 0)/Epsilon + resFinitePart),
 
 
 			FCPrint[1,"LToolsEvaluate: Calculating only the finite part.", FCDoControl->ltVerbose];
 			LToolsSetLambda[OptionValue[LToolsSetLambda]];
-			resultLT = optLToolsExplicitPrefactor * (ints /.loopIntegral->Identity /. PaVe -> LToolsPaVe);
+			resultLT = optLToolsImplicitPrefactor * (ints /.loopIntegral->Identity /. PaVe -> LToolsPaVe);
 			FCPrint[3,"LToolsEvaluate: resultLT: ", FCDoControl->ltVerbose]
 		];
 

@@ -49,7 +49,7 @@ of the expression. The default value is True.";
 PaXImplicitPrefactor::usage=
 "PaXImplicitPrefactor is an option for PaXEvaluate. It specifies a prefactor \
 that doesn't show up explicitly in the input expression, but is understood \
-to appear in fron of every 1-loop integral. For technical reasons, PaXImplicitPrefactor \
+to appear in front of every 1-loop integral. For technical reasons, PaXImplicitPrefactor \
 shouldn't depend on the number of dimensions D. Instead you should explicitly specify \
 what D is (e.g. 4-2 Epsilon). The default value is 1. \
 If the standard prefactor 1/(2Pi)^D is implicit in your calculations then you set \
