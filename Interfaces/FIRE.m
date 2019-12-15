@@ -89,6 +89,7 @@ fireUsingFermat::usage="";
 fireAddPropagators::usage="";
 firePath::usage="";
 fireRun::usage="";
+abbreviations::usage="";
 
 Options[FIREBurn] = {
 	Collect -> True,
@@ -315,7 +316,7 @@ batchFIRE[qs_List,ext_List,props_List,id_, {file1_String, file2_String, file3_St
 (* Generates batch files to run FIRE *)
 prepareFIRE[qs_List,ext_List,props_List, {fireFile1_String,fireFile2_String, fireFile3_String, fireStartFile_String}]:=
 	Block[{	internal,external,prs,propagators,replacements,
-			integral,tmp,fireConfig, listHead,spd,abbreviations,spHead, sps},
+			integral,tmp,fireConfig, listHead,spd,spHead, sps},
 
 		FCPrint[2,"FIREBurn: prepareFIRE: Entering with:", qs, " | ",  ext, " | ", props, " ", FCDoControl->fbVerbose];
 
@@ -477,8 +478,17 @@ RunFIRE[{fireFile1_String, fireFile2_String, fireFile3_String}]:=
 		repList= MapThread[Rule[#1,#2]&,{gList,solsList}];
 
 		FCPrint[3,"FIREBurn: RunFIRE: repList: ", repList, FCDoControl->fbVerbose];
+		FCPrint[3,"FIREBurn: RunFIRE: abbrs: ", abbrs, FCDoControl->fbVerbose];
 
-		res = outFIRE/.repList/.abbrs;
+		res = outFIRE/.repList //. Dispatch[abbrs];
+
+		If[	!FreeQ2[res,Variables[Last/@Flatten[abbreviations]]],
+			Message[FIREBurn::failmsg,"Failed to eliminate all abbreviations from the final result."];
+			Abort[]
+
+		];
+
+
 
 		FCPrint[3,"FIREBurn: RunFIRE: Leaving with: ", res, FCDoControl->fbVerbose];
 
