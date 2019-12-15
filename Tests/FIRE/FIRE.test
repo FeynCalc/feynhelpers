@@ -48,7 +48,21 @@ q2 - q3, {q1 + q3, m}])/(16 (-7 + 2 D) m^4))"},
 {"FIRE-Generic-ID16", "FCClearScalarProducts[]; \n SPD[p1, p1] = 0; \n SPD[p2, p2] = 0; \n SPD[p3, p3] = 0; \n
 SPD[p1, p2] = s/2; \n SPD[p1, p3] = -(s + t)/2; \n SPD[p2, p3] = t/2; \n
 FIREBurn[FAD[q, q - p1 - p2, q - p1 - p2 - p3], {q}, {p1, p2, p3}] // FCE",
-"-((2 (-3 + D) FAD[q, -p1 - p2 + q])/((-4 + D) s))"}
+"-((2 (-3 + D) FAD[q, -p1 - p2 + q])/((-4 + D) s))"},
+{"FIRE-Generic-ID17", "FCClearScalarProducts[]; SPD[p1, p1] = 4 MB^2; SPD[p2, p2] = 0; SPD[p1, p2] = 2 (MB^2 - MC^2);
+FIREBurn[FAD[{q, MC, 2}, {q - p1, MC}, {q - p2, MC, 2}], {q}, {p1,  p2}, FCVerbose -> 0, FCE->True]",
+"-((-2 + D)*(32*MB^4 - 16*D*MB^4 + 2*D^2*MB^4 + 26*MB^2*MC^2 - 25*D*MB^2*MC^2 +
+	4*D^2*MB^2*MC^2 + 4*MC^4 - D*MC^4)*FAD[{q, MC}])/
+(128*MC^6*(-MB + MC)^3*(MB + MC)^3) -
+((-2 + D)*(31*MB^2 - 11*D*MB^2 + D^2*MB^2 + 24*MC^2 - 10*D*MC^2 + D^2*MC^2)*
+FAD[{-p1 + q, MC}])/(64*(-5 + D)*MC^4*(-MB + MC)^3*(MB + MC)^3) +
+((-2 + D)*(80*MB^4 - 36*D*MB^4 + 4*D^2*MB^4 - 272*MB^2*MC^2 + 209*D*MB^2*MC^2 -
+	51*D^2*MB^2*MC^2 + 4*D^3*MB^2*MC^2 - 228*MC^4 + 141*D*MC^4 - 29*D^2*MC^4 +
+	2*D^3*MC^4)*FAD[{-p2 + q, MC}])/(128*(-5 + D)*MC^6*(-MB + MC)^3*
+(MB + MC)^3) - ((-3 + D)*(-11 + 2*D)*MB^2*FAD[{q, MC}, {-p1 + q, MC}])/
+(16*(MB - MC)^3*MC^2*(MB + MC)^3) -
+((-4 + D)*(-11*MB^2 + 2*D*MB^2 + MC^2)*FAD[{-p2 + q, MC}, {q, MC},
+	{-p1 + q, MC}])/(8*MC^2*(-MB + MC)^2*(MB + MC)^2)"}
 });
 (*
 Tests`FIRE`GenericWithFermat = ({
