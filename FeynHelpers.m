@@ -28,7 +28,7 @@ End[]
 
 Begin["`FeynHelpers`Private`"];
 
-$FeynHelpersVersion="1.1.0";
+$FeynHelpersVersion="1.2.0";
 
 $FeynHelpersDirectory = FileNameJoin[{$FeynCalcDirectory, "AddOns", "FeynHelpers"}];
 
@@ -40,12 +40,12 @@ EndPackage[]
 
 
 fcVersion = StringSplit[$FeynCalcVersion, "."];
-tooOldString = "Your FeynCalc version is too old. FeynHelpers "<> $FeynHelpersVersion <> " requires at least FeynCalc 9.2.0";
+tooOldString = "Your FeynCalc version is too old. FeynHelpers "<> $FeynHelpersVersion <> " requires at least FeynCalc 9.3.0";
 
-If[ fcVersion[[1]]<9,
+If[ (fcVersion[[1]]<9),
 	Print[tooOldString];
 	Abort[],
-	If[ fcVersion[[2]]<2,
+	If[ fcVersion[[2]]<3,
 		Print[tooOldString];
 		Abort[]
 	];
