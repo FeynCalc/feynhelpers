@@ -80,6 +80,15 @@ PaXKallenLambda::usage =
 PaXDiLog::usage =
 "PaXDiLog corresponds to DiLog in Package-X.";
 
+PaXContinuedDiLog::usage =
+"PaXContinuedDiLog corresponds to ContinuedDiLog in Package-X.";
+
+PaXKibblePhi::usage =
+"PaXKibblePhi corresponds to Kibble\[Phi] in Package-X.";
+
+PaXLn::usage =
+"PaXLn corresponds to Ln in Package-X.";
+
 PaXDiscExpand::usage =
 "PaXDiscExpand is an option for PaXEvaluate. If set to True, \
 Package-X function DiscExpand will be applied to the output \
@@ -159,6 +168,8 @@ Begin["`PackageX`Private`"]
 paxVerbose::usage="";
 dummyLoopMom::usage="";
 
+paxLoaded = False;
+
 Options[PaXEvaluate] = {
 	Collecting 				-> True,
 	Dimension 				-> D,
@@ -198,17 +209,51 @@ PaXKallenLambda /:
 	MakeBoxes[PaXKallenLambda[a_,b_,c_], TraditionalForm]:=
 		TBox["\[Lambda]","(",a,",",b,",",c,")"];
 
+PaXKibblePhi /:
+	MakeBoxes[PaXKibblePhi[a_,b_,c_,d_,e_,f_], TraditionalForm]:=
+		TBox["\[Lambda]","(",a,",",b,",",c,",",d,";",e,",",f")"];
+
 PaXDiscB /:
 	MakeBoxes[PaXDiscB[a_,b_,c_], TraditionalForm]:=
 		TBox["\[CapitalLambda]","(",a,",",b,",",c,")"];
 
 PaXDiLog /:
 	MakeBoxes[PaXDiLog[a_, b_], TraditionalForm] :=
-		RowBox[{SubscriptBox["Li", "2"], "(", TBox[a], "+", TBox[I b], "\[Epsilon]", ")"}]
+		RowBox[{SubscriptBox["Li", "2"], "(", TBox[a], Sequence@@If[Internal`SyntacticNegativeQ[b],{TBox[I b]},{"+",TBox[I b]}], "\[Epsilon]", ")"}];
+
+PaXLn /:
+	MakeBoxes[PaXLn[a_, b_], TraditionalForm] :=
+		RowBox[{"log", "(", TBox[a], Sequence@@If[Internal`SyntacticNegativeQ[b],{TBox[I b]},{"+",TBox[I b]}], "\[Epsilon]", ")"}];
+
+PaXContinuedDiLog /:
+	MakeBoxes[PaXContinuedDiLog[{x1_, a1_}, {x2_, a2_}], TraditionalForm] :=
+		RowBox[{SubscriptBox["\[ScriptCapitalL]", "2"], "(", TBox[x1], Sequence@@If[Internal`SyntacticNegativeQ[a2],{TBox[I a1]},{"+",TBox[I a1]}],
+			"\[Epsilon]",",", TBox[x2], Sequence@@If[Internal`SyntacticNegativeQ[a2],{TBox[I a2]},{"+",TBox[I a2]}], "\[Epsilon]", ")"}];
+
+
+PaXLn[a_, b_?NumericQ] :=
+	X`Ln[a, b]/; paxLoaded;
+
+(* Numerical evaluation *)
+
+PaXDiLog[a_?NumericQ, b_] :=
+	X`DiLog[a, b]/; paxLoaded;
+
+PaXDiscB[a_?NumericQ, b_?NumericQ, c_?NumericQ]:=
+	X`DiscB[a,b,c]/; paxLoaded;
+
+PaXKallenLambda[a_?NumericQ, b_?NumericQ, c_?NumericQ]:=
+	X`Kallen\[Lambda][a,b,c]/; paxLoaded;
+
+PaXKibblePhi[a_?NumericQ, b_?NumericQ, c_?NumericQ, d_?NumericQ, e_?NumericQ, f_?NumericQ]:=
+	X`Kibble\[Phi][a,b,c,d,e,f]/; paxLoaded;
+
+PaXContinuedDiLog[{x1_?NumericQ, a1_?NumericQ}, {x2_?NumericQ, a2_?NumericQ}]:=
+	X`ContinuedDiLog[{x1,a1},{x2,a2}]/; paxLoaded;
 
 (* FeynCalc->Package-X conversion of scalar products *)
 momConv[x_] :=
-	FCE[ExpandScalarProduct[MomentumCombine[FCI[x]]]];
+	FCE[ExpandScalarProduct[MomentumCombine[x]]];
 
 toPackageX[pref_, q_]:=
 	pref /; FreeQ2[pref,Join[{q},FeynCalc`Package`PaVeHeadsList]];
@@ -541,7 +586,10 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 				X`Mu -> ScaleMu,
 				X`DiscB -> PaXDiscB,
 				X`Kallen\[Lambda] -> PaXKallenLambda,
+				X`Kibble\[Phi] -> PaXKibblePhi,
+				X`ContinuedDiLog -> PaXContinuedDiLog,
 				X`DiLog -> PaXDiLog,
+				X`Ln -> PaXLn,
 				(* Notice the differnence between mass conventions
 					in FeynCalc and Package-X	*)
 				X`ScalarC0[s1_,s12_,s2_,m0_,m1_,m2_] :>

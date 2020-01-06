@@ -211,17 +211,59 @@ Log[-(ScaleMu^2/(2 (SPD[p1, p2] + SPD[p1, p3] + SPD[p2, p3])))] SPD[
 p2, p3])/(4 SPD[p1, p3] (SPD[p1, p3] + SPD[p2, p3])^2)"},
 {"PackageX-Generic-ID20","PaXEvaluate[PaVe[0, {0, mH2 - s - t, 0, t, 0, mH2}, {0, mZ2, 0, mZ2}],
 PaXD0Expand -> True]","(Log[mZ2/(mZ2 - t)] + Log[mZ2/(-mH2 + mZ2 + s + t)])/(Epsilon*(-(mH2*mZ2) + mZ2*s + mH2*t - s*t - t^2)) -
-(X`ContinuedDiLog[{-(mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] - 2*mZ2)/(2*mZ2), -mH2/2 - Sqrt[mH2*(mH2 - 4*mZ2)]/2 + mZ2 +
-	(2*mZ2^2)/(mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] - 2*mZ2)}, {mZ2/(-mH2 + mZ2 + s + t), mH2 - s - t}] -
-X`ContinuedDiLog[{-(mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] - 2*mZ2)/(2*mZ2), -mH2/2 - Sqrt[mH2*(mH2 - 4*mZ2)]/2 + mZ2 +
-	(2*mZ2^2)/(mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] - 2*mZ2)}, {1 - t/mZ2, -t}] +
-X`ContinuedDiLog[{(-mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] + 2*mZ2)/(2*mZ2), -mH2/2 + Sqrt[mH2*(mH2 - 4*mZ2)]/2 + mZ2 -
-	(2*mZ2^2)/(-mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] + 2*mZ2)}, {mZ2/(-mH2 + mZ2 + s + t), mH2 - s - t}] -
-X`ContinuedDiLog[{(-mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] + 2*mZ2)/(2*mZ2), -mH2/2 + Sqrt[mH2*(mH2 - 4*mZ2)]/2 + mZ2 -
-	(2*mZ2^2)/(-mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] + 2*mZ2)}, {1 - t/mZ2, -t}] +
-2*X`ContinuedDiLog[{(-mH2 + mZ2 + s + t)/mZ2, -mH2 + s + t}, {1 - t/mZ2, -t}] + EulerGamma*Log[mZ2/(mZ2 - t)] +
-2*Log[2*Pi]*Log[mZ2/(mZ2 - t)] - Log[4*Pi]*Log[mZ2/(mZ2 - t)] - Log[ScaleMu^2/mZ2]*Log[mZ2/(mZ2 - t)] +
-EulerGamma*Log[mZ2/(-mH2 + mZ2 + s + t)] + 2*Log[2*Pi]*Log[mZ2/(-mH2 + mZ2 + s + t)] -
-Log[4*Pi]*Log[mZ2/(-mH2 + mZ2 + s + t)] - Log[ScaleMu^2/mZ2]*Log[mZ2/(-mH2 + mZ2 + s + t)] + 2*PaXDiLog[-(t/(mZ2 - t)), -t] -
-2*PaXDiLog[-((-mH2 + s + t)/mZ2), mH2 - s - t])/(-(mH2*mZ2) + mZ2*s + mH2*t - s*t - t^2)"}
+(EulerGamma*Log[mZ2/(mZ2 - t)] + 2*Log[2*Pi]*Log[mZ2/(mZ2 - t)] - Log[4*Pi]*Log[mZ2/(mZ2 - t)] -
+Log[ScaleMu^2/mZ2]*Log[mZ2/(mZ2 - t)] + EulerGamma*Log[mZ2/(-mH2 + mZ2 + s + t)] +
+2*Log[2*Pi]*Log[mZ2/(-mH2 + mZ2 + s + t)] - Log[4*Pi]*Log[mZ2/(-mH2 + mZ2 + s + t)] -
+Log[ScaleMu^2/mZ2]*Log[mZ2/(-mH2 + mZ2 + s + t)] + PaXContinuedDiLog[{-(mH2 +
+Sqrt[mH2*(mH2 - 4*mZ2)] - 2*mZ2)/(2*mZ2), -mH2/2 - Sqrt[mH2*(mH2 - 4*mZ2)]/2 + mZ2 +
+(2*mZ2^2)/(mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] - 2*mZ2)}, {mZ2/(-mH2 + mZ2 + s + t),
+mH2 - s - t}] - PaXContinuedDiLog[{-(mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] -
+2*mZ2)/(2*mZ2), -mH2/2 - Sqrt[mH2*(mH2 - 4*mZ2)]/2 + mZ2 + (2*mZ2^2)/(mH2 +
+Sqrt[mH2*(mH2 - 4*mZ2)] - 2*mZ2)}, {1 - t/mZ2, -t}] + PaXContinuedDiLog[{(-mH2 +
+Sqrt[mH2*(mH2 - 4*mZ2)] + 2*mZ2)/(2*mZ2), -mH2/2 + Sqrt[mH2*(mH2 - 4*mZ2)]/2 +
+mZ2 - (2*mZ2^2)/(-mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] + 2*mZ2)}, {mZ2/(-mH2 + mZ2 +
+s + t), mH2 - s - t}] - PaXContinuedDiLog[{(-mH2 + Sqrt[mH2*(mH2 - 4*mZ2)] +
+2*mZ2)/(2*mZ2), -mH2/2 + Sqrt[mH2*(mH2 - 4*mZ2)]/2 + mZ2 - (2*mZ2^2)/(-mH2 +
+Sqrt[mH2*(mH2 - 4*mZ2)] + 2*mZ2)}, {1 - t/mZ2, -t}] + 2*PaXContinuedDiLog[{1 -
+t/mZ2, -t}, {(-mH2 + mZ2 + s + t)/mZ2, -mH2 + s + t}] + 2*PaXDiLog[-(t/(mZ2 -
+t)), -t] - 2*PaXDiLog[-((-mH2 + s + t)/mZ2), mH2 - s - t])/(-(mH2*mZ2) + mZ2*s + mH2*t - s*t - t^2)"},
+{"PackageX-Generic-ID20", "PaXContinuedDiLog[{2.2,1},{3,1}]",
+"-2.9577213440651673"},
+{"PackageX-Generic-ID21", "PaXContinuedDiLog[{2.2,-1},{3,-1}]",
+"-2.9577213440651673"},
+{"PackageX-Generic-ID22", "PaXContinuedDiLog[{2.2,-1},{3,1}]",
+"-2.9577213440651673"},
+{"PackageX-Generic-ID23", "PaXKibblePhi[3.2,3.2,1,1,15.0,-3.5]",
+"90.14999999999998"},
+{"PackageX-Generic-ID24",
+"PaXEvaluate[D0[0,0,0,\!\(\*SuperscriptBox[\(m\), \
+\(2\)]\),s,t,m^2,0,m^2,0],PaXD0Expand\[Rule]True]",
+"-((PaXContinuedDiLog[{(2*m^2)/(2*m^2 - s + Sqrt[s*(-4*m^2 + s)]), \
+-m^2 + (s - Sqrt[s*(-4*m^2 + s)])/2 + (2*m^4)/(2*m^2 - s + \
+Sqrt[s*(-4*m^2 + s)])}, {(m^4 + 2*m^2*t - s*t - Sqrt[m^8 - 2*m^4*s*t \
+- 4*m^2*s*t^2 + s^2*t^2])/(2*m^2*t), -(t/Sqrt[m^8 - 2*m^4*s*t - \
+4*m^2*s*t^2 + s^2*t^2])}] - PaXContinuedDiLog[{(2*m^2)/(2*m^2 - s + \
+Sqrt[s*(-4*m^2 + s)]), -m^2 + (s - Sqrt[s*(-4*m^2 + s)])/2 + \
+(2*m^4)/(2*m^2 - s + Sqrt[s*(-4*m^2 + s)])}, {(m^4 + 2*m^2*t - s*t + \
+Sqrt[m^8 - 2*m^4*s*t - 4*m^2*s*t^2 + s^2*t^2])/(2*m^2*t), t/Sqrt[m^8 \
+- 2*m^4*s*t - 4*m^2*s*t^2 + s^2*t^2]}] + \
+PaXContinuedDiLog[{(-2*m^2)/(-2*m^2 + s + Sqrt[s*(-4*m^2 + s)]), -m^2 \
++ (s + Sqrt[s*(-4*m^2 + s)])/2 - (2*m^4)/(-2*m^2 + s + Sqrt[s*(-4*m^2 \
++ s)])}, {(m^4 + 2*m^2*t - s*t - Sqrt[m^8 - 2*m^4*s*t - 4*m^2*s*t^2 + \
+s^2*t^2])/(2*m^2*t), -(t/Sqrt[m^8 - 2*m^4*s*t - 4*m^2*s*t^2 + \
+s^2*t^2])}] - PaXContinuedDiLog[{(-2*m^2)/(-2*m^2 + s + \
+Sqrt[s*(-4*m^2 + s)]), -m^2 + (s + Sqrt[s*(-4*m^2 + s)])/2 - \
+(2*m^4)/(-2*m^2 + s + Sqrt[s*(-4*m^2 + s)])}, {(m^4 + 2*m^2*t - s*t + \
+Sqrt[m^8 - 2*m^4*s*t - 4*m^2*s*t^2 + s^2*t^2])/(2*m^2*t), t/Sqrt[m^8 \
+- 2*m^4*s*t - 4*m^2*s*t^2 + s^2*t^2]}] + PaXDiLog[-(m^4 - s*t + \
+Sqrt[m^8 - 2*m^4*s*t - 4*m^2*s*t^2 + s^2*t^2])/(2*m^2*t), t/Sqrt[m^8 \
+- 2*m^4*s*t - 4*m^2*s*t^2 + s^2*t^2]] - PaXDiLog[(-m^4 + s*t + \
+Sqrt[m^8 - 2*m^4*s*t - 4*m^2*s*t^2 + s^2*t^2])/(2*m^2*t), \
+-(t/Sqrt[m^8 - 2*m^4*s*t - 4*m^2*s*t^2 + s^2*t^2])] + \
+Log[-(m^2/t)]*PaXLn[(m^4 + 2*m^2*t - s*t - Sqrt[m^8 - 2*m^4*s*t - \
+4*m^2*s*t^2 + s^2*t^2])/(2*m^2*t), -(t*Sqrt[m^8 - 2*m^4*s*t - \
+4*m^2*s*t^2 + s^2*t^2])] - Log[-(m^2/t)]*PaXLn[(m^4 + 2*m^2*t - s*t + \
+Sqrt[m^8 - 2*m^4*s*t - 4*m^2*s*t^2 + s^2*t^2])/(2*m^2*t), t*Sqrt[m^8 \
+- 2*m^4*s*t - 4*m^2*s*t^2 + s^2*t^2]])/Sqrt[m^8 - 2*m^4*s*t - \
+4*m^2*s*t^2 + s^2*t^2])"}
 })
