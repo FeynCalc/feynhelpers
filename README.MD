@@ -36,6 +36,10 @@ Tools that are currently supported are
     InstallFeynHelpers[]
     ```
 
+  When updating FeynHelpers on Windows 10, Mathematica sometimes may not be able to delete the existing directories
+  containing FeynHelpers, Package-X or FIRE. This will cause the installer script to fail. In this case you should 
+  remove the existing directories by hand, restart the kernel and run the installer again.
+
 * The automatic installer can also install Package-X and FIRE for you. It will offer you this possiblity at the end of the installation process
 
 ## Manual installation
