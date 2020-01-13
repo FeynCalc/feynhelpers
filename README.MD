@@ -8,7 +8,7 @@ FeynHelpers is a collection of interfaces that allow you to use other HEP-relate
 
 # Requirements
 
-FeynHelpers is designed as an add-on for FeynCalc. To use it you need at least FeynCalc 9.2 and Mathematica 8.
+FeynHelpers is designed as an add-on for FeynCalc. To use it you need at least FeynCalc 9.3 and Mathematica 8.
 
 # Supported tools
 
