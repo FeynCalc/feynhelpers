@@ -4,9 +4,9 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 1990-2018 Rolf Mertig
-	Copyright (C) 1997-2018 Frederik Orellana
-	Copyright (C) 2014-2018 Vladyslav Shtabovenko
+	Copyright (C) 1990-2020 Rolf Mertig
+	Copyright (C) 1997-2020 Frederik Orellana
+	Copyright (C) 2014-2020 Vladyslav Shtabovenko
 *)
 
 (* :Summary:  Computation of the total decay rate for the decay of a 
@@ -25,8 +25,7 @@ If[ $FrontEnd === Null,
 		Print["Computation of the total decay rate for the decay of a Higgs into 2 gluons via a top-loop."];
 ];
 If[$Notebooks === False, $FeynCalcStartupMessages = False];
-$LoadAddOns={"FeynHelpers"};
-$LoadFeynArts= True;
+$LoadAddOns={"FeynArts","FeynHelpers"};
 <<FeynCalc`
 $FAVerbose = 0;
 

@@ -1,30 +1,63 @@
 #!/bin/bash
 
-# This small bash script provides a nice way to check that
-# FeynHelpers is working properly using real-life examples.
+# This software is covered by the GNU General Public License 3.
+# Copyright (C) 1990-2018 Rolf Mertig
+# Copyright (C) 1997-2018 Frederik Orellana
+# Copyright (C) 2014-2018 Vladyslav Shtabovenko
+
+# Description:
+
+# Checks FeynHelpers using real-life calculations.
+
+# Stop if any of the examples fails
+set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd $DIR
 
-if [ -z ${MATH+x} ]; then MATH=math; else echo $MATH; fi
+cd $DIR
+echo $(pwd)
+
+MATH=$1
+
 
 #QED Examples
-$MATH -nopromt -script ../Examples/QED/QEDABJAxialAnomaly.m
-$MATH -nopromt -script ../Examples/QED/QEDElectronGMinusTwoOneLoop.m
-$MATH -nopromt -script ../Examples/QED/QEDRenormalizationOneLoop.m
-$MATH -nopromt -script ../Examples/QED/MasslessQEDSelfEnergiesTwoLoops.m
+#-------------------------------------------------------------------------------
+for exFile in 'QEDABJAxialAnomaly.m' 'QEDElectronGMinusTwoOneLoop.m' 'QEDRenormalizationOneLoop.m' 'MasslessQEDSelfEnergiesTwoLoops.m' 'QEDToEulerHeisenbergLagrangianMatching.m'
+
+do
+  echo
+  echo -e "* \c"
+  $MATH -nopromt -script ../Examples/QED/$exFile
+done
 
 #QCD Examples
-$MATH -nopromt -script ../Examples/QCD/QCDQuarkSelfEnergyOneLoop.m
-$MATH -nopromt -script ../Examples/QCD/QCDGluonSelfEnergyOneLoop.m
-$MATH -nopromt -script ../Examples/QCD/NRQCDVertexMatchingInTheTwoQuarkSectorOneLoop.m
-$MATH -nopromt -script ../Examples/QCD/QCDThreeGluonVertexOneLoop.m
+#-------------------------------------------------------------------------------
+for exFile in 'QCDQuarkSelfEnergyOneLoop.m' 'QCDGluonSelfEnergyOneLoop.m' 'NRQCDVertexMatchingInTheTwoQuarkSectorOneLoop.m' 'QCDThreeGluonVertexOneLoop.m'
+
+do
+  echo
+  echo -e "* \c"
+  $MATH -nopromt -script ../Examples/QCD/$exFile
+done
 
 #EW Examples
-$MATH -nopromt -script ../Examples/EW/EWHiggsToTwoGluonsOneLoop.m
-$MATH -nopromt -script ../Examples/EW/EWHiggsDecayControversy.m
+#-------------------------------------------------------------------------------
+for exFile in 'EWHiggsToTwoGluonsOneLoop.m' 'EWHiggsDecayControversy.m'
 
-#Other Examples
-$MATH -nopromt -script ../Examples/UVCheck.m
+do
+  echo
+  echo -e "* \c"
+  $MATH -nopromt -script ../Examples/EW/$exFile
+done
+
+#Misc Examples
+#-------------------------------------------------------------------------------
+for exFile in 'UVCheck.m'
+
+do
+  echo
+  echo -e "* \c"
+  $MATH -nopromt -script ../Examples/$exFile
+done
 
 notify-send "Finished running examples for FeynHelpers."

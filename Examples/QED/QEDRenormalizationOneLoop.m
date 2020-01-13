@@ -4,9 +4,9 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 1990-2018 Rolf Mertig
-	Copyright (C) 1997-2018 Frederik Orellana
-	Copyright (C) 2014-2018 Vladyslav Shtabovenko
+	Copyright (C) 1990-2020 Rolf Mertig
+	Copyright (C) 1997-2020 Frederik Orellana
+	Copyright (C) 2014-2020 Vladyslav Shtabovenko
 *)
 
 (* :Summary:  Computation of the QED renormalization constants at 1-loop  *)
@@ -32,7 +32,7 @@ If[ $FrontEnd === Null,
 		Print["Computation of the QED renormalization constants at 1-loop"];
 ];
 $LoadAddOns={"FeynHelpers"};
-$LoadFeynArts= True;
+$LoadAddOns={"FeynArts"};
 << FeynCalc`
 $FAVerbose = 0
 
@@ -96,7 +96,7 @@ Zpsi->SMP["Z_psi"],SMP["e"]->Sqrt[4Pi SMP["alpha_fs"]]}]]&/@{diagElectronSE,diag
 (*Tensor reduction allows us to express the electron self-energy in tems of the Passarino-Veltman coefficient functions.*)
 
 
-ampElectronSE1=TID[ampElectronSE,l,ToPaVe->True]
+ampElectronSE1=TID[ampElectronSE,l,ToPaVe->True]//DiracSimplify
 
 
 (* ::Text:: *)
@@ -375,7 +375,7 @@ PaXEvaluateUVIRSplit[tmp[15]/.{FCI[SPD[p1,p2]]->SMP["m_e"]^2},PaXImplicitPrefact
 tmp[16]=Cancel[DotSimplify[(tmp[14]/.p2->p1)]/FCI[SpinorUBarD[p1,SMP["m_e"]]. GAD[Lor1].SpinorUD[p1,SMP["m_e"]]]]
 
 
-tmp[17]=PaXEvaluateUVIRSplit[tmp[16],PaXImplicitPrefactor->1/(2Pi)^D]//FCHideEpsilon
+tmp[17]=PaXEvaluateUVIRSplit[tmp[16],PaXImplicitPrefactor->1/(2Pi)^D,PaXAnalytic->True]//FCHideEpsilon
 
 
 (* ::Text:: *)

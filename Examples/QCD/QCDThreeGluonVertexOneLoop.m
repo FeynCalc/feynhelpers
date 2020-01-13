@@ -4,9 +4,9 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 1990-2018 Rolf Mertig
-	Copyright (C) 1997-2018 Frederik Orellana
-	Copyright (C) 2014-2018 Vladyslav Shtabovenko
+	Copyright (C) 1990-2020 Rolf Mertig
+	Copyright (C) 1997-2020 Frederik Orellana
+	Copyright (C) 2014-2020 Vladyslav Shtabovenko
 *)
 
 (* :Summary:  Computation of the singularities in the QCD 3-gluon vertex 
@@ -27,8 +27,7 @@ If[ $FrontEnd === Null,
 		$FeynCalcStartupMessages = False;
 		Print["Computation of the singularities in QCD triangle diagrams"];
 ];
-$LoadAddOns={"FeynHelpers"};
-$LoadFeynArts = True;
+$LoadAddOns={"FeynArts","FeynHelpers"};
 <<FeynCalc`
 $FAVerbose=0;
 

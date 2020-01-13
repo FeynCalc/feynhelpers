@@ -1,6 +1,10 @@
-# Description
+# FeynHelpers
 
-FeynHelpers is a collection of interfaces that allow you to use other HEP-related tools from your FeynCalc session.
+[![license: GPLv3](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)](https://github.com/FeynCalc/feynhelpers/blob/master/LICENSE)
+[![latest release](https://img.shields.io/github/release/FeynCalc/feynhelpers.svg)](https://github.com/FeynCalc/feynhelpers/releases)
+![compatibility](https://img.shields.io/badge/Mathematica-8.x_9.x_10.x_11.x_12.x-brightgreen.svg)
+
+FeynHelpers is a collection of interfaces that allow you to use other HEP-related tools from your [FeynCalc](http://www.feyncalc.org/) session.
 
 # Requirements
 
@@ -9,8 +13,9 @@ FeynHelpers is designed as an add-on for FeynCalc. To use it you need at least F
 # Supported tools
 
 Tools that are currently supported are
- * FIRE 5.2
- * Package-X 2.0
+
+ * [FIRE 5.2](https://bitbucket.org/feynmanIntegrals/fire)
+ * [Package-X 2.1](https://packagex.hepforge.org)
 
 # Installation
 
@@ -18,17 +23,19 @@ Tools that are currently supported are
 
 * Run the following instruction in a Kernel or Notebook session of Mathematica
 
-    ``` 
+
+    ```
     Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
     InstallFeynHelpers[]
     ```
 
   If the above code fails with `URLFetch::invhttp: SSL connect error` (e.g. on Mathematica 9 under OS X), try
 
-    ``` 
-    ImportString[URLFetch["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]]
-    InstallFeynCalc[]
     ```
+    ImportString[URLFetch["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]]
+    InstallFeynHelpers[]
+    ```
+
 * The automatic installer can also install Package-X and FIRE for you. It will offer you this possiblity at the end of the installation process
 
 ## Manual installation
@@ -39,7 +46,7 @@ Tools that are currently supported are
 	FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns"}]
 	```
 
-	and put the source code there. 
+	and put the source code there.
 
 * Install Package-X and FIRE packages.  It should be possible to load Package-X via
 
@@ -52,6 +59,15 @@ Tools that are currently supported are
 	```
 	<< FIRE5`
 	```
+
+## Development version
+
+If you like the bleeding edge and you are already using the development version of FeynCalc, you can also install the development version of FeynHelpers
+
+```
+Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
+InstallFeynHelpers[InstallFeynHelpersDevelopmentVersion->True]
+```
 
 # Usage
 
@@ -70,5 +86,5 @@ Also don't forget to cite the authors of the tools that you are calling from Fey
 
 # License
 
-* The code of FeynHelpers is licensed under GNU GPLv3. 
+* The code of FeynHelpers is covered by the GNU General Public License 3.
 * This __does not__ apply to the packages for which FeynHelpers provides an interface to FeynCalc. For the licensing of those packages please check the informations provided by the respective authors.

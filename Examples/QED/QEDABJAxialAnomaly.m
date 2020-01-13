@@ -4,9 +4,9 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 1990-2018 Rolf Mertig
-	Copyright (C) 1997-2018 Frederik Orellana
-	Copyright (C) 2014-2018 Vladyslav Shtabovenko
+	Copyright (C) 1990-2020 Rolf Mertig
+	Copyright (C) 1997-2020 Frederik Orellana
+	Copyright (C) 2014-2020 Vladyslav Shtabovenko
 *)
 
 (* :Summary:  Computation of the Adler-Bell-Jackiw anomaly in QED *)
@@ -61,7 +61,7 @@ ampDotted=Contract[I*FVD[k+p,mu](amp1+amp2)]
 (*prescription.*)
 
 
-$BreitMaison=True;
+FCSetDiracGammaScheme["BMHV"];
 ampDotted2=ampDotted/.DiracTrace->Tr
 
 

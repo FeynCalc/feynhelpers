@@ -97,13 +97,13 @@ Options[FIREBurn] = {
 	FCLoopIBPReducableQ->False,
 	FCVerbose -> False,
 	FIREAddPropagators -> Automatic,
-	FIREConfigFiles -> {ToFileName[{$FeynCalcDirectory, "Database"}, "FIREp1.m"],
-						ToFileName[{$FeynCalcDirectory, "Database"}, "FIREp2.m"],
-						ToFileName[{$FeynCalcDirectory, "Database"}, "FIRERepList.m"]},
+	FIREConfigFiles -> {FileNameJoin[{$FeynCalcDirectory, "Database", "FIREp1.m"}],
+						FileNameJoin[{$FeynCalcDirectory, "Database", "FIREp2.m"}],
+						FileNameJoin[{$FeynCalcDirectory, "Database", "FIRERepList.m"}]},
 	FIREPath -> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE5", "FIRE5.m"}],
 	FIRERun -> True,
 	FIRESilentMode -> True,
-	FIREStartFile -> ToFileName[{$FeynCalcDirectory, "Database"}, "FIREStartFile"],
+	FIREStartFile -> FileNameJoin[{$FeynCalcDirectory, "Database", "FIREStartFile"}],
 	FIREUsingFermat -> False,
 	Timing -> True
 };
@@ -115,7 +115,7 @@ FIREBurn[expr_, qs_List/;qs=!={}, extMom_List, OptionsPattern[]] :=
 
 		If [OptionValue[FCVerbose]===False,
 			fbVerbose=$VeryVerbose,
-			If[MatchQ[OptionValue[FCVerbose], _Integer?Positive | 0],
+			If[MatchQ[OptionValue[FCVerbose], _Integer],
 				fbVerbose=OptionValue[FCVerbose]
 			];
 		];

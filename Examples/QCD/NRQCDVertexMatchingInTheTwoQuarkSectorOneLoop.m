@@ -4,9 +4,9 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 1990-2018 Rolf Mertig
-	Copyright (C) 1997-2018 Frederik Orellana
-	Copyright (C) 2014-2018 Vladyslav Shtabovenko
+	Copyright (C) 1990-2020 Rolf Mertig
+	Copyright (C) 1997-2020 Frederik Orellana
+	Copyright (C) 2014-2020 Vladyslav Shtabovenko
 *)
 
 (* :Summary:  Computation of the QCD side of the QCD/NRQCD matching in the
@@ -33,8 +33,7 @@ If[ $FrontEnd === Null,
 		Print["Computation of the QCD side of the QCD/NRQCD matching in the 
 two quark sector by expanding quark-gluon vertex in the relative momentum"];
 ];
-$LoadAddOns={"FeynHelpers"};
-$LoadFeynArts = True;
+$LoadAddOns={"FeynArts","FeynHelpers"};
 <<FeynCalc`
 $FAVerbose=0;
 
@@ -123,8 +122,8 @@ Collect2[#,{SMP["Delta_UV"],SMP["Delta_IR"],q2},Factoring->FullSimplify,FCFactor
 
 
 scalarPart[expr_,fo_:1]:=((expr//SelectNotFree2[#,DiracSigma]&)/
-FCI[I SMP["g_s"]SUNT[Glu2](I/(2m))FCI[SpinorUBarD[p2,m]. DiracSigma[GAD[Lor1],
-GSD[p2-p1]].SpinorUD[p1,m]]])//Collect2[#,{SMP["Delta_UV"],SMP["Delta_IR"],q2},
+FCI[-I SMP["g_s"]SUNT[Glu2](I/(2m))FCI[SpinorUBarD[p2,m]. DiracSigma[GAD[Lor1],
+GSD[p1-p2]].SpinorUD[p1,m]]])//Collect2[#,{SMP["Delta_UV"],SMP["Delta_IR"],q2},
 Factoring->FullSimplify,FCFactorOut->fo]&;
 
 
