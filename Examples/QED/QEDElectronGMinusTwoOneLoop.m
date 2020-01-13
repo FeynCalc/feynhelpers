@@ -26,7 +26,7 @@ If[ $FrontEnd === Null,
 		$FeynCalcStartupMessages = False;
 		Print["Computation of the electron's g-2 in QED at 1-loop"];
 ];
-$LoadAddOns={"FeynArtsLoader","FeynHelpers"};
+$LoadAddOns={"FeynArts","FeynHelpers"};
 << FeynCalc`
 $FAVerbose=0;
 

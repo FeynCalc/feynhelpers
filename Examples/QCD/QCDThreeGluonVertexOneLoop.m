@@ -27,7 +27,7 @@ If[ $FrontEnd === Null,
 		$FeynCalcStartupMessages = False;
 		Print["Computation of the singularities in QCD triangle diagrams"];
 ];
-$LoadAddOns={"FeynArtsLoader","FeynHelpers"};
+$LoadAddOns={"FeynArts","FeynHelpers"};
 <<FeynCalc`
 $FAVerbose=0;
 

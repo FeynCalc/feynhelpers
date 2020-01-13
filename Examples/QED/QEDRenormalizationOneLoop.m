@@ -32,7 +32,7 @@ If[ $FrontEnd === Null,
 		Print["Computation of the QED renormalization constants at 1-loop"];
 ];
 $LoadAddOns={"FeynHelpers"};
-$LoadAddOns={"FeynArtsLoader"};
+$LoadAddOns={"FeynArts"};
 << FeynCalc`
 $FAVerbose = 0
 

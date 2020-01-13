@@ -32,7 +32,7 @@ If[ $FrontEnd === Null,
 		$FeynCalcStartupMessages = False;
 		Print["Computation of the matching coefficients in the Euler-Heisenberg Lagrangian"];
 ];
-$LoadAddOns={"FeynArtsLoader","FeynHelpers"};
+$LoadAddOns={"FeynArts","FeynHelpers"};
 << FeynCalc`
 $FAVerbose=0;
 
