@@ -55,12 +55,6 @@ AutoOverwriteFIREDirectory::usage="AutoOverwriteFIREDirectory is an option of In
 set to True, the existing FIRE directory will be deleted without any further notice. The default
 value None means that the user will be asked by a dialog. False means that the directory will be overwritten.";
 
-AutoDisableInsufficientVersionWarning::usage="AutoDisableInsufficientVersionWarning is an option of InstallFeynHelpers. If \
-set to True, warning messages for notebooks that were created with a newer Mathematica version will be silently disabled. \
-This is needed to use FeynHelpers documentation in Mathematica 8 and 9, since otherwise the warning message will appear every \
-time one opens a help page for a FeynHelpers function. The default value None means that the user will be asked by a dialog. \
-False means that the warning will not be disabled.";
-
 FeynHelpersDevelopmentVersionLink::usage="FeynHelpersDevelopmentVersionLink is an option of InstallFeynHelpers. It specifies the url \
 to the main repository of FeynHelpers. This repository is used to install the development version of FeynHelpers.";
 
