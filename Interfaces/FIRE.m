@@ -208,11 +208,12 @@ FIREBurn[expr_, qs_List/;qs=!={}, extMom_List, OptionsPattern[]] :=
 		];
 
 		(* Solutions list *)
-		finalRepList= MapThread[Rule[#1,#2]&,{intsUnique,fireRes}];
+		finalRepList= Thread[Rule[intsUnique,fireRes]];
+
 		FCPrint[3," Solutions list: ", finalRepList, " ", FCDoControl->fbVerbose];
 
 		(* Final result *)
-		res = rest + FCI[loopInts/.finalRepList];
+		res = rest + FCI[loopInts/. Dispatch[finalRepList]];
 
 		If[	OptionValue[FCE],
 			res = FCE[res]
@@ -475,7 +476,7 @@ RunFIRE[{fireFile1_String, fireFile2_String, fireFile3_String}]:=
 		FCPrint[3,"FIREBurn: RunFIRE: pList: ", pList, FCDoControl->fbVerbose];
 
 		solsList=fromFIRE[#,qs]&/@pList;
-		repList= MapThread[Rule[#1,#2]&,{gList,solsList}];
+		repList= Thread[Rule[gList,solsList]];
 
 		FCPrint[3,"FIREBurn: RunFIRE: repList: ", repList, FCDoControl->fbVerbose];
 		FCPrint[3,"FIREBurn: RunFIRE: abbrs: ", abbrs, FCDoControl->fbVerbose];
