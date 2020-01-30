@@ -265,5 +265,11 @@ Log[-(m^2/t)]*PaXLn[(m^4 + 2*m^2*t - s*t - Sqrt[m^8 - 2*m^4*s*t - \
 4*m^2*s*t^2 + s^2*t^2])] - Log[-(m^2/t)]*PaXLn[(m^4 + 2*m^2*t - s*t + \
 Sqrt[m^8 - 2*m^4*s*t - 4*m^2*s*t^2 + s^2*t^2])/(2*m^2*t), t*Sqrt[m^8 \
 - 2*m^4*s*t - 4*m^2*s*t^2 + s^2*t^2]])/Sqrt[m^8 - 2*m^4*s*t - \
-4*m^2*s*t^2 + s^2*t^2])"}
+4*m^2*s*t^2 + s^2*t^2])"},
+{"PackageX-Generic-ID25", "PaXEvaluate[B0[pp, m1, m2] SpinorU[p1, m1].GAD[mu].SpinorV[p2, m2],
+PaXSeries -> {{m1, 0, 0}}, PaXAnalytic -> True, FCE -> True]",
+"Spinor[Momentum[p1], m1, 1].GAD[mu].Spinor[-Momentum[p2], m2,
+1]/Epsilon + (Spinor[Momentum[p1], m1, 1].GAD[mu].Spinor[-Momentum[p2], m2,
+	1] (2 pp - EulerGamma pp - pp Log[\[Pi]] - m2 Log[m2/(m2 - pp)] +
+	pp Log[m2/(m2 - pp)] + pp Log[ScaleMu^2/m2]))/pp"}
 })

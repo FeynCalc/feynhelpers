@@ -152,7 +152,7 @@ PaXEvaluate::gen=
 error description reads: `1`";
 
 PaXEvaluate::C0D0=
-"The explicit result for the occuring `1` function(s) is expected to be very \
+"The explicit result for the occurring `1` function(s) is expected to be very \
 complicated. Please rerun PaXEvaluate with the option `2` \
 to show the result nevertheless. Please set $FCAdvice=False if you do not want \
 to see this message in future.";
@@ -369,9 +369,9 @@ PaXEvaluate[expr_, opts:OptionsPattern[]]:=
 	PaXEvaluate[expr, dummyLoopMom, opts];
 
 PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
-	Block[{	ex,kernel,temp,resultX,finalResult,xList,ints,fclsOutput,fclcOutput,
-			dim,epsFree,epsNotFree, holddim,paxVer, paxOptions={}, paxSeries, paxSeriesVars={}, time, tmp,
-			rootsum, optPaXSimplifyEpsilon},
+	Block[{	ex, resultX, finalResult, xList, ints, fclsOutput, fclcOutput,
+			dim, epsFree, epsNotFree, paxVer, paxOptions={}, paxSeries, paxSeriesVars={}, time, tmp, check,
+			rootsum, optPaXSimplifyEpsilon, seriesProtectList, seriesProtectRule, seriesVarProtectRule, varHold},
 
 		dim = OptionValue[Dimension];
 		paxSeries = OptionValue[PaXSeries];
@@ -466,21 +466,42 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		(*	FCLoopCanonicalize is of course an overkill for purely scalar integrals,
 			but it is better to use it than to implement own functions every time...	*)
 
+		tmp = fclsOutput[[2]];
+
+		If[	paxSeriesVars=!={} && !FreeQ2[tmp,{Spinor,Polarization}],
+
+			seriesProtectList = Cases2[tmp,Spinor,Polarization];
+
+			seriesVarProtectRule =
+				Thread[Rule[paxSeriesVars,Table[varHold[Unique["sVar"]], {i, 1, Length[paxSeriesVars]}]]];
+
+			seriesProtectRule = Thread[Rule[seriesProtectList,(seriesProtectList//.seriesVarProtectRule)]];
+
+			FCPrint[1,"PaXEvaluate: Rule for protecting expansion variables in nonexpandable objects:",
+					seriesVarProtectRule, FCDoControl->paxVerbose];
+
+			tmp = tmp /. Dispatch[seriesProtectRule],
+
+			seriesVarProtectRule = {}
+		];
+
+
 		FCPrint[1,"PaXEvaluate: Applying FCLoopIsolate.", FCDoControl->paxVerbose];
-		tmp=FCLoopIsolate[FCReplaceD[fclsOutput[[2]],dim->4-2*Epsilon], {q}, FCI->True, Head->loopIntegral,
+
+		check=FCLoopIsolate[FCReplaceD[tmp, dim->4-2*Epsilon], {q}, FCI->True, Head->loopIntegral,
 			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD, Epsilon},paxSeriesVars]];
-		FCPrint[3,"PaXEvaluate: After FCLoopIsolate:",tmp, FCDoControl->paxVerbose];
+		FCPrint[3,"PaXEvaluate: After FCLoopIsolate:",check, FCDoControl->paxVerbose];
 
 
-		Quiet[tmp = Cases2[tmp, loopIntegral] /. Epsilon -> 0, Power::infy];
-		If[!FreeQ[tmp,ComplexInfinity],
+		Quiet[check = Cases2[check, loopIntegral] /. Epsilon -> 0, Power::infy];
+		If[!FreeQ[check,ComplexInfinity],
 			Message[PaXEvaluate::gen, "PaXEvaluate cannot handle PaVe functions multiplied by 1/Epsilon poles."];
 			Abort[]
 		];
 
 
 		FCPrint[1,"PaXEvaluate: Applying FCLoopIsolate.", FCDoControl->paxVerbose];
-		ints=FCLoopIsolate[fclsOutput[[2]], {q}, FCI->True, Head->loopIntegral,
+		ints=FCLoopIsolate[tmp, {q}, FCI->True, Head->loopIntegral,
 			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD},paxSeriesVars]];
 		FCPrint[3,"PaXEvaluate: After FCLoopIsolate:",ints, FCDoControl->paxVerbose];
 
@@ -488,6 +509,11 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			need to be computed. But first we need to convert them to the Pacakge X input *)
 		fclcOutput = FCLoopCanonicalize[ints, q, loopIntegral,FCI->True,
 			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD}]];
+
+		If[	!FreeQ2[fclcOutput,{Spinor,Polarization}],
+			Message[PaXEvaluate::gen, "PaXEvaluate may not pass spinors or polarization vectors to Package-X."];
+			Abort[]
+		];
 
 		FCPrint[1,"PaXEvaluate: Checking the version of Package-X.", FCDoControl->paxVerbose];
 
@@ -519,7 +545,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			xList = FCE[xList]/. { dim->4-2*(X`Eps), Epsilon->(X`Eps) };
 
 			If[ Head[paxSeries]===List,
-				FCPrint[1,"PaXEvaluate: Applying LoopRefineSerie.", FCDoControl->paxVerbose];
+				FCPrint[1,"PaXEvaluate: Applying LoopRefineSeries.", FCDoControl->paxVerbose];
 				xList = Normal[X`LoopRefineSeries[xList, Sequence@@paxSeries, Sequence@@paxOptions]];
 				FCPrint[3,"PaXEvaluate: xList (after LoopRefineSeries): ", xList, FCDoControl->paxVerbose]
 			];
@@ -678,6 +704,12 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			finalResult = Series[(OptionValue[PaXImplicitPrefactor]/.dim->4-2Epsilon) finalResult,{Epsilon,0,0}]//Normal,
 			finalResult = (OptionValue[PaXImplicitPrefactor] finalResult);
 			FCPrint[1, "PaXEvaluate: Done expanding around Epsilon=0, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose];
+		];
+
+		finalResult = finalResult//ReplaceAll[#,Reverse/@seriesVarProtectRule]&;
+		If[	!FreeQ[finalResult,varHold],
+			Message[PaXEvaluate::gen, "Failed to perform a backsubstitution for variables in spinors and polarization vectors."];
+			Abort[]
 		];
 
 		FCPrint[2,"PaXEvaluate: finalResult (with implicit prefactor): ", finalResult, FCDoControl->paxVerbose];
