@@ -192,7 +192,8 @@ Options[PaXEvaluate] = {
 	PaXSeries				-> False,
 	PaXSimplifyEpsilon		-> {Automatic, 5000},
 	PaXSubstituteEpsilon	-> True,
-	TimeConstrained 		-> 3
+	TimeConstrained 		-> 3,
+	ToPaVe					-> True
 };
 
 Options[PaXEvaluateUVIRSplit] = Options[PaXEvaluate];
@@ -436,7 +437,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		];
 
 
-
+		FCPrint[1,"PaXEvaluate: Entering.", FCDoControl->paxVerbose];
 		FCPrint[3,"PaXEvaluate: Entering with: ", expr, FCDoControl->paxVerbose];
 
 		If [ !FreeQ[OptionValue[PaXImplicitPrefactor],PaXEpsilonBar],
@@ -445,8 +446,12 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		];
 
 		(*	First of all, let us convert all the scalar integrals to PaVe functions:	*)
-		ex = expr//ToPaVe[#,q,PaVeAutoReduce->False,
-					PaVeAutoOrder -> OptionValue[PaVeAutoOrder]]&//ToPaVe2;
+		FCPrint[1,"PaXEvaluate: Applying ToPaVe/ToPaVe2.", FCDoControl->paxVerbose];
+		If[OptionValue[ToPaVe],
+			ex = expr//ToPaVe[#,q,PaVeAutoReduce->False,
+						PaVeAutoOrder -> OptionValue[PaVeAutoOrder]]&//ToPaVe2,
+			ex = expr//ToPaVe2
+		];
 
 
 		(*	Since we care only for the scalar integrals, we need
@@ -460,7 +465,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		If [fclsOutput[[3]]=!=0 || fclsOutput[[4]]=!=0,
 			Message[PaXEvaluate::tens]
 		];
-		FCPrint[3,"PaXEvaluate: After FCLoopSplit:",fclsOutput, FCDoControl->paxVerbose];
+		FCPrint[3,"PaXEvaluate: After FCLoopSplit: ",fclsOutput, FCDoControl->paxVerbose];
 
 
 		(*	FCLoopCanonicalize is of course an overkill for purely scalar integrals,
@@ -477,7 +482,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 			seriesProtectRule = Thread[Rule[seriesProtectList,(seriesProtectList//.seriesVarProtectRule)]];
 
-			FCPrint[1,"PaXEvaluate: Rule for protecting expansion variables in nonexpandable objects:",
+			FCPrint[1,"PaXEvaluate: Rule for protecting expansion variables in nonexpandable objects: ",
 					seriesVarProtectRule, FCDoControl->paxVerbose];
 
 			tmp = tmp /. Dispatch[seriesProtectRule],
@@ -490,7 +495,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		check=FCLoopIsolate[FCReplaceD[tmp, dim->4-2*Epsilon], {q}, FCI->True, Head->loopIntegral,
 			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD, Epsilon},paxSeriesVars]];
-		FCPrint[3,"PaXEvaluate: After FCLoopIsolate:",check, FCDoControl->paxVerbose];
+		FCPrint[3,"PaXEvaluate: After FCLoopIsolate: ",check, FCDoControl->paxVerbose];
 
 
 		Quiet[check = Cases2[check, loopIntegral] /. Epsilon -> 0, Power::infy];
@@ -503,7 +508,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		FCPrint[1,"PaXEvaluate: Applying FCLoopIsolate.", FCDoControl->paxVerbose];
 		ints=FCLoopIsolate[tmp, {q}, FCI->True, Head->loopIntegral,
 			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD},paxSeriesVars]];
-		FCPrint[3,"PaXEvaluate: After FCLoopIsolate:",ints, FCDoControl->paxVerbose];
+		FCPrint[3,"PaXEvaluate: After FCLoopIsolate: ",ints, FCDoControl->paxVerbose];
 
 
 		(*	The 4th element in fclcOutput is our list of unique scalar integrals that
