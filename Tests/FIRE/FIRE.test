@@ -40,17 +40,17 @@ FIREAddPropagators -> {SPD[q, k] - m}, FCE -> True, Timing->False]",
 "-(((-3 + D) FAD[q, -k - p + q])/(SPD[k, k] + 2 SPD[k, p] + SPD[p, p]))"},
 {"FIRE-Generic-ID14",
 "FIREBurn[FAD[{q1, m, 2}, {q1 + q3, m}, {q2 \[Minus] q3}, {q2, 0,2}], {q1, q2, q3}, {},
-FIREAddPropagators -> {SPD[q1, q2], SPD[q1, q3]},FCE->True]",
+FIREAddPropagators -> {SPD[q1, q2], SPD[q1, q3]},FCE->True, Timing -> False]",
 "-(((-3 + D) (-10 + 3 D) (-8 + 3 D) FAD[{q1, m}, q2,
 q2 - q3, {q1 + q3, m}])/(16 (-7 + 2 D) m^4))"},
 {"FIRE-Generic-ID15", "FIREBurn[TID[FAD[{l, mf}, {l, mf}, {l, mf}] (4 mf FVD[l, mu] FVD[l, nu] +
-	mf^3 MTD[mu, nu] - mf MTD[mu, nu] SPD[l, l]), l], {l}, {}]", "0"},
+	mf^3 MTD[mu, nu] - mf MTD[mu, nu] SPD[l, l]), l], {l}, {}, Timing->False]", "0"},
 {"FIRE-Generic-ID16", "FCClearScalarProducts[]; \n SPD[p1, p1] = 0; \n SPD[p2, p2] = 0; \n SPD[p3, p3] = 0; \n
 SPD[p1, p2] = s/2; \n SPD[p1, p3] = -(s + t)/2; \n SPD[p2, p3] = t/2; \n
-FIREBurn[FAD[q, q - p1 - p2, q - p1 - p2 - p3], {q}, {p1, p2, p3}] // FCE",
+FIREBurn[FAD[q, q - p1 - p2, q - p1 - p2 - p3], {q}, {p1, p2, p3}, Timing -> False,FCE->True]",
 "-((2 (-3 + D) FAD[q, -p1 - p2 + q])/((-4 + D) s))"},
 {"FIRE-Generic-ID17", "FCClearScalarProducts[]; SPD[p1, p1] = 4 MB^2; SPD[p2, p2] = 0; SPD[p1, p2] = 2 (MB^2 - MC^2);
-FIREBurn[FAD[{q, MC, 2}, {q - p1, MC}, {q - p2, MC, 2}], {q}, {p1,  p2}, FCVerbose -> 0, FCE->True]",
+FIREBurn[FAD[{q, MC, 2}, {q - p1, MC}, {q - p2, MC, 2}], {q}, {p1,  p2}, FCVerbose -> 0, FCE->True, Timing -> False]",
 "-((-2 + D)*(32*MB^4 - 16*D*MB^4 + 2*D^2*MB^4 + 26*MB^2*MC^2 - 25*D*MB^2*MC^2 +
 	4*D^2*MB^2*MC^2 + 4*MC^4 - D*MC^4)*FAD[{q, MC}])/
 (128*MC^6*(-MB + MC)^3*(MB + MC)^3) -
@@ -62,7 +62,18 @@ FAD[{-p1 + q, MC}])/(64*(-5 + D)*MC^4*(-MB + MC)^3*(MB + MC)^3) +
 (MB + MC)^3) - ((-3 + D)*(-11 + 2*D)*MB^2*FAD[{q, MC}, {-p1 + q, MC}])/
 (16*(MB - MC)^3*MC^2*(MB + MC)^3) -
 ((-4 + D)*(-11*MB^2 + 2*D*MB^2 + MC^2)*FAD[{-p2 + q, MC}, {q, MC},
-	{-p1 + q, MC}])/(8*MC^2*(-MB + MC)^2*(MB + MC)^2)"}
+	{-p1 + q, MC}])/(8*MC^2*(-MB + MC)^2*(MB + MC)^2)"},
+{"FIRE-Generic-ID18",
+"FIREBurn[SFAD[{p, -m^2, 2}], {p}, {}, FCE -> True, Timing -> False]",
+"-(((-2 + D) SFAD[{{p, 0}, {-m^2, 1}, 1}])/(2 m^2))"},
+{"FIRE-Generic-ID19",
+"FIREBurn[SFAD[{p, m^2, 2}, {{0, 2 p.k}, m^2, 3}], {p}, {k},
+FCE -> True, Timing -> False]",
+"-(1/(m^4 (m^2 - 4 SPD[k, k])^3))(-5 + D) (-3 +
+	D) SFAD[{{0, 2 k.p}, {m^2, 1}, 1}, {{p, 0}, {m^2, 1},
+	1}] (-6 m^2 + D m^2 - 4 SPD[k, k]) SPD[k, k] - ((-2 +
+	D) SFAD[{{p, 0}, {m^2, 1}, 1}] (m^2 + 66 SPD[k, k] -
+	24 D SPD[k, k] + 2 D^2 SPD[k, k]))/(2 m^4 (m^2 - 4 SPD[k, k])^3)"}
 });
 (*
 Tests`FIRE`GenericWithFermat = ({
