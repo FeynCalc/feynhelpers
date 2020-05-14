@@ -28,7 +28,7 @@ End[]
 
 Begin["`FeynHelpers`Private`"];
 
-$FeynHelpersVersion="1.2.0";
+$FeynHelpersVersion="1.3.0";
 
 $FeynHelpersDirectory = FileNameJoin[{$FeynCalcDirectory, "AddOns", "FeynHelpers"}];
 
@@ -50,6 +50,8 @@ If[ (fcVersion[[1]]<9),
 		Abort[]
 	];
 ];
+
+FeynCalc`Package`FeynHelpersLoaded = True;
 
 (* Print the startup message *)
 If[ $FeynCalcStartupMessages =!= False,

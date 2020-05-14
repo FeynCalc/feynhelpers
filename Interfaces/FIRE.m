@@ -235,8 +235,8 @@ fromFIRE[props_List,qs_List]:=
 		tmp = Map[list@@#&,props];
 
 		tmp = Replace[tmp, {
-			list[_, i_, j_]/;(Head[j]===FAD && i>0) :> Power[j,i],
-			list[_, i_, j_]/;(Head[j]===FAD && i<0) :> Power[inversePropagator[j],-i],
+			list[_, i_, j_]/;(MemberQ[{FAD,SFAD},Head[j]] && i>0) :> Power[j,i],
+			list[_, i_, j_]/;(MemberQ[{FAD,SFAD},Head[j]] && i<0) :> Power[inversePropagator[j],-i],
 			list[_, i_, j_]/;(Head[j]===SPD && i<0) :> Power[j,-i],
 			(* TODO: Currently FeynCalc cannot represent HQET-type propagators 1/q.p.*)
 			list[_, i_, j_]/;(Head[j]===SPD && i>0) :> Power[inverseSPD[j],i],
@@ -245,49 +245,52 @@ fromFIRE[props_List,qs_List]:=
 		FCPrint[4,"FIREBurn: fromFIRE: Converted propagators: ", tmp, FCDoControl->fbVerbose];
 
 		If[!FreeQ2[tmp,{list,inversePropagator,inverseSPD}],
-			FCPrint[1,"FIREBurn: fromFIRE: tmp:", tmp, FCDoControl->fbVerbose];
+			FCPrint[1,"FIREBurn: fromFIRE: tmp: ", tmp, FCDoControl->fbVerbose];
 			Message[FIREBurn::failmsg,"FIRE output could not be converted into valid FeynCalc input."];
 			Abort[]
 		];
 
 		res = Times@@tmp;
 
-		FCPrint[4,"FIREBurn: fromFIRE: Intermediate result :", res, FCDoControl->fbVerbose];
+		FCPrint[4,"FIREBurn: fromFIRE: Intermediate result: ", res, FCDoControl->fbVerbose];
 		res = FeynAmpDenominatorCombine[res];
-		FCPrint[4,"FIREBurn: fromFIRE: Final result :", res, FCDoControl->fbVerbose];
+		FCPrint[4,"FIREBurn: fromFIRE: Final result: ", res, FCDoControl->fbVerbose];
 		res
 	];
 
 (*	Converts the output of FeynCalc into FIRE notation	*)
 toFIRE[int_,qs_List] :=
-	Block[{one,two,res,pow,check},
+	Block[{one,two,res,pow,check,dot,aux},
 
-		If[	!MatchQ[int,FAD[b__]/;!FreeQ2[{b},qs]] &&
-			!MatchQ[int,((qps : Times[SPD[_, _]^_. ..] ) FAD[b__])/;!FreeQ2[{b,qps},qs]],
-			FCPrint[3,"FIREBurn: toFIRE: Wrong input :", int, FCDoControl->fbVerbose];
+		If[	!MatchQ[int,(FAD|SFAD)[b__]/;!FreeQ2[{b},qs]] &&
+			!MatchQ[int,((qps : Times[SPD[_, _]^_. ..] ) (FAD|SFAD)[b__])/;!FreeQ2[{b,qps},qs]],
+			FCPrint[3,"FIREBurn: toFIRE: Wrong input: ", int, FCDoControl->fbVerbose];
 			Message[FIREBurn::failmsg,"toFIRE cannot recognize the form of the integral."];
 			Abort[]
 		];
+		aux = int//FCLoopPropagatorPowersExpand//FCLoopRemoveNegativePropagatorPowers[#,FCLoopPropagatorPowersCombine->False]&;
+		res = Tally[ReplaceAll[List@@(one*two*FeynAmpDenominatorSplit[aux,FCE->True]), one|two -> Unevaluated[Sequence[]]]];
+		FCPrint[4,"FIREBurn: toFIRE: Preparing the conversion: ", res, FCDoControl->fbVerbose];
+		res = res/. {Power -> pow, DOT->dot}/. {SFAD[x__]:> (SFAD[x] /. pow->Power)} /.	{pow[x_, i1_Integer], i2_Integer} :> {x, i1*i2};
 
-		res = Tally[ReplaceAll[List@@(one*two*FeynAmpDenominatorSplit[int,FCE->True]), one|two -> Unevaluated[Sequence[]]]];
-		FCPrint[4,"FIREBurn: toFIRE: Preparing the conversion :", res, FCDoControl->fbVerbose];
+		res = res //. {
+						{SPD[x_, y_], i_Integer} :> {x*y,-i, SPD[x,y]}, (* scalar products count as negative propagators*)
+						{FAD[mom_],i_Integer}/;Head[mom]=!=List:> {mom^2,i,FAD[mom]},
+						{FAD[{mom_,mass_}],i_Integer}:> {mom^2-mass^2,i,FAD[{mom,mass}]},
+						{SFAD[{{p0_, c_. dot[p1_, p2_]}, {m2_, 1}, 1}], i_} :> {p0^2 + c p1*p2 - m2,i, SFAD[{{p0, c DOT[p1,p2]}, {m2, 1}, 1}]},
+						{SFAD[{{p0_, 0}, {m2_, 1}, 1}], i_} :> {p0^2 - m2,i, SFAD[{{p0, 0}, {m2, 1}, 1}]}
+		};
 
-		res = res/.Power -> pow /.	{pow[x_, i1_Integer], i2_Integer} :> {x, i1*i2} //. {
-									{SPD[x_, y_], i_Integer} :> {x*y,-i, SPD[x,y]}, (* scalar products count as negative propagators*)
-									{FAD[mom_],i_Integer}/;Head[mom]=!=List:> {mom^2,i,FAD[mom]},
-									{FAD[{mom_,mass_}],i_Integer}:> {mom^2-mass^2,i,FAD[{mom,mass}]}
-									};
-
-		FCPrint[4,"FIREBurn: toFIRE: Intermediate result :", res, FCDoControl->fbVerbose];
-		If[!MatchQ[res, {{_, _Integer, _SPD|_FAD} ..}],
+		FCPrint[4,"FIREBurn: toFIRE: Intermediate result: ", res, FCDoControl->fbVerbose];
+		If[!MatchQ[res, {{_, _Integer, _SPD|_FAD|_SFAD} ..}],
 			Message[FIREBurn::convfail,int,res];
 			Abort[]
 		];
 
-		(* 	check that there is one-to-one correspondence between the list
+		(* 	check that there is a one-to-one correspondence between the list
 			of propagators and the original integral *)
 		check = fromFIRE[res,qs];
-		If[((int-check)//FCI//FDS) =!= 0,
+		If[((int-check)//FCLoopPropagatorPowersExpand//FDS) =!= 0,
 			Message[FIREBurn::convfail,int,ToString[(int-check)//FCI//FDS,InputForm]];
 			Abort[]
 		];
@@ -298,7 +301,7 @@ toFIRE[int_,qs_List] :=
 batchFIRE[qs_List,ext_List,props_List,id_, {file1_String, file2_String, file3_String, startFile_String}]:=
 	Block[{res,fireFile1 ,fireFile2, fireFile3, fireStartFile},
 
-		FCPrint[3,"FIREBurn: batchFIRE: Entering with:", qs, " | ",  ext, " | ", props, " | ", id, " ", FCDoControl->fbVerbose];
+		FCPrint[3,"FIREBurn: batchFIRE: Entering with: ", qs, " | ",  ext, " | ", props, " | ", id, " ", FCDoControl->fbVerbose];
 		{fireFile1, fireFile2, fireFile3, fireStartFile} = FileNameJoin[{FileNameDrop[#, -1], FileBaseName[#] <> "-int" <> ToString[id] <>
 			"." <> FileExtension[#]}]&/@{file1,file2,file3,startFile};
 
@@ -307,7 +310,7 @@ batchFIRE[qs_List,ext_List,props_List,id_, {file1_String, file2_String, file3_St
 			res = RunFIRE[{fireFile1,fireFile2,fireFile3}],
 			res = Null
 		];
-		FCPrint[3,"FIREBurn: batchFIRE: Leaving with:", res, FCDoControl->fbVerbose];
+		FCPrint[3,"FIREBurn: batchFIRE: Leaving with: ", res, FCDoControl->fbVerbose];
 		res
 	];
 
@@ -319,7 +322,7 @@ prepareFIRE[qs_List,ext_List,props_List, {fireFile1_String,fireFile2_String, fir
 	Block[{	internal,external,prs,propagators,replacements,
 			integral,tmp,fireConfig, listHead,spd,spHead, sps},
 
-		FCPrint[2,"FIREBurn: prepareFIRE: Entering with:", qs, " | ",  ext, " | ", props, " ", FCDoControl->fbVerbose];
+		FCPrint[2,"FIREBurn: prepareFIRE: Entering with: ", qs, " | ",  ext, " | ", props, " ", FCDoControl->fbVerbose];
 
 		prs = props;
 		(* 	We take only loop and external momenta that are explicitly present in the integral.
@@ -336,7 +339,7 @@ prepareFIRE[qs_List,ext_List,props_List, {fireFile1_String,fireFile2_String, fir
 
 		abbreviations = FCAbbreviate[Join[propagators,sps],internal,external,Head->spHead];
 
-		FCPrint[3,"FIREBurn: prepareFIRE: abbreviations :", abbreviations, FCDoControl->fbVerbose];
+		FCPrint[3,"FIREBurn: prepareFIRE: abbreviations: ", abbreviations, FCDoControl->fbVerbose];
 
 		replacements = abbreviations[[1]]/.spHead->Times;
 
@@ -346,12 +349,12 @@ prepareFIRE[qs_List,ext_List,props_List, {fireFile1_String,fireFile2_String, fir
 		(*	this is the integral F[1,xxx] that FIRE will reduce	*)
 		integral = {1,prs/.{_,a_Integer,_}:>a};
 
-		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's Internal :", StandardForm[internal], FCDoControl->fbVerbose];
-		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's External :", StandardForm[external], FCDoControl->fbVerbose];
-		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's Propagators :", StandardForm[propagators], FCDoControl->fbVerbose];
-		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's Replacements :", StandardForm[replacements], FCDoControl->fbVerbose];
-		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's Intitial Data File :", StandardForm[fireStartFile], FCDoControl->fbVerbose];
-		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's F integral :", StandardForm[integral], FCDoControl->fbVerbose];
+		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's Internal: ", StandardForm[internal], FCDoControl->fbVerbose];
+		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's External: ", StandardForm[external], FCDoControl->fbVerbose];
+		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's Propagators: ", StandardForm[propagators], FCDoControl->fbVerbose];
+		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's Replacements: ", StandardForm[replacements], FCDoControl->fbVerbose];
+		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's Intitial Data File: ", StandardForm[fireStartFile], FCDoControl->fbVerbose];
+		FCPrint[3,"FIREBurn: prepareFIRE: FIRE's F integral: ", StandardForm[integral], FCDoControl->fbVerbose];
 
 		fireConfig = OpenWrite[fireFile1];
 		WriteString[fireConfig, "FIREPath="<> ToString[DirectoryName[firePath],InputForm] <>";\n"];
@@ -496,6 +499,9 @@ RunFIRE[{fireFile1_String, fireFile2_String, fireFile3_String}]:=
 		res
 	];
 
+inversePropagator[SFAD[a__]]:=
+	1/PropagatorDenominatorExplicit[SFAD[a],FCE->True];
+
 inversePropagator[FAD[a_ /; Head[a] =!= List]]:=
 	SPD[a];
 
@@ -504,5 +510,8 @@ inversePropagator[FAD[a_List]] :=
 
 inverseSPD[SPD[a_,a_]]:=
 	FAD[a];
+
+inverseSPD[SPD[a_,b_]]:=
+	SFAD[{{0, a.b}, {0, 1}, 1}]/; b=!=a;
 
 End[]
