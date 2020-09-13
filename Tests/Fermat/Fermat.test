@@ -1,0 +1,20 @@
+(* :Title: Fermat.test														*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2020-2020 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for FeynHelpers				*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`Fermat`Generic =
+({
+{"FerSolve-ID1",
+"FerSolve[{a x + y == 7, b x - y == 1}, {x, y}, Timing -> False]",
+"{x->8/(a+b),y->-((a-7 b)/(a+b))}"},
+{"FerSolve-ID2",
+"FerSolve[{2 x + y c == 2, 4 x == c}, {x, y}, Timing -> False]",
+"{x->c/4,y->-((c-4)/(2 c))}"}
+})
