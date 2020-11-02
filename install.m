@@ -337,13 +337,18 @@ InstallFIRE[OptionsPattern[]]:=
 		(* Move the files to the final destination	*)
 		WriteString["stdout", "Copying "<> packageName <>" to ", packageDir, " ..."];
 
+		CopyDirectory[fullPath,packageDir];
+		WriteString["stdout", "done! \n"];
+		Quiet@DeleteDirectory[unzipDir, DeleteContents -> True];
+		(* CopyDirectory always returns $Failed, since the FIRE5 tarball contains broken symlinks *)
+		(*
 		If[	CopyDirectory[fullPath,packageDir]===$Failed,
 			WriteString["stdout", "\nFailed to copy "  <> fullPath <> " to ", packageDir <>". \nInstallation aborted!"];
 			Abort[],
 			WriteString["stdout", "done! \n"];
 			(* Delete the extracted archive *)
 			Quiet@DeleteDirectory[unzipDir, DeleteContents -> True];
-		];
+		];*)
 
 
 		(* Delete the downloaded file	*)
