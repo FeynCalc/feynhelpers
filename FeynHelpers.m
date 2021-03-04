@@ -67,10 +67,16 @@ If[ $FeynCalcStartupMessages =!= False,
 	Style[" If you use FeynHelpers in your research, please cite","Text"]];
 	Print [Style[" \[Bullet] V. Shtabovenko, \"FeynHelpers: Connecting FeynCalc to FIRE and Package-X\", Comput. Phys. Commun., 218, 48-65, 2017, arXiv:1611.06793","Text"]];
 	Print[Style["Furthermore, remember to cite the authors of the tools that you are calling from FeynHelpers, which are","Text"]];
-	Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIRE",ButtonData :> {URL["http://science.sander.su/FIRE.htm"], None},BaseStyle -> "Hyperlink",
-				ButtonNote -> "http://science.sander.su/FIRE.htm"],"Text"], Style[" by A. Smirnov, if you are using the function FIREBurn.","Text"]];
+	Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIRE",ButtonData :> {URL["https://bitbucket.org/feynmanIntegrals/fire/"], None},BaseStyle -> "Hyperlink",
+				ButtonNote -> "https://bitbucket.org/feynmanIntegrals/fire/"],"Text"], Style[" by A. Smirnov, if you are using the function FIREBurn.","Text"]];
 	Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Package-X",ButtonData :> {URL["https://packagex.hepforge.org"], None},BaseStyle -> "Hyperlink",
 				ButtonNote -> "https://packagex.hepforge.org"],"Text"], Style[" by H. Patel, if you are using the function PaXEvaluate.","Text"]];
+	Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Fermat",ButtonData :> {URL["https://home.bway.net/lewis"], None},BaseStyle -> "Hyperlink",
+				ButtonNote -> "https://home.bway.net/lewis"],"Text"], Style[" by R. Lewis, if you are using the function FerSolve.","Text"]];
+];
+
+If[ !ValueQ[FeynHelpers`Package`paxLoaded],
+	FeynHelpers`Package`paxLoaded = False
 ];
 
 If[ !ValueQ[FeynHelpers`Package`paxLoaded],

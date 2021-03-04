@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2020-2020 Vladyslav Shtabovenko
+	Copyright (C) 2020-2021 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Interface between FeynCalc/Mathematica and Fermat			*)
@@ -16,10 +16,9 @@ FerCommand::usage =
 corresponding to str (possibly using arguments args) as a list of strings.";
 
 FerSolve::usage =
-"FerSolve[eqs, vars] solves the system of equations eqs for the variables \
-vars by calculating the row-reduced form of the corresponding augmented matrix. \
-The latter is done using Fermat.";
-
+"FerSolve[eqs, vars] solves the system of linear equations eqs for the variables \
+vars by calculating the row-reduced form of the corresponding augmented matrix \
+using Fermat.";
 
 FerMatrixToFermatArray::usage =
 "FerMatrixToFermatArray[mat,varName] is an auxiliary function that converts \
@@ -28,12 +27,35 @@ that represents the matrix, a list of auxuliary variables (introduced to be \
 compatible with the restrictions of Fermat) and a replacement rule for \
 converting auxiliary variables back into the original variables."
 
-FerInputFile::usage ="";
-FerOutputFile::usage ="";
-FerScriptFile::usage ="";
+FerInputFile::usage =
+"FerInputFile is an option for multiple functions of the Fermat interface. It \
+specifies the location of the file containing the input for a Fermat calculation. If set \
+to Automatic (default), a temporary file will be automatically created and removed \
+after a successful evaluation.";
+
+FerOutputFile::usage =
+"FerOutputFile is an option for multiple functions of the Fermat interface. It \
+specifies the location of the file containing the output of Fermat calculation. If set \
+to Automatic (default), a temporary file will be automatically created and removed \
+after a successful evaluation.";
+
+FerScriptFile::usage =
+"FerScriptFile is an option for multiple functions of the Fermat interface. It \
+specifies the location of the file containing instructions for Fermat. If set \
+to Automatic (default), a temporary file will be automatically created and removed \
+after a successful evaluation.";
 
 FerRunScript::usage =
-"";
+"FerRunScript[scriptFile] is an auxiliary function that runs the script \
+scriptFile in Fermat. The script file is expected to be a valid Fermat code. \
+Furthermore, the option FerPath should point to an executable Fermat binary";
+
+FerPath::usage="FerPath is an option for FerRunScript and multiple other Fer* functions. \
+It specifies the full path to the Fermat binary. If set to Automatic, Fermat binaries are
+expected to be located in \
+FileNameJoin[{$FeynHelpersDirectory, \"ExternalTools\", \"Fermat\", \"ferl6\", \"fer64\"}] and \
+and FileNameJoin[{$FeynHelpersDirectory, \"ExternalTools\", \"Fermat\",\"ferm6\", \"fer64\"}] \
+for Linux and macOS respectively.";
 
 FerMatrixToFermatArray::failmsg =
 "Error! FerMatrixToFermatArray has encountered a fatal problem and must abort the computation. \
@@ -65,6 +87,9 @@ Begin["`Package`"]
 End[]
 
 Begin["`Fer`Private`"]
+
+fsVerbose::usage="";
+frsVerbose::usage="";
 
 FerCommand["Quit"]:=
 	"&q;";
@@ -100,19 +125,25 @@ Options[FerRowReduce] = {
 	FerInputFile	:> CreateTemporary[],
 	FerOutputFile	:> CreateTemporary[],
 	FerScriptFile	:> CreateTemporary[],
+	FerPath			-> Automatic,
 	Timing			-> True
 };
 
 Options[FerSolve] = {
 	Check			-> True,
+	DeleteFile		-> True,
+	FCVerbose 		-> False,
 	FerInputFile	:> CreateTemporary[],
 	FerOutputFile	:> CreateTemporary[],
+	FerPath			-> Automatic,
 	FerScriptFile	:> CreateTemporary[],
 	Timing			-> True
 };
 
 
 Options[FerRunScript] = {
+	FCVerbose 		-> False,
+	FerPath			-> Automatic,
 	MaxIterations	-> Infinity,
 	Timing			-> True
 };
@@ -137,17 +168,54 @@ FerSolve[eqs_List, vars_List, OptionsPattern[]]:=
 			Abort[]
 		];
 
-		{aPiece, bPiece} = CoefficientArrays[eqs, vars];
+		If [OptionValue[FCVerbose]===False,
+			fsVerbose=$VeryVerbose,
+			If[MatchQ[OptionValue[FCVerbose], _Integer],
+				fsVerbose=OptionValue[FCVerbose]
+			]
+		];
 
+		FCPrint[1,"FerSolve: Entering.", FCDoControl->fsVerbose];
+		FCPrint[1,"FerSolve: Fermat input file: ", inFile, FCDoControl->fsVerbose];
+		FCPrint[1,"FerSolve: Fermat output file: ", outFile, FCDoControl->fsVerbose];
+		FCPrint[1,"FerSolve: Fermat scriptFile file: ", scriptFile, FCDoControl->fsVerbose];
+		FCPrint[3,"FerSolve: Entering with: ", {eqs,vars}, FCDoControl->fsVerbose];
+
+		FCPrint[1,"FerSolve: Constructing the augmented matrix.", FCDoControl->fsVerbose];
+		time=AbsoluteTime[];
+		{aPiece, bPiece} = CoefficientArrays[eqs, vars];
 		augMatrix = Transpose[Join[Transpose[bPiece], {aPiece}]];
+		FCPrint[1, "FerSolve: Done constructing the augmented matrix, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->fsVerbose];
+
+		FCPrint[3,"FerSolve: Augmented matrix: ", augMatrix, FCDoControl->fsVerbose];
 
 		If[!MatrixQ[augMatrix],
 			Message[FerSolve::failmsg,"Failed to obtain the augmented matrix."];
 			Abort[]
 		];
 
+		FCPrint[1,"FerSolve: Calling RowReduce.", FCDoControl->fsVerbose];
+		time=AbsoluteTime[];
 		res = FerRowReduce[augMatrix, FerInputFile->inFile, FerOutputFile->outFile,
 			FerScriptFile->scriptFile, Timing-> optTiming];
+		FCPrint[1, "FerSolve: RowReduce done, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->fsVerbose];
+
+		If[	OptionValue[DeleteFile],
+
+			FCPrint[1,"FerSolve: Removing temporary files.", FCDoControl->fsVerbose];
+			If[	FileExistsQ[inFile],
+				DeleteFile[inFile]
+			];
+			If[	FileExistsQ[outFile],
+				DeleteFile[outFile]
+			];
+			If[	FileExistsQ[scriptFile],
+				DeleteFile[scriptFile]
+			];
+			FCPrint[1, "FerSolve: Done removing temporary files timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->fsVerbose];
+		];
+
+		FCPrint[3,"FerSolve: Raw solution: ", res, FCDoControl->fsVerbose];
 
 		If[!MatrixQ[res],
 			Message[FerSolve::failmsg,"Failed to obtain the row-reduced matrix."];
@@ -155,18 +223,19 @@ FerSolve[eqs_List, vars_List, OptionsPattern[]]:=
 		];
 
 		size = First[Dimensions[res]];
-
 		If[	IdentityMatrix[size, SparseArray] =!= res[[1 ;;, 1 ;; -2]],
-			Message[FerSolve::failmsg,"The row-reduced matrix is not in the required form."];
+			(*No solution found*)
+			Return[{}];
 			Abort[]
 		];
 
 		sol = Thread[Rule[vars, -1*res[[All, -1]]]];
+		FCPrint[3,"FerSolve: Final solution: " res, FCDoControl->fsVerbose];
 
 		If[OptionValue[Check],
 
 			time=AbsoluteTime[];
-			FCPrint[If[optTiming,0,1],"FerSolve: Verifying the result.","\n", UseWriteString -> True];
+			FCPrint[If[optTiming,0,1],"FerSolve: Verifying the result.","\n", UseWriteString -> True, FCDoControl->fsVerbose];
 
 			checkVars = Variables[augMatrix];
 			checkPrimes = Table[RandomPrime[{10^6, 10^7}],{i,1,Length[checkVars]}];
@@ -179,9 +248,11 @@ FerSolve[eqs_List, vars_List, OptionsPattern[]]:=
 				Message[FerSolve::failmsg,"The obtained solution is incorrect."];
 				Abort[]
 			];
-			FCPrint[If[optTiming,0,1],"FerSolve: Done verifying the result, timing: ", N[AbsoluteTime[] - time, 4], "\n", UseWriteString -> True];
+			FCPrint[If[optTiming,0,1],"FerSolve: Done verifying the result, timing: ", N[AbsoluteTime[] - time, 4], "\n", UseWriteString -> True, FCDoControl->fsVerbose];
 
 		];
+
+		FCPrint[1,"FerSolve: Leaving.", FCDoControl->fsVerbose];
 
 		sol
 	];
@@ -217,7 +288,7 @@ FerRowReduce[matRaw_?MatrixQ, OptionsPattern[]]:=
 
 		FerWriteFile[inFile, scriptFile, mat, script];
 
-		FerRunScript[scriptFile, Timing->OptionValue[Timing]];
+		FerRunScript[scriptFile, FerPath -> OptionValue[FerPath], Timing->OptionValue[Timing]];
 
 		res = FerImportArrayAsSparseMatrix[outFile, "fMat", Dimensions[matRaw], FinalSubstitutions->rule];
 
@@ -336,62 +407,88 @@ FerWriteFile[inFile_String, scriptFile_String, input_String, script_String] :=
 
 
 FerRunScript[scriptFile_String, OptionsPattern[]]:=
-Block[{scriptRunner, server, input, counter,
-	optMaxIterations, failed, time, optTiming},
+	Block[{	scriptRunner, server, input, counter,
+			optMaxIterations, failed, time, optTiming, pathToFermat, optFerPath},
 
-	failed=False;
-	counter = 0;
+		If [OptionValue[FCVerbose]===False,
+			frsVerbose=$VeryVerbose,
+			If[MatchQ[OptionValue[FCVerbose], _Integer],
+				frsVerbose=OptionValue[FCVerbose]
+			]
+		];
 
-	optMaxIterations	= OptionValue[MaxIterations];
-	optTiming			= OptionValue[Timing];
+		failed	= False;
+		counter = 0;
 
-	Switch[$OperatingSystem,
-		"MacOSX" | "Unix",
-		scriptRunner = FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "Fermat","runFermatUnix.sh"}],
-		"Windows",
-		scriptRunner = FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "Fermat","runFermatWin.ps1"}],
-		_,
-		Message[FerRunScript::failmsg,"Unknown operating system."];
-		Abort[]
-	];
+		optMaxIterations	= OptionValue[MaxIterations];
+		optTiming			= OptionValue[Timing];
+		optFerPath			= OptionValue[FerPath];
 
-	time=AbsoluteTime[];
-	FCPrint[If[optTiming,0,1],"FerRunScript: Running Fermat.","\n", UseWriteString -> True];
+		FCPrint[1,"FerRunScript: Entering.", FCDoControl->frsVerbose];
 
-	server = StartProcess[{scriptRunner,scriptFile}];
+		Switch[$OperatingSystem,
+			"Unix",
+			pathToFermat = FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "Fermat", "ferl6", "fer64"}],
+			"MacOSX",
+			pathToFermat = FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "Fermat", "ferm6", "fer64"}],
+			_,
+			Message[FerRunScript::failmsg,"Recent versions of Fermat are available only for Linux and macOS."];
+			Abort[]
+		];
 
-	If[	server === $Failed,
-		Message[FerRunScript::failmsg,"Failed to execute StartProcess."];
-		Abort[]
-	];
+		If[	optFerPath=!=Automatic,
+			pathToFermat = optFerPath
+		];
 
-	While[	input =!= EndOfFile,
-			counter++;
+		If[	!FileExistsQ[pathToFermat],
+			Message[FerRunScript::failmsg,"Fermat binary not found. Did you download Fermat from the author's webpage?"];
+			Abort[]'
+		];
 
-			input = ReadLine[server];
-			(*Print[input];*)
+		scriptRunner = FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "Fermat","runFermatUnix.sh"}];
 
-			If[ input === " bye",
-				KillProcess[server];
-				Break[]
-			];
+		time=AbsoluteTime[];
+		FCPrint[If[optTiming,0,1],"FerRunScript: Running Fermat.","\n", UseWriteString -> True];
 
-			If[ StringMatchQ[input, ___ ~~"Inappropriate" ~~ ___] ||
-				StringMatchQ[input, ___ ~~"Stopped" ~~ ___] ||
-				StringMatchQ[input, ___ ~~"Error occurred" ~~ ___],
-				Print[input];
-				failed=True;
-				KillProcess[server];
-				Message[FerRunScript::failmsg,"Errors in the execution of the Fermat script " <> scriptFile];
-				Abort[]
-			];
-	];
+		FCPrint[1,"FerRunScript: Fermat script runner: ", scriptRunner,  FCDoControl->frsVerbose];
+		FCPrint[1,"FerRunScript: Fermat binary: ", pathToFermat,  FCDoControl->frsVerbose];
+		FCPrint[1,"FerRunScript: Fermat script file: ", pathToFermat,  FCDoControl->frsVerbose];
 
-	FCPrint[If[optTiming,0,1],"FerRunScript: Done running Fermat, timing: ", N[AbsoluteTime[] - time, 4], "\n", UseWriteString -> True];
+		server = StartProcess[{scriptRunner,pathToFermat,scriptFile}];
 
+		If[	server === $Failed,
+			Message[FerRunScript::failmsg,"Failed to execute StartProcess."];
+			Abort[]
+		];
 
-	(*Print[ProcessStatus[server]];*)
+		While[	input =!= EndOfFile,
+				counter++;
 
+				input = ReadLine[server];
+				If[input === EndOfFile, Continue[]];
+				FCPrint[1,"FerRunScript: ", input,"\n", UseWriteString -> True,  FCDoControl->frsVerbose];
+
+				If[ input === " bye",
+					KillProcess[server];
+					Break[]
+				];
+
+				If[ StringMatchQ[input, ___ ~~"Inappropriate" ~~ ___] ||
+					StringMatchQ[input, ___ ~~"Stopped" ~~ ___] ||
+					StringMatchQ[input, ___ ~~"Error occurred" ~~ ___],
+					Print[input];
+					failed=True;
+					KillProcess[server];
+					Message[FerRunScript::failmsg,"Errors in the execution of the Fermat script " <> scriptFile];
+					Abort[]
+				];
+		];
+
+		FCPrint[If[optTiming,0,1],"FerRunScript: Done running Fermat, timing: ", N[AbsoluteTime[] - time, 4], "\n", UseWriteString -> True];
+
+		FCPrint[1,"FerRunScript: ProcessStatus: ", ProcessStatus[server], FCDoControl->frsVerbose];
+
+		FCPrint[1,"FerRunScript: Leaving.", FCDoControl->frsVerbose];
 ];
 
 

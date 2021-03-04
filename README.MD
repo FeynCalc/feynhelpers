@@ -8,7 +8,7 @@ FeynHelpers is a collection of interfaces that allow you to use other HEP-relate
 
 # Requirements
 
-FeynHelpers is designed as an add-on for FeynCalc. To use it you need at least FeynCalc 9.3 and Mathematica 8.
+FeynHelpers is designed as an add-on for FeynCalc. To use it you need at least FeynCalc 9.2 and Mathematica 8.
 
 # Supported tools
 
@@ -35,10 +35,6 @@ Tools that are currently supported are
     ImportString[URLFetch["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]]
     InstallFeynHelpers[]
     ```
-
-  When updating FeynHelpers on Windows 10, Mathematica sometimes may not be able to delete the existing directories
-  containing FeynHelpers, Package-X or FIRE. This will cause the installer script to fail. In this case you should 
-  remove the existing directories by hand, restart the kernel and run the installer again.
 
 * The automatic installer can also install Package-X and FIRE for you. It will offer you this possiblity at the end of the installation process
 
@@ -73,6 +69,60 @@ Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"
 InstallFeynHelpers[InstallFeynHelpersDevelopmentVersion->True]
 ```
 
+## Experimental Fermat interface
+
+The development version features an interface to the CAS [Fermat](http://home.bway.net/lewis/) by R. Lewis. At the moment
+the main function of this interface is `FerSolve`, which employs Fermat to solve systems of linear equations. Notice that to run `FerSolve` you need to download the Fermat binary and put `ferl6` (Linux) or `ferm6` (macOS) to `FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "Fermat"}]`.
+
+
+Some examples for running FerSolve would be
+
+
+```
+FerSolve[{a x + y == 7, b x - y == 1}, {x, y}]
+```
+
+```
+FerSolve[{2 x + y c == 2, 4 x == c}, {x, y}]
+```
+
+```
+eqs = {M0 == (1 - f1 - f2 - f3 - f4 - f5 - f6 - f7 - f8 - f9 - f10 - 
+      f11 - f12 - f13 - f14 - f15 - f16)*m0, 
+  M1 == f1*m0 + (1 - f1 - f2 - f3 - f4 - f5 - f6 - f7 - f8 - f9 - 
+       f10 - f11 - f12 - f13 - f14 - f15 - f16)*m1, 
+  M2 == f1*m1 + 
+    f2*m0 + (1 - f1 - f2 - f3 - f4 - f5 - f6 - f7 - f8 - f9 - f10 - 
+       f11 - f12 - f13 - f14 - f15 - f16)*m2, 
+  M4 == f1*m3 + f2*m2 + f3*m1 + f4*m0, 
+  M5 == f2*m3 + f3*m2 + f4*m1 + f5*m0, 
+  M6 == f3*m3 + f4*m2 + f5*m1 + f6*m0, 
+  M7 == f4*m3 + f5*m2 + f6*m1 + f7*m0, 
+  M8 == f5*m3 + f6*m2 + f7*m1 + f8*m0, 
+  M9 == f6*m3 + f7*m2 + f8*m1 + f9*m0, 
+  M10 == f7*m3 + f8*m2 + f9*m1 + f10*m0, 
+  M11 == f8*m3 + f9*m2 + f10*m1 + f11*m0, 
+  M12 == f9*m3 + f10*m2 + f11*m1 + f12*m0, 
+  M13 == f10*m3 + f11*m2 + f12*m1 + f13*m0, 
+  M14 == f11*m3 + f12*m2 + f13*m1 + f14*m0, 
+  M15 == f12*m3 + f13*m2 + f14*m1 + f15*m0, 
+  M16 == f13*m3 + f14*m2 + f15*m1 + f16*m0};
+vars = {f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, 
+  f15, f16}
+FerSolve[eqs, vars]
+```
+
+`FerSolve` can be also employed for calculating new tensor reduction with `Tdec`. For example,
+
+```
+$LoadAddOns = {"FeynHelpers"};
+<< FeynCalc`
+
+Tdec[{{p1, mu1}, {p1, mu2}, {p1, mu3}, {p1, mu4}, {p2, mu5}, {p2, 
+   mu6}}, {Q1, Q2}, Solve -> FerSolve, UseTIDL -> False, 
+ FCVerbose -> 1]
+```
+
 # Usage
 
 For usage information see the accompanying paper [arXiv:1611.06793](https://arxiv.org/abs/1611.06793) and the supplied examples.
@@ -87,6 +137,7 @@ Also don't forget to cite the authors of the tools that you are calling from Fey
 
 * [FIRE](http://inspirehep.net/record/1310407?ln=en) if you use FIREBurn
 * [Package X](http://inspirehep.net/record/1347391/) if you use PaXEvaluate
+* [Fermat](https://home.bway.net/lewis) if you use FerSolve
 
 # License
 
