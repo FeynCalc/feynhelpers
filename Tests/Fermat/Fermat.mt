@@ -2,7 +2,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2020-2020 Vladyslav Shtabovenko
+	Copyright (C) 2020-2021 Vladyslav Shtabovenko
 *)
 
 (* :Summary:  Unit tests for Fermat											*)

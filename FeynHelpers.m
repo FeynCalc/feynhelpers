@@ -6,7 +6,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2020 Vladyslav Shtabovenko
+	Copyright (C) 2015-2021 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Interfaces between FeynCalc and other useful HEP package	*)
