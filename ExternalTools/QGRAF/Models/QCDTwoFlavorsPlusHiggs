@@ -1,0 +1,21 @@
+[ model = 'Two-flavor QCD with Higgs effective vertices' ]
+
+% Propagators:
+
+[Qi, Qibar, -; mass='QGMassQ1']
+[Qj, Qjbar, -; mass='QGMassQ2']
+[Gh, Ghbar, -; mass='0']
+[Gl, Gl, +;  mass='0']
+[H, H, +;  mass='QGMassH']
+
+
+% Vertices:
+
+[Qibar, Qi, Gl]
+[Qjbar, Qj, Gl]
+[Gl, Gl, Gl, Gl]
+[Gl, Gl, Gl]
+[Ghbar, Gl, Gh]
+[Gl, Gl, H]
+[Gl, Gl, Gl, H]
+[Gl, Gl, Gl, Gl, H]

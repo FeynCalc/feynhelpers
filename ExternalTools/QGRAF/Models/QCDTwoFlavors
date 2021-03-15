@@ -1,0 +1,17 @@
+[ model = 'Two-flavor QCD' ]
+
+% Propagators:
+
+[Qi, Qibar, -; mass='QGMassQ1']
+[Qj, Qjbar, -; mass='QGMassQ2']
+[Gh, Ghbar, -; mass='0']
+[Gl, Gl, +;  mass='0']
+
+
+% Vertices:
+
+[Qibar, Qi, Gl]
+[Qjbar, Qj, Gl]
+[Gl, Gl, Gl, Gl]
+[Gl, Gl, Gl]
+[Ghbar, Gl, Gh]

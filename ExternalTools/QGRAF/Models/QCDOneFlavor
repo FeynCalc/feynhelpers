@@ -1,0 +1,15 @@
+[ model = 'One-flavor QCD' ]
+
+% Propagators:
+
+[Q, Qbar, -; mass='QGMassQ']
+[Gh, Ghbar, -; mass='0']
+[Gl, Gl, +;  mass='0']
+
+
+% Vertices:
+
+[Qbar, Q, Gl]
+[Gl, Gl, Gl, Gl]
+[Gl, Gl, Gl]
+[Ghbar, Gl, Gh]

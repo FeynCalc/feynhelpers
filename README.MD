@@ -123,6 +123,22 @@ Tdec[{{p1, mu1}, {p1, mu2}, {p1, mu3}, {p1, mu4}, {p2, mu5}, {p2,
  FCVerbose -> 1]
 ```
 
+## Experimental QGRAF interface
+
+The interface to QGRAF is still very unstable and full of bugs and missing features. Just to 
+give a general idea of how it is supposed to work, here is a simple QED 2-loop example
+
+```
+SetDirectory[NotebookDirectory[]]
+out = QGCreateAmp[2, {"El[p]"} -> {"El[p]"}, QGLoopMomentum -> l, 
+  QGModel -> "QEDOneFlavor", QGShowOutput -> False]
+  
+QGConvertToFC[out[[1]], DiracChainJoin -> True]  
+
+QGPrepareDiagramsTeX[out[[2]], "dias.tex"]
+(*or QGPrepareDiagramsTeX[out[[2]], "Dias", Split -> True] *)
+```
+
 # Usage
 
 For usage information see the accompanying paper [arXiv:1611.06793](https://arxiv.org/abs/1611.06793) and the supplied examples.

@@ -1,0 +1,15 @@
+[ model = 'Three-flavors QED' ]
+
+% Propagators:
+
+[El, Ael, -; mass='QGMassEl']
+[Mu, Amu, -; mass='QGMassMu']
+[Tau, Atau, -; mass='QGMassTau']
+[Ga, Ga, +;  mass='0']
+
+
+% Vertices:
+
+[Ael, El, Ga]
+[Amu, Mu, Ga]
+[Atau, Tau, Ga]

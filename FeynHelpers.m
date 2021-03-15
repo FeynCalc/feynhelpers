@@ -28,14 +28,17 @@ End[]
 
 Begin["`FeynHelpers`Private`"];
 
-$FeynHelpersVersion="1.3.0";
+$FeynHelpersVersion="1.4.0";
 
 $FeynHelpersDirectory = FileNameJoin[{$FeynCalcDirectory, "AddOns", "FeynHelpers"}];
 
 (* Load the intefaces *)
 BeginPackage["FeynCalc`"];
 FCDeclareHeader/@FileNames[{"*.m"}, FileNameJoin[{$FeynHelpersDirectory,"Interfaces"}]];
+FCDeclareHeader/@FileNames[{"*.m"},ToFileName[{$FeynHelpersDirectory,"Interfaces","QGRAF"}]];
 Get/@FileNames[{"*.m"}, FileNameJoin[{$FeynHelpersDirectory,"Interfaces"}]];
+Get/@FileNames[ToFileName[{$FeynHelpersDirectory,"Interfaces","QGRAF","QGRAFShared.m"}]];
+Get/@FileNames[{"*.m"},ToFileName[{$FeynHelpersDirectory,"Interfaces","QGRAF"}]];
 EndPackage[]
 
 
@@ -73,6 +76,8 @@ If[ $FeynCalcStartupMessages =!= False,
 				ButtonNote -> "https://packagex.hepforge.org"],"Text"], Style[" by H. Patel, if you are using the function PaXEvaluate.","Text"]];
 	Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Fermat",ButtonData :> {URL["https://home.bway.net/lewis"], None},BaseStyle -> "Hyperlink",
 				ButtonNote -> "https://home.bway.net/lewis"],"Text"], Style[" by R. Lewis, if you are using the function FerSolve.","Text"]];
+	Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["QGRAF",ButtonData :> {URL["http://cfif.ist.utl.pt/~paulo/qgraf.html"], None},BaseStyle -> "Hyperlink",
+				ButtonNote -> "http://cfif.ist.utl.pt/~paulo/qgraf.html"],"Text"], Style[" by P. Nogueira, if you are using functions that begin with QG.","Text"]];
 ];
 
 If[ !ValueQ[FeynHelpers`Package`paxLoaded],

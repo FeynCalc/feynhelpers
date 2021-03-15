@@ -1,2 +1,6 @@
 ExternalTools/Fermat/ferl6/*
 ExternalTools/Fermat/ferm6/*
+ExternalTools/QGRAF/Binary/*
+ExternalTools/QGRAF/LaTeX/*.aux
+ExternalTools/QGRAF/LaTeX/*.log
+

@@ -1,0 +1,32 @@
+% !TeX program = lualatex
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[compat=1.1.0]{tikz-feynman}
+
+\newcommand{\diaProlog}{}
+\newcommand{\diaEpilog}{\\ \\}
+
+
+\tikzfeynmanset{
+	qgElName/.style={particle=\(e^-\)},
+	qgAelName/.style={particle=\(e^+\)},
+	qgGaName/.style={particle=\(\gamma\)},
+	qgElStyle/.style={fermion},
+	qgAelStyle/.style={anti fermion},
+	qgGaStyle/.style={boson, blue},
+	%	qgElMomentumArrowStyle/.style n args={2}{{momentum'={[arrow style=red]{\(#1\)}}}},
+	%	qgAelMomentumArrowStyle/.style n args={2}{{momentum'={[arrow style=red]{\(#1\)}}}},
+	%    qgGaMomentumArrowStyle/.style n args={2}{{momentum'={[arrow style=red]{\(#1\)}}}}
+	qgElMomentumArrowStyle/.style n args={2}{},
+	qgAelMomentumArrowStyle/.style n args={2}{},
+	qgGaMomentumArrowStyle/.style n args={2}{}
+}
+
+
+\tikzset{
+	qgGaEdgeName/.style={edge label=\(\gamma\)},
+	qgElEdgeName/.style={edge label=\(e^-\)},
+	qgAelEdgeName/.style={edge label=\(e^+\)},
+}
+
+\begin{document}

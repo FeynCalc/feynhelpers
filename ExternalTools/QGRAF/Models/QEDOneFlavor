@@ -1,0 +1,11 @@
+[ model = 'One-flavor QED' ]
+
+% Propagators:
+
+[El, Ael, -; mass='QGMassEl']
+[Ga, Ga, +;  mass='0']
+
+
+% Vertices:
+
+[Ael, El, Ga]
