@@ -61,7 +61,7 @@ Options[QGPrepareDiagramsTeX] =
 	QGTeXProlog 	-> "TikZ-FeynmanProlog.tex",
 	Style			-> "TikZ-Feynman",
 	Split			-> False,
-	StringSplit 	-> "\diaProlog"
+	StringSplit 	-> "\\diaProlog"
 };
 
 
