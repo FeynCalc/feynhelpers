@@ -78,6 +78,8 @@ If[ $FeynCalcStartupMessages =!= False,
 				ButtonNote -> "https://home.bway.net/lewis"],"Text"], Style[" by R. Lewis, if you are using the function FerSolve.","Text"]];
 	Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["QGRAF",ButtonData :> {URL["http://cfif.ist.utl.pt/~paulo/qgraf.html"], None},BaseStyle -> "Hyperlink",
 				ButtonNote -> "http://cfif.ist.utl.pt/~paulo/qgraf.html"],"Text"], Style[" by P. Nogueira, if you are using functions that begin with QG.","Text"]];
+	Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["LoopTools",ButtonData :> {URL["http://www.feynarts.de/looptools/"], None},BaseStyle -> "Hyperlink",
+				ButtonNote -> "http://www.feynarts.de/looptools"],"Text"], Style[" by T. Hahn, if you are using functions that begin with LT.","Text"]];
 ];
 
 If[ !ValueQ[FeynHelpers`Package`paxLoaded],
