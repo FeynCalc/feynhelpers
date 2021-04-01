@@ -63,12 +63,15 @@ Options[QGPrepareDiagramsTeX] =
 	Split			-> False,
 	StringSplit 	-> "\\diaProlog"
 };
-
+(*Optional possibilities: All in one or many simple PDFs
+Layouting: horizontal or vertical ...
+*)
 
 QGPrepareDiagramsTeX[input_String/;input=!="", output_String, OptionsPattern[]] :=
 	Block[{	importedFile, time, diagramsRaw, prolog, diagrams, optNames,
 			optDeleteFile, optDeleteDirectory, status, texPrologEpilog,
-			pathQGTeXProlog, pathQGTeXEpilog, optQGTeXProlog, optQGTeXEpilog},
+			pathQGTeXProlog, pathQGTeXEpilog, optQGTeXProlog, optQGTeXEpilog,
+			optStyle},
 
 		If [OptionValue[FCVerbose]===False,
 			qgptVerbose=$VeryVerbose,
@@ -82,6 +85,7 @@ QGPrepareDiagramsTeX[input_String/;input=!="", output_String, OptionsPattern[]] 
 		optDeleteDirectory	= OptionValue[DeleteDirectory];
 		optQGTeXProlog		= OptionValue[QGTeXProlog];
 		optQGTeXEpilog		= OptionValue[QGTeXEpilog];
+		optStyle			= OptionValue[Style];
 
 		FCPrint[1,"QGPrepareDiagramsTeX: Entering. ", FCDoControl->qgptVerbose];
 
@@ -120,7 +124,7 @@ QGPrepareDiagramsTeX[input_String/;input=!="", output_String, OptionsPattern[]] 
 			Abort[]
 		];
 
-		FCPrint[1, "QGPrepareDiagramsTeX: Done importing tprolog and epilog files, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->qgptVerbose];
+		FCPrint[1, "QGPrepareDiagramsTeX: Done importing prolog and epilog files, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->qgptVerbose];
 
 
 		FCPrint[1,"QGPrepareDiagramsTeX: Importig the input file.", FCDoControl->qgptVerbose];
@@ -206,6 +210,7 @@ QGPrepareDiagramsTeX[input_String/;input=!="", output_String, OptionsPattern[]] 
 
 	];
 
+(* fixes the direction of lines in 1-loop SE diagrams to prevent them from collapsing to a point *)
 fixSELoopsTikz[str_] :=
 	FixedPoint[
 		StringReplace[#, {

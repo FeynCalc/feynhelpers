@@ -12,10 +12,12 @@
 (* ------------------------------------------------------------------------ *)
 
 QGLoadInsertions::usage="
-QGLoadInsertions[insertion.m] loads insertion rules from insertion.m for amplitudes generated with
-QGRAF. Specifying only the file name means that QGLoadInsertions will search for the file first in
-$QGInsertionsDirectory and then in the current directory. Specifying the full path will force the
-function to load the file from there directly.";
+QGLoadInsertions[\"insertion.m\"] loads insertion rules from insertion.m for amplitudes \
+generated with QGRAF. Specifying only the file name means that QGLoadInsertions will \
+search for the file first in $QGInsertionsDirectory and then in the current directory. \
+Specifying the full path will force the function to load the file from there directly. \n
+Evaluating QGLoadInsertions[] loads some common insertions from QGCommonInsertions.m that \
+are shipped with this interface.";
 
 QGLoadInsertions::fail=
 "QGLoadInsertions has encountered an error and must abort the evaluation. The \
@@ -34,6 +36,8 @@ Options[QGLoadInsertions] =
 	FCVerbose -> False
 };
 
+QGLoadInsertions[] :=
+	QGLoadInsertions["QGCommonInsertions.m"];
 
 QGLoadInsertions[ins_String/;ins=!="",OptionsPattern[]] :=
 	Block[{insFile, loadedInsertion, finalInsertions, res},
@@ -46,28 +50,7 @@ QGLoadInsertions[ins_String/;ins=!="",OptionsPattern[]] :=
 		];
 
 		FCPrint[1,"QGLoadInsertions: Entering. ", FCDoControl->qgliVerbose];
-		If[	FileNameTake[ins] === ins,
-
-			Which[
-				FileExistsQ[FileNameJoin[{$QGInsertionsDirectory,ins}]],
-				insFile = FileNameJoin[{$QGInsertionsDirectory,ins}],
-
-				FileExistsQ[FileNameJoin[{Directory[],ins}]],
-				insFile = FileNameJoin[{Directory[],ins}],
-
-				True,
-				Message[QGLoadInsertions::fail,"Unable to locate the file " <> ins <> " in " <> $QGInsertionsDirectory <> " or the current directory"];
-				Abort[]
-
-			],
-
-			If[FileExistsQ[ins],
-				insFile = ins,
-				Message[QGLoadInsertions::fail,"The file " <> ins <> " does not exist."];
-				Abort[]
-			]
-		];
-
+		insFile = FeynCalc`Package`qdLoadFileFrom[ins, $QGInsertionsDirectory];
 		FCPrint[1,"QGLoadInsertions: Full path to the insertions file: ", insFile, FCDoControl->qgliVerbose];
 
 		loadedInsertion = Get[insFile];

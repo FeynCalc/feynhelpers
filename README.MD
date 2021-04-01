@@ -129,7 +129,8 @@ The interface to QGRAF is still very unstable and full of bugs and missing featu
 give a general idea of how it is supposed to work, here is a simple QED 2-loop example
 
 ```
-SetDirectory[NotebookDirectory[]]
+SetDirectory[NotebookDirectory[]];
+QGLoadInsertions[];
 out = QGCreateAmp[2, {"El[p]"} -> {"El[p]"}, QGLoopMomentum -> l, 
   QGModel -> "QEDOneFlavor", QGShowOutput -> False]
   
