@@ -252,12 +252,31 @@ PaXKibblePhi[a_?NumericQ, b_?NumericQ, c_?NumericQ, d_?NumericQ, e_?NumericQ, f_
 PaXContinuedDiLog[{x1_?NumericQ, a1_?NumericQ}, {x2_?NumericQ, a2_?NumericQ}]:=
 	X`ContinuedDiLog[{x1,a1},{x2,a2}]/; paxLoaded;
 
+(* Extra PaVe reduction *)
+PaVeEx::usage="";
+
+(* TODO: Reduction formula with non-zero indices *)
+reduceGenPaVe[GenPaVe[(*inds_List*)inds:{(0)..}, lst:{{0,_}, ({_,_} ...)}], opts:OptionsPattern[]]:=
+	Module[{packList = Tally@lst},
+		(* Reduce only if we actually have less than 4 different propagators, otherwise just transform into standard PaVe[]. *)
+		If[Length@packList <= 4,
+			PaVeEx[Sequence@@inds, ExpandScalarProduct@FeynCalc`Package`momentumRoutingDenner[Drop[packList[[All,1,1]],1],Pair[#1,#1]&],
+				Power[#, 2]& /@ packList[[All,1,2]], Weights->packList[[All,2]]],
+			ToPaVe2@PaVeOrder@PaVe[Sequence@@inds, ExpandScalarProduct@FeynCalc`Package`momentumRoutingDenner[Drop[lst[[All,1]],1],Pair[#1,#1]&],
+				Power[#, 2]& /@ lst[[All,2]], Sequence@@Join[{PaVeAutoReduce->False,PaVeAutoOrder->OptionValue[PaVeAutoOrder]},FilterRules[{opts},FilterRules[Options[PaVe],Except[PaVeAutoOrder|PaVeAutoReduce]]]]]
+		]
+	];
+
+(* Anything else is ignored *)
+reduceGenPaVe[x_, OptionsPattern[]]:= x;
+
+
 (* FeynCalc->Package-X conversion of scalar products *)
 momConv[x_] :=
 	FCE[ExpandScalarProduct[MomentumCombine[x]]];
 
 toPackageX[pref_, q_]:=
-	pref /; FreeQ2[pref,Join[{q},FeynCalc`Package`PaVeHeadsList]];
+	pref /; FreeQ2[pref,Join[{q},FeynCalc`Package`PaVeHeadsList,{PaVeEx}]];
 
 (* FeynCalc->Package-X conversion for A0, B0, B1, B00, B11 and C0.
 	Notice that additional (2Pi)^(D-4) prefactor that comes from different
@@ -276,8 +295,16 @@ toPackageX[pref_. PaVe[0, {}, {m_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`Eps)) pref X`PVA[0, PowerExpand[Sqrt[m]]]/;
 	FreeQ[pref,q] && FreeQ[m, Complex];
 
+toPackageX[pref_. PaVeEx[0, {}, {m_}, opts:OptionsPattern[]], q_]:=
+	(2 Pi)^(-2*(X`Eps)) pref X`PVA[0, PowerExpand[Sqrt[m]], opts]/;
+	FreeQ[pref,q] && FreeQ[m, Complex];
+
 toPackageX[pref_. PaVe[inds__, {}, {m_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`Eps)) pref X`PVA[Count[{inds},0]/2, PowerExpand[Sqrt[m]]]/;
+	FreeQ[pref,q] && FreeQ[m, Complex] && EvenQ[Count[{inds},0]] && {inds}=!={0};
+
+toPackageX[pref_. PaVeEx[inds__, {}, {m_}, opts:OptionsPattern[]], q_]:=
+	(2 Pi)^(-2*(X`Eps)) pref X`PVA[Count[{inds},0]/2, PowerExpand[Sqrt[m]], opts]/;
 	FreeQ[pref,q] && FreeQ[m, Complex] && EvenQ[Count[{inds},0]] && {inds}=!={0};
 
 (* 2-point functions *)
@@ -285,9 +312,18 @@ toPackageX[pref_. PaVe[0, {mom1_}, {m1_, m2_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`Eps)) pref X`PVB[0, 0, momConv[mom1], PowerExpand[Sqrt[m1]],
 	PowerExpand[Sqrt[m2]]]/;FreeQ[pref,q] && FreeQ[{m1,m2}, Complex];
 
+toPackageX[pref_. PaVeEx[0, {mom1_}, {m1_, m2_}, opts:OptionsPattern[]], q_]:=
+	(2 Pi)^(-2*(X`Eps)) pref X`PVB[0, 0, momConv[mom1], PowerExpand[Sqrt[m1]],
+	PowerExpand[Sqrt[m2]], opts]/;FreeQ[pref,q] && FreeQ[{m1,m2}, Complex];
+
 toPackageX[pref_. PaVe[inds__, {mom1_}, {m1_, m2_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`Eps)) pref X`PVB[Count[{inds},0]/2, Count[{inds},1], momConv[mom1], PowerExpand[Sqrt[m1]],
 	PowerExpand[Sqrt[m2]]]/;FreeQ[pref,q] && FreeQ[{m1,m2}, Complex] &&
+	(EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0) && {inds}=!={0};
+
+toPackageX[pref_. PaVeEx[inds__, {mom1_}, {m1_, m2_}, opts:OptionsPattern[]], q_]:=
+	(2 Pi)^(-2*(X`Eps)) pref X`PVB[Count[{inds},0]/2, Count[{inds},1], momConv[mom1], PowerExpand[Sqrt[m1]],
+	PowerExpand[Sqrt[m2]], opts]/;FreeQ[pref,q] && FreeQ[{m1,m2}, Complex] &&
 	(EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0) && {inds}=!={0};
 
 (* 3-point functions *)
@@ -296,9 +332,19 @@ toPackageX[pref_. PaVe[0,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPa
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]]]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex];
 
+toPackageX[pref_. PaVeEx[0,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, opts:OptionsPattern[]], q_]:=
+	(2 Pi)^(-2*(X`Eps)) pref X`PVC[0, 0, 0, momConv[mom1], momConv[mom1min2], momConv[mom2],
+	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], opts]/;
+	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex];
+
 toPackageX[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`Eps)) pref X`PVC[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], momConv[mom1], momConv[mom1min2], momConv[mom2],
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]]]/;
+	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex] && (EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0);
+
+toPackageX[pref_. PaVeEx[inds__,  {mom1_, mom1min2_, mom2_}, {m1_, m2_, m3_}, opts:OptionsPattern[]], q_]:=
+	(2 Pi)^(-2*(X`Eps)) pref X`PVC[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], momConv[mom1], momConv[mom1min2], momConv[mom2],
+	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], opts]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3}, Complex] && (EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0);
 
 (* 4-point functions *)
@@ -308,10 +354,22 @@ toPackageX[pref_. PaVe[0,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m4]]]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3,m4}, Complex];
 
+toPackageX[pref_. PaVeEx[0,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_}, {m1_, m2_, m3_, m4_}, opts:OptionsPattern[]], q_]:=
+	(2 Pi)^(-2*(X`Eps)) pref X`PVD[0, 0, 0, 0,
+		momConv[mom1], momConv[mom1min2], momConv[mom2min3], momConv[mom3], momConv[mom2], momConv[mom1min3],
+	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m4]], opts]/;
+	FreeQ[pref,q] && FreeQ[{m1,m2,m3,m4}, Complex];
+
 toPackageX[pref_. PaVe[inds__,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_}, {m1_, m2_, m3_, m4_}, OptionsPattern[]], q_]:=
 	(2 Pi)^(-2*(X`Eps)) pref X`PVD[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], Count[{inds},3],
 		momConv[mom1], momConv[mom1min2], momConv[mom2min3], momConv[mom3], momConv[mom2], momConv[mom1min3],
 	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m4]]]/;
+	FreeQ[pref,q] && FreeQ[{m1,m2,m3,m4}, Complex] && (EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0);
+
+toPackageX[pref_. PaVeEx[inds__,  {mom1_, mom1min2_, mom2min3_, mom3_, mom2_, mom1min3_}, {m1_, m2_, m3_, m4_}, opts:OptionsPattern[]], q_]:=
+	(2 Pi)^(-2*(X`Eps)) pref X`PVD[Count[{inds},0]/2, Count[{inds},1], Count[{inds},2], Count[{inds},3],
+		momConv[mom1], momConv[mom1min2], momConv[mom2min3], momConv[mom3], momConv[mom2], momConv[mom1min3],
+	PowerExpand[Sqrt[m1]], PowerExpand[Sqrt[m2]], PowerExpand[Sqrt[m3]], PowerExpand[Sqrt[m4]], opts]/;
 	FreeQ[pref,q] && FreeQ[{m1,m2,m3,m4}, Complex] && (EvenQ[Count[{inds}, 0]] || Count[{inds}, 0] === 0);
 
 
@@ -451,11 +509,13 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		(*	First of all, let us convert all the scalar integrals to PaVe functions:	*)
 		FCPrint[1,"PaXEvaluate: Applying ToPaVe/ToPaVe2.", FCDoControl->paxVerbose];
 		If[OptionValue[ToPaVe],
-			ex = expr//ToPaVe[#,q,PaVeAutoReduce->False,
+			ex = expr//ToPaVe[#,q, GenPaVe->True, PaVeAutoReduce->False,
 						PaVeAutoOrder -> OptionValue[PaVeAutoOrder]]&//ToPaVe2,
 			ex = expr//ToPaVe2
 		];
 
+		(* Attempt further reduction in case same propagators are repeated more than once *)
+		ex = ex /. gpv:_GenPaVe :> reduceGenPaVe[gpv, PaVeAutoReduce->False, PaVeAutoOrder -> OptionValue[PaVeAutoOrder]];
 
 		(*	Since we care only for the scalar integrals, we need
 			only the second element from the list returned by FCLoopSplit.
@@ -464,7 +524,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			like 1/p.p B0[p.p,m^2,m^2] will be expanded in a wrong way *)
 
 		FCPrint[1,"PaXEvaluate: Applying FCLoopSplit.", FCDoControl->paxVerbose];
-		fclsOutput  = FCLoopSplit[ex,Join[{q}],PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD}]];
+		fclsOutput  = FCLoopSplit[ex,Join[{q}],PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {PaVeEx, X`PVA, X`PVB, X`PVC, X`PVD}]];
 		If [fclsOutput[[3]]=!=0 || fclsOutput[[4]]=!=0,
 			Message[PaXEvaluate::tens]
 		];
@@ -497,7 +557,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 		FCPrint[1,"PaXEvaluate: Applying FCLoopIsolate.", FCDoControl->paxVerbose];
 
 		check=FCLoopIsolate[FCReplaceD[tmp, dim->4-2*Epsilon], {q}, FCI->True, Head->loopIntegral,
-			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD, Epsilon},paxSeriesVars]];
+			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {PaVeEx, X`PVA, X`PVB, X`PVC, X`PVD, Epsilon},paxSeriesVars]];
 		FCPrint[3,"PaXEvaluate: After FCLoopIsolate: ",check, FCDoControl->paxVerbose];
 
 
@@ -510,13 +570,13 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		FCPrint[1,"PaXEvaluate: Applying FCLoopIsolate.", FCDoControl->paxVerbose];
 		ints=FCLoopIsolate[tmp, {q}, FCI->True, Head->loopIntegral,
-			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD},paxSeriesVars]];
+			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {PaVeEx, X`PVA, X`PVB, X`PVC, X`PVD},paxSeriesVars]];
 		FCPrint[3,"PaXEvaluate: After FCLoopIsolate: ",ints, FCDoControl->paxVerbose];
 
 		(*	The 4th element in fclcOutput is our list of unique scalar integrals that
 			need to be computed. But first we need to convert them to the Pacakge X input *)
 		fclcOutput = FCLoopCanonicalize[ints, q, loopIntegral,FCI->True,
-			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {X`PVA, X`PVB, X`PVC, X`PVD}]];
+			PaVeIntegralHeads->Join[FeynCalc`Package`PaVeHeadsList, {PaVeEx, X`PVA, X`PVB, X`PVC, X`PVD}]];
 
 		If[	!FreeQ2[fclcOutput,{Spinor,Polarization}],
 			Message[PaXEvaluate::gen, "PaXEvaluate may not pass spinors or polarization vectors to Package-X."];
