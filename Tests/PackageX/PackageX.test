@@ -271,5 +271,22 @@ PaXSeries -> {{m1, 0, 0}}, PaXAnalytic -> True, FCE -> True]",
 "Spinor[Momentum[p1], m1, 1].GAD[mu].Spinor[-Momentum[p2], m2,
 1]/Epsilon + (Spinor[Momentum[p1], m1, 1].GAD[mu].Spinor[-Momentum[p2], m2,
 	1] (2 pp - EulerGamma pp - pp Log[\[Pi]] - m2 Log[m2/(m2 - pp)] +
-	pp Log[m2/(m2 - pp)] + pp Log[ScaleMu^2/m2]))/pp"}
+	pp Log[m2/(m2 - pp)] + pp Log[ScaleMu^2/m2]))/pp"},
+{"PackageX-Generic-ID26", "PaXEvaluate[PaVeOrder[
+I*Pi^2*D0[s, me^2, t, mmu^2, me^2, mmu^2, mH^2, 0, me^2, mmu^2],
+PaVeOrderList -> {me, mH}], PaXAnalytic -> True,
+PaXD0Expand -> True] // Normal",
+"I*Pi^2*((Sqrt[me^4 - 2*me^2*mmu^2 + mmu^4 - 2*me^2*t - 2*mmu^2*t + t^2]*(-1/2*(t*Log[me^2/mmu^2])/((mH^2 - s)*(me^4 - 2*me^2*mmu^2 + mmu^4 - 2*me^2*t - 2*mmu^2*t + t^2)) + (2*t*Log[2*Pi])/((mH^2 - s)*(me^4 - 2*me^2*mmu^2 + mmu^4 - 2*me^2*t - 2*mmu^2*t + t^2)))*
+	Log[(me^2 + mmu^2 - t + Sqrt[me^4 - 2*me^2*mmu^2 + mmu^4 - 2*me^2*t - 2*mmu^2*t + t^2])/(2*me*mmu)])/t - ((Epsilon^(-1) - EulerGamma + Log[4*Pi])*Log[(me^2 + mmu^2 - t + Sqrt[me^4 - 2*me^2*mmu^2 + mmu^4 - 2*me^2*t - 2*mmu^2*t + t^2])/(2*me*mmu)])/
+((mH^2 - s)*Sqrt[me^4 - 2*me^2*mmu^2 + mmu^4 - 2*me^2*t - 2*mmu^2*t + t^2]) - (Log[ScaleMu^2/me^2]*Log[(me^2 + mmu^2 - t + Sqrt[me^4 - 2*me^2*mmu^2 + mmu^4 - 2*me^2*t - 2*mmu^2*t + t^2])/(2*me*mmu)])/
+((mH^2 - s)*Sqrt[me^4 - 2*me^2*mmu^2 + mmu^4 - 2*me^2*t - 2*mmu^2*t + t^2]) + (Log[(me^2 + mmu^2 - t + Sqrt[me^4 - 2*me^2*mmu^2 + mmu^4 - 2*me^2*t - 2*mmu^2*t + t^2])/(2*me*mmu)]*
+	(Log[(me*mmu)/mH^2] + 2*Log[mH^2/(mH^2 - s)] - 2*Log[1 - (-1 + Sqrt[1 - (4*me*mmu)/(-(-me + mmu)^2 + t)])^2/(1 + Sqrt[1 - (4*me*mmu)/(-(-me + mmu)^2 + t)])^2]))/((-mH^2 + s)*Sqrt[me^4 - 2*me^2*mmu^2 + mmu^4 - 2*me^2*t - 2*mmu^2*t + t^2]) -
+((-1/6*Pi^2 + Log[(mH^2 + Sqrt[mH^2*(-4*me^2 + mH^2)])/(2*me*mH)]^2 + Log[(mH^2 + Sqrt[mH^2*(mH^2 - 4*mmu^2)])/(2*mH*mmu)]^2 + PaXContinuedDiLog[{(mH - Sqrt[-4*me^2 + mH^2])/(2*me), (-2*me)/(mH - Sqrt[-4*me^2 + mH^2]) + (mH - Sqrt[-4*me^2 + mH^2])/(2*me)},
+	{(mH - Sqrt[mH^2 - 4*mmu^2])/(2*mmu), (-2*mmu)/(mH - Sqrt[mH^2 - 4*mmu^2]) + (mH - Sqrt[mH^2 - 4*mmu^2])/(2*mmu)}, {(-1 + Sqrt[1 - (4*me*mmu)/(-(-me + mmu)^2 + t)])/(1 + Sqrt[1 - (4*me*mmu)/(-(-me + mmu)^2 + t)]), 1}] +
+	PaXContinuedDiLog[{(mH - Sqrt[-4*me^2 + mH^2])/(2*me), (-2*me)/(mH - Sqrt[-4*me^2 + mH^2]) + (mH - Sqrt[-4*me^2 + mH^2])/(2*me)}, {(mH + Sqrt[mH^2 - 4*mmu^2])/(2*mmu), (-2*mmu)/(mH + Sqrt[mH^2 - 4*mmu^2]) + (mH + Sqrt[mH^2 - 4*mmu^2])/(2*mmu)},
+	{(-1 + Sqrt[1 - (4*me*mmu)/(-(-me + mmu)^2 + t)])/(1 + Sqrt[1 - (4*me*mmu)/(-(-me + mmu)^2 + t)]), 1}] + PaXContinuedDiLog[{(mH + Sqrt[-4*me^2 + mH^2])/(2*me), (-2*me)/(mH + Sqrt[-4*me^2 + mH^2]) + (mH + Sqrt[-4*me^2 + mH^2])/(2*me)},
+	{(mH - Sqrt[mH^2 - 4*mmu^2])/(2*mmu), (-2*mmu)/(mH - Sqrt[mH^2 - 4*mmu^2]) + (mH - Sqrt[mH^2 - 4*mmu^2])/(2*mmu)}, {(-1 + Sqrt[1 - (4*me*mmu)/(-(-me + mmu)^2 + t)])/(1 + Sqrt[1 - (4*me*mmu)/(-(-me + mmu)^2 + t)]), 1}] +
+	PaXContinuedDiLog[{(mH + Sqrt[-4*me^2 + mH^2])/(2*me), (-2*me)/(mH + Sqrt[-4*me^2 + mH^2]) + (mH + Sqrt[-4*me^2 + mH^2])/(2*me)}, {(mH + Sqrt[mH^2 - 4*mmu^2])/(2*mmu), (-2*mmu)/(mH + Sqrt[mH^2 - 4*mmu^2]) + (mH + Sqrt[mH^2 - 4*mmu^2])/(2*mmu)},
+	{(-1 + Sqrt[1 - (4*me*mmu)/(-(-me + mmu)^2 + t)])/(1 + Sqrt[1 - (4*me*mmu)/(-(-me + mmu)^2 + t)]), 1}] + PolyLog[2, (-1 + Sqrt[1 - (4*me*mmu)/(-(-me + mmu)^2 + t)])^2/(1 + Sqrt[1 - (4*me*mmu)/(-(-me + mmu)^2 + t)])^2])*Sign[-(me - mmu)^2 + t])/
+((-mH^2 + s)*Sqrt[me^4 - 2*me^2*mmu^2 + mmu^4 - 2*me^2*t - 2*mmu^2*t + t^2]))"}
 })

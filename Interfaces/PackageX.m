@@ -323,10 +323,13 @@ PaXEvaluateUVIRSplit[expr_, q:Except[_?OptionQ], opts:OptionsPattern[]]:=
 		resUV = PaXEvaluateUV[expr, q, opts]/. EpsilonUV->Epsilon;
 		resFull = PaXEvaluate[expr, q, opts];
 		(*TODO Checks!!!*)
-		resIRAndFinite = Collect2[resFull-resUV,{Epsilon}, Factoring->OptionValue[Factoring],TimeConstrained->OptionValue[TimeConstrained]]/. Epsilon->EpsilonIR;
+		If[	FreeQ[resUV,ConditionalExpression] && FreeQ[resFull,ConditionalExpression],
+			resIRAndFinite = Collect2[resFull-resUV,{Epsilon}, Factoring->OptionValue[Factoring],TimeConstrained->OptionValue[TimeConstrained]]/. Epsilon->EpsilonIR,
+			resIRAndFinite = (resFull-resUV) /. Epsilon->EpsilonIR
+		];
 		resUV = resUV/. Epsilon -> EpsilonUV;
 		resFinal = resUV + resIRAndFinite;
-		If[ Factor[(resFinal/.(EpsilonUV|EpsilonIR)->Epsilon)-resFull]=!=0,
+		If[ Factor[(Normal[resFinal]/.(EpsilonUV|EpsilonIR)->Epsilon)-Normal[resFull]]=!=0,
 			Message[PaXEvaluate::gen, "Splitting into UV and IR pieces failed."];
 			Abort[]
 		];
@@ -604,11 +607,11 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 			(* We need to convert Package X output into FeynCalc input *)
 
-			If[	!FreeQ[resultX,X`ScalarC0] && $FCAdvice,
+			If[	!FreeQ2[resultX,{X`ScalarC0,X`ScalarC0IR6}] && $FCAdvice,
 				Message[PaXEvaluate::C0D0,"C0","PaXC0Expand->True"]
 			];
 
-			If[	!FreeQ[resultX,X`ScalarD0] && $FCAdvice,
+			If[	!FreeQ2[resultX,{X`ScalarD0,X`ScalarD0IR12,X`ScalarD0IR13,X`ScalarD0IR16}] && $FCAdvice,
 				Message[PaXEvaluate::C0D0,"D0","PaXD0Expand->True"]
 			];
 
@@ -664,7 +667,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 					Message[PaXEvaluate::gen, "Failed to eliminate EpsilonBar."];
 					Abort[]
 				];
-				FCPrint[1, "PaXEvaluate: Done sibstituting Substituting 1/Eps - EulerGamma + Log[4Pi], timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose]
+				FCPrint[1, "PaXEvaluate: Done substituting Substituting 1/Eps - EulerGamma + Log[4Pi], timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->paxVerbose]
 
 			],
 			resultX={}
