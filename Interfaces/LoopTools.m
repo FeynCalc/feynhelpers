@@ -309,6 +309,11 @@ LTools::tens=
 "Warning! Your input contains tensor loop integrals. Those integrals \
 will be ignored, because LoopTools operates only on 1-loop scalar integrals.";
 
+LToolsLoadLibrary::nobinary=
+"Error! Cannot locate the LoopTools MathLink executable. Please specify the \
+full path to the correct binary file LoopTools (Linux/macOS) or LoopTools.exe (Windows) \
+via the option LToolsPath and evaluate LToolsLoadLibrary again."
+
 Begin["`Package`"]
 
 End[]
@@ -333,7 +338,7 @@ Options[LToolsLoadLibrary] = {
 			"Linux x86 (32-bit)",
 				"i686-Linux",
 			_,
-				"UnknownSystem"], "bin", "LoopTools"}]
+				"LToolsUnknownSystem"], "bin", "LoopTools"}]
 	}
 
 Options[LToolsEvaluate] = {
@@ -342,6 +347,7 @@ Options[LToolsEvaluate] = {
 	LToolsSetMudim 			-> 1.,
 	LToolsSetLambda 		-> 0,
 	LToolsSetDelta 			-> -EulerGamma- Log[Pi],
+	Head					-> Identity,
 	PaVeAutoOrder 			-> True,
 	FCVerbose 				-> False,
 	InitialSubstitutions	-> {}
@@ -390,7 +396,7 @@ LToolsLoadLibrary[OptionsPattern[]]:=
 			optLToolsPath = OptionValue[LToolsPath];
 
 			If[	!FileExistsQ[optLToolsPath],
-				Message[LTools::failmsg,"Incorrect path to the LoopTools MathLink executable."];
+				Message[LTools::failmsg,"Cannot locate the LoopTools MathLink executable. Please specify the full path to the correct binary file LoopTools or LoopTools.exe"];
 				Abort[]
 			];
 
@@ -409,7 +415,7 @@ LToolsLoadLibrary[OptionsPattern[]]:=
 
 			],{General::shdw}];
 			If[	Head[$LTools]=!=LinkObject,
-				Message[LTools::failmsg,"Failed to load the LoopTools MathLink executable."];
+				Message[LToolsLoadLibrary::nobinary];
 				Abort[]
 			];
 
@@ -440,7 +446,7 @@ LToolsEvaluate[expr_, q:Except[_?OptionQ], OptionsPattern[]]:=
 	Block[	{ex, fclsOutput, loopIntegral, ints, fcleOutput,
 			resultLT,resEps2,resEps1,resFinitePart,
 			lambda, mudim, delta, repRule, res, optLToolsImplicitPrefactor,
-			optInitialSubstitutions},
+			optInitialSubstitutions, optHead},
 
 		If [OptionValue[FCVerbose]===False,
 			ltVerbose=$VeryVerbose,
@@ -451,6 +457,7 @@ LToolsEvaluate[expr_, q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		optLToolsImplicitPrefactor	= OptionValue[LToolsImplicitPrefactor];
 		optInitialSubstitutions 	= OptionValue[InitialSubstitutions];
+		optHead						= OptionValue[Head];
 
 		If[!ltLoaded,
 			LToolsLoadLibrary[];
@@ -504,15 +511,15 @@ LToolsEvaluate[expr_, q:Except[_?OptionQ], OptionsPattern[]]:=
 			FCPrint[1,"LToolsEvaluate: Calculating full result.", FCDoControl->ltVerbose];
 
 			LToolsSetLambda[-2];
-			resEps2 = ints /. loopIntegral->Identity /. PaVe -> LToolsPaVe;
+			resEps2 = ints /. loopIntegral->optHead /. PaVe -> LToolsPaVe;
 			FCPrint[3,"LToolsEvaluate: 1/Epsilon^2 term: ", resEps2, " ", FCDoControl->ltVerbose];
 
 			LToolsSetLambda[-1];
-			resEps1 = ints /. loopIntegral->Identity /. PaVe -> LToolsPaVe;
+			resEps1 = ints /. loopIntegral->optHead /. PaVe -> LToolsPaVe;
 			FCPrint[3,"LToolsEvaluate: 1/Epsilon term: ", resEps1, " ", FCDoControl->ltVerbose];
 
 			LToolsSetLambda[OptionValue[LToolsSetLambda]];
-			resFinitePart = ints /.loopIntegral->Identity /. PaVe -> LToolsPaVe;
+			resFinitePart = ints /.loopIntegral->optHead /. PaVe -> LToolsPaVe;
 			FCPrint[3,"LToolsEvaluate: finite part: ", resFinitePart, " ", FCDoControl->ltVerbose];
 
 			resultLT = optLToolsImplicitPrefactor*((resEps2/. failed[_] -> 0)/Epsilon^2 + (resEps1/. failed[_] -> 0)/Epsilon + resFinitePart),
@@ -520,8 +527,12 @@ LToolsEvaluate[expr_, q:Except[_?OptionQ], OptionsPattern[]]:=
 
 			FCPrint[1,"LToolsEvaluate: Calculating only the finite part.", FCDoControl->ltVerbose];
 			LToolsSetLambda[OptionValue[LToolsSetLambda]];
-			resultLT = optLToolsImplicitPrefactor * (ints /.loopIntegral->Identity /. PaVe -> LToolsPaVe);
+			resultLT = optLToolsImplicitPrefactor * (ints /.loopIntegral->optHead /. PaVe -> LToolsPaVe);
 			FCPrint[3,"LToolsEvaluate: resultLT: ", FCDoControl->ltVerbose]
+		];
+
+		If[	resultLT=!=Identity,
+				resultLT = resultLT /. optHead[0.]->0
 		];
 
 		LToolsSetLambda[lambda];
