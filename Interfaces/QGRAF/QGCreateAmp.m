@@ -194,7 +194,7 @@ QGCreateAmp[nLoops_Integer?NonNegative, Rule[inFields_List, outFields_List], Opt
 		stringOptCheck["QGDiagramStyle",	optQGDiagramStyle,		QGCreateAmp::fail];
 		stringOptCheck["QGModel",			optQGModel,				QGCreateAmp::fail];
 		stringOptCheck["QGOutputAmplitudes",optQGOutputAmplitudes,	QGCreateAmp::fail];
-		stringOptCheck["QGOutputDiagrams",	optQGOutputDiagrams,	QGCreateAmp::fail];
+		(*stringOptCheck["QGOutputDiagrams",	optQGOutputDiagrams,	QGCreateAmp::fail];*)
 		stringOptCheck["QGOutputDirectory",	optQGOutputDirectory,	QGCreateAmp::fail];
 		If[	(optQGSaveInputFile=!=True) && (optQGSaveInputFile=!=False),
 			stringOptCheck["QGSaveInputFile",	optQGSaveInputFile,	QGCreateAmp::fail];

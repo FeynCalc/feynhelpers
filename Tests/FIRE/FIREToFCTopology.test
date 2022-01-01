@@ -1,0 +1,211 @@
+(* :Title: FIREToFCTopology.test											*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2015-2018 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for FIREToFCTopology			*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`FIRE`FIREToFCTopology =
+({
+{"FIREToFCTopology-ID1",
+"FIREToFCTopology[{-z p1 p3,p1^2},{p1,p2,p3},{q1},{},{}]",
+"FCTopology[\"fctopology\", \
+{FeynAmpDenominator[StandardPropagatorDenominator[0, \
+-(z*Pair[Momentum[p1, D], Momentum[p3, D]]), 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[Momentum[p1, D], 0, \
+0, {1, 1}]]}, {p1, p3}, {}, {}, {}]"},
+{"FIREToFCTopology-ID2",
+"FIREToFCTopology[{-z p1 p3,p1^2},{p1,p2,p3},{},{}]",
+"FCTopology[\"fctopology\", \
+{FeynAmpDenominator[StandardPropagatorDenominator[0, \
+-(z*Pair[Momentum[p1, D], Momentum[p3, D]]), 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[Momentum[p1, D], 0, \
+0, {1, 1}]]}, {p1, p3}, {}, {}, {}]"},
+{"FIREToFCTopology-ID3",
+"FIREToFCTopology[{-z p1 p3,p1^2},{p1,p2,p3},{q1},{}]",
+"FCTopology[\"fctopology\", \
+{FeynAmpDenominator[StandardPropagatorDenominator[0, \
+-(z*Pair[Momentum[p1, D], Momentum[p3, D]]), 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[Momentum[p1, D], 0, \
+0, {1, 1}]]}, {p1, p3}, {}, {}, {}]"},
+{"FIREToFCTopology-ID4",
+"FIREToFCTopology[{- p1 p3,p1^2},{p1,p2,p3},{q1},{}]",
+"FCTopology[\"fctopology\", \
+{FeynAmpDenominator[StandardPropagatorDenominator[0, \
+-Pair[Momentum[p1, D], Momentum[p3, D]], 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[Momentum[p1, D], 0, \
+0, {1, 1}]]}, {p1, p3}, {}, {}, {}]"},
+{"FIREToFCTopology-ID5",
+"FIREToFCTopology[{- 2 p1 p3,p1^2},{p1,p2,p3},{q1},{}]",
+"FCTopology[\"fctopology\", \
+{FeynAmpDenominator[StandardPropagatorDenominator[0, \
+-2*Pair[Momentum[p1, D], Momentum[p3, D]], 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[Momentum[p1, D], 0, \
+0, {1, 1}]]}, {p1, p3}, {}, {}, {}]"},
+{"FIREToFCTopology-ID6",
+"FIREToFCTopology[{p1^2+2 p1 p3+m^2},{p1,p2,p3},{q1},{}]",
+"FCTopology[\"fctopology\", \
+{FeynAmpDenominator[StandardPropagatorDenominator[Momentum[p1, D], \
+2*Pair[Momentum[p1, D], Momentum[p3, D]], m^2, {1, 1}]]}, {p1, p3}, \
+{}, {}, {}]"},
+{"FIREToFCTopology-ID7",
+"FIREToFCTopology[{-p1^2+2 p1 p3+m^2},{p1,p2,p3},{q1}]",
+"FCTopology[\"fctopology\", \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1, D], \
+2*Pair[Momentum[p1, D], Momentum[p3, D]], m^2, {1, 1}]]}, {p1, p3}, \
+{}, {}, {}]"},
+{"FIREToFCTopology-ID8",
+"FIREToFCTopology[{{m3^2 - p1^2, m1^2 - (p1 + q1)^2, m3^2 - p3^2, \
+-(p3 + q1)^2, -(p1 - p3)^2}, {m3^2 - p1^2, m3^2 - (p1 + q1)^2, -p3^2, \
+-(p3 + q1)^2, -(p1 - p3)^2}, {-p1^2, -(p1 + q1)^2, m3^2 - p3^2, -(p3 \
++ q1)^2, -(p1 - p3)^2}, {-p1^2, -(p1 + q1)^2, -p3^2, m3^2 - (p3 + \
+q1)^2, -(p1 - p3)^2},
+{m1^2 - p1^2, m3^2 - (p1 + q1)^2, m1^2 - p3^2, m3^2 - (p3 + q1)^2, \
+m1^2 - (p1 - p3)^2}, {m1^2 - p1^2, -(p1 + q1)^2, m1^2 - p3^2, m3^2 - \
+(p3 + q1)^2, m1^2 - (p1 - p3)^2}, {m1^2 - p1^2, m3^2 - (p1 + q1)^2, \
+m1^2 - p3^2, -(p3 + q1)^2, -(p1 - p3)^2}, {m1^2 - p1^2, m3^2 - (p1 + \
+q1)^2, m3^2 - p3^2, m1^2 - (p3 + q1)^2, m1^2 - (p1 - p3)^2},
+{m1^2 - p1^2, -(p1 + q1)^2, m3^2 - p3^2, m1^2 - (p3 + q1)^2, m1^2 - \
+(p1 - p3)^2}, {m1^2 - p1^2, m3^2 - (p1 + q1)^2, m3^2 - p3^2, m1^2 - \
+(p3 + q1)^2, -(p1 - p3)^2}, {m3^2 - p1^2, -(p1 + q1)^2, -p3^2, -(p3 + \
+q1)^2, m3^2 - (p1 - p3)^2}}, {p1, p2, p3}, {q1}, Names -> {77, 78, \
+700, 701, 702, 703, 704, 705, 706, 707, 708}]",
+"{FCTopology[77, \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1, D], \
+0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 + q1, \
+D], 0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3, D], \
+0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3 + q1, \
+D], 0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 - p3, \
+D], 0, 0, {1, 1}]]}, {p1, p3}, {q1}, {}, {}], FCTopology[78, \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1, D], \
+0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 + q1, \
+D], 0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3, D], \
+0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3 + q1, \
+D], 0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 - p3, \
+D], 0, 0, {1, 1}]]}, {p1, p3}, {q1}, {}, {}], FCTopology[700, \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1, D], \
+0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 + q1, \
+D], 0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3, D], \
+0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3 + q1, \
+D], 0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 - p3, \
+D], 0, 0, {1, 1}]]}, {p1, p3}, {q1}, {}, {}], FCTopology[701, \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1, D], \
+0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 + q1, \
+D], 0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3, D], \
+0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3 + q1, \
+D], 0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 - p3, \
+D], 0, 0, {1, 1}]]}, {p1, p3}, {q1}, {}, {}], FCTopology[702, \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1, D], \
+0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 + q1, \
+D], 0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3, D], \
+0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3 + q1, \
+D], 0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 - p3, \
+D], 0, m1^2, {1, 1}]]}, {p1, p3}, {q1}, {}, {}], FCTopology[703, \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1, D], \
+0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 + q1, \
+D], 0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3, D], \
+0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3 + q1, \
+D], 0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 - p3, \
+D], 0, m1^2, {1, 1}]]}, {p1, p3}, {q1}, {}, {}], FCTopology[704, \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1, D], \
+0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 + q1, \
+D], 0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3, D], \
+0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3 + q1, \
+D], 0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 - p3, \
+D], 0, 0, {1, 1}]]}, {p1, p3}, {q1}, {}, {}], FCTopology[705, \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1, D], \
+0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 + q1, \
+D], 0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3, D], \
+0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3 + q1, \
+D], 0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 - p3, \
+D], 0, m1^2, {1, 1}]]}, {p1, p3}, {q1}, {}, {}], FCTopology[706, \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1, D], \
+0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 + q1, \
+D], 0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3, D], \
+0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3 + q1, \
+D], 0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 - p3, \
+D], 0, m1^2, {1, 1}]]}, {p1, p3}, {q1}, {}, {}], FCTopology[707, \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1, D], \
+0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 + q1, \
+D], 0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3, D], \
+0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3 + q1, \
+D], 0, m1^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 - p3, \
+D], 0, 0, {1, 1}]]}, {p1, p3}, {q1}, {}, {}], FCTopology[708, \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1, D], \
+0, m3^2, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 + q1, \
+D], 0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3, D], \
+0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3 + q1, \
+D], 0, 0, {1, 1}]], \
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p1 - p3, \
+D], 0, m3^2, {1, 1}]]}, {p1, p3}, {q1}, {}, {}]}"},
+{"FIREToFCTopology-ID9",
+"FIREToFCTopology[{(p2-p1)q1},{p1,p2,p3},{q1}]",
+"FCTopology[\"fctopology\", \
+{FeynAmpDenominator[StandardPropagatorDenominator[0, \
+Pair[Momentum[-p1 + p2, D], Momentum[q1, D]], 0, {1, 1}]]}, {p1, p2}, \
+{q1}, {}, {}]"},
+{"FIREToFCTopology-ID10",
+"FIREToFCTopology[{p3^2+(p2-p1)q1},{p1,p2,p3},{q1}]",
+"FCTopology[\"fctopology\", \
+{FeynAmpDenominator[StandardPropagatorDenominator[Momentum[p3, D], \
+Pair[Momentum[-p1 + p2, D], Momentum[q1, D]], 0, {1, 1}]]}, {p1, p2, \
+p3}, {q1}, {}, {}]"},
+{"FIREToFCTopology-ID11",
+"FIREToFCTopology[{-p3^2+(p2-p1)q1},{p1,p2,p3},{q1}]",
+"FCTopology[\"fctopology\", \
+{FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3, D], \
+Pair[Momentum[-p1 + p2, D], Momentum[q1, D]], 0, {1, 1}]]}, {p1, p2, \
+p3}, {q1}, {}, {}]"},
+{"FIREToFCTopology-ID12",
+"FIREToFCTopology[{p3^2 + (p2 - p1) q1}, {p1, p2, p3}, {q1},
+FinalSubstitutions -> {SPD[q1] -> m1^2}, FCE -> True]",
+"FCTopology[\"fctopology\", {SFAD[{{p3, (-p1 + p2) . q1}, {0, 1},
+	1}]}, {p1, p2, p3}, {q1}, {SPD[q1, q1] -> m1^2}, {}]"}
+});

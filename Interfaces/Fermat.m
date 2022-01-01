@@ -230,7 +230,7 @@ FerSolve[eqs_List, vars_List, OptionsPattern[]]:=
 		];
 
 		sol = Thread[Rule[vars, -1*res[[All, -1]]]];
-		FCPrint[3,"FerSolve: Final solution: " res, FCDoControl->fsVerbose];
+		FCPrint[3,"FerSolve: Final solution: ", res, FCDoControl->fsVerbose];
 
 		If[OptionValue[Check],
 

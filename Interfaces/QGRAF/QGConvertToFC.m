@@ -49,7 +49,7 @@ QGConvertToFC[amps_String, opts:OptionsPattern[]]/; FileExistsQ[amps] :=
 	QGConvertToFC[Get[amps], opts];
 
 QGConvertToFC[diag_, opts:OptionsPattern[]] :=
-	QGConvertToFC[{diag}, opts]/; Head[diag]=!=List && Head[diag]=!=List;
+	QGConvertToFC[{diag}, opts]/; Head[diag]=!=List;
 
 QGConvertToFC[diags_List, OptionsPattern[]] :=
 	Block[{ repRuleInsertions, optQGInsertionRule, optHeads,

@@ -8,7 +8,7 @@
 (* :Summary:  Framework independent unit tests for FeynHelpers				*)
 
 (* ------------------------------------------------------------------------ *)
-
+(*
 Tests`FIRE`Generic = ({
 {"FIRE-Generic-ID1", "FIREBurn[0,{q},{}]", "0"},
 {"FIRE-Generic-ID2", "FIREBurn[x,{q},{}]", "x"},
@@ -75,7 +75,7 @@ FCE -> True, Timing -> False]",
 	D) SFAD[{{p, 0}, {m^2, 1}, 1}] (m^2 + 66 SPD[k, k] -
 	24 D SPD[k, k] + 2 D^2 SPD[k, k]))/(2 m^4 (m^2 - 4 SPD[k, k])^3)"}
 });
-(*
+
 Tests`FIRE`GenericWithFermat = ({
 {"FIREGeneric-GenericWithFermat-ID1",
 "FIREBurn[0,{q},{},FIREUsingFermat\[Rule]True]", "0"},

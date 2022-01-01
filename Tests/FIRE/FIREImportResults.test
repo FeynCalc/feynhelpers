@@ -1,0 +1,65 @@
+(* :Title: FIREImportResults.test											*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2015-2018 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for FIREImportResults			*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`FIRE`FIREImportResults =
+({
+{"FIREImportResults-ID1",
+"FIREImportResults[\"asyR1prop2Ltopo01300X01101N1\",FileNameJoin[{$\
+FeynHelpersDirectory,\"Tests\",\"FIRE\",\"Samples\",\"\
+asyR1prop2Ltopo01300X01101N1.tables\"}]]",
+"{GLI[\"asyR1prop2Ltopo01300X01101N1\", {7, 1, 1, -6, 0}] -> \
+-1/12*((360 - 270*d + 45*d^2)*mg^6*GLI[\"asyR1prop2Ltopo01300X01101N1\
+\", {0, 1, 1, 0, 0}])/((2016*d + 1000*d^2 - 100*d^3 - 40*d^4 + \
+4*d^5)*mb^8), GLI[\"asyR1prop2Ltopo01300X01101N1\", {6, 1, 1, -5, 0}] \
+-> 0, GLI[\"asyR1prop2Ltopo01300X01101N1\", {6, 1, 1, -4, 0}] -> \
+-1/10*((-120 + 90*d - 15*d^2)*mg^4*GLI[\"asyR1prop2Ltopo01300X01101N1\
+\", {0, 1, 1, 0, 0}])/((1008*d + 248*d^2 - 112*d^3 + 8*d^4)*mb^8), \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {5, 1, 1, -4, 0}] -> -1/8*((24 \
+- 18*d + 3*d^2)*mg^4*GLI[\"asyR1prop2Ltopo01300X01101N1\", {0, 1, 1, \
+0, 0}])/((70*d + 11*d^2 - 10*d^3 + d^4)*mb^6), \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {5, 1, 1, -3, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {4, 1, 1, -3, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {5, 1, 1, -2, 0}] -> -1/8*((8 - \
+6*d + d^2)*mg^2*GLI[\"asyR1prop2Ltopo01300X01101N1\", {0, 1, 1, 0, \
+0}])/((126*d - 32*d^2 + 2*d^3)*mb^8), \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {4, 1, 1, -2, 0}] -> -1/6*((-24 \
++ 18*d - 3*d^2)*mg^2*GLI[\"asyR1prop2Ltopo01300X01101N1\", {0, 1, 1, \
+0, 0}])/((140*d - 48*d^2 + 4*d^3)*mb^6), \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {3, 1, 1, -2, 0}] -> -1/4*((-2 \
++ d)*mg^2*GLI[\"asyR1prop2Ltopo01300X01101N1\", {0, 1, 1, 0, \
+0}])/((-5*d + d^2)*mb^4), GLI[\"asyR1prop2Ltopo01300X01101N1\", {4, \
+1, 1, -1, 0}] -> 0, GLI[\"asyR1prop2Ltopo01300X01101N1\", {3, 1, 1, \
+-1, 0}] -> 0, GLI[\"asyR1prop2Ltopo01300X01101N1\", {4, 1, 1, 0, 0}] -> \
+-(((-8 + 6*d - d^2)*GLI[\"asyR1prop2Ltopo01300X01101N1\", {0, 1, 1, \
+0, 0}])/((-9 + d)*(-112 + 16*d)*mb^8)), \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {2, 1, 1, -1, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {3, 1, 1, 0, 0}] -> -(((8 - 6*d \
++ d^2)*GLI[\"asyR1prop2Ltopo01300X01101N1\", {0, 1, 1, 0, 0}])/((-7 + \
+d)*(-40 + 8*d)*mb^6)), GLI[\"asyR1prop2Ltopo01300X01101N1\", {2, 1, \
+1, 0, 0}] -> -1/4*((2 - d)*GLI[\"asyR1prop2Ltopo01300X01101N1\", {0, \
+1, 1, 0, 0}])/((-5 + d)*mb^4), GLI[\"asyR1prop2Ltopo01300X01101N1\", \
+{1, 1, 1, 0, 0}] -> -1/2*((-2 + d)*GLI[\"asyR1prop2Ltopo01300X01101N1\
+\", {0, 1, 1, 0, 0}])/((-3 + d)*mb^2), \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {6, 0, 1, -4, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {5, 0, 1, -2, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {5, 0, 1, -3, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {5, -1, 1, -2, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {4, 0, 1, 0, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {4, 0, 1, -1, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {4, 0, 1, -2, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {4, -1, 1, 0, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {4, -1, 1, -1, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {4, -2, 1, 0, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {3, 0, 1, 0, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {3, 0, 1, -1, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {3, -1, 1, 0, 0}] -> 0, \
+GLI[\"asyR1prop2Ltopo01300X01101N1\", {2, 0, 1, 0, 0}] -> 0}"}
+});

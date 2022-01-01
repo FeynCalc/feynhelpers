@@ -212,7 +212,7 @@ PaXKallenLambda /:
 
 PaXKibblePhi /:
 	MakeBoxes[PaXKibblePhi[a_,b_,c_,d_,e_,f_], TraditionalForm]:=
-		TBox["\[Lambda]","(",a,",",b,",",c,",",d,";",e,",",f")"];
+		TBox["\[Lambda]","(",a,",",b,",",c,",",d,";",e,",",f,")"];
 
 PaXDiscB /:
 	MakeBoxes[PaXDiscB[a_,b_,c_], TraditionalForm]:=

@@ -29,12 +29,17 @@ End[]
 Begin["`FeynHelpers`Private`"];
 
 If[ !ValueQ[FeynCalc`$FeynHelpersLoadInterfaces],
-	FeynCalc`$FeynHelpersLoadInterfaces = {"PackageX", "FIRE", "Fermat", "QGRAF", "LoopTools"}
+	FeynCalc`$FeynHelpersLoadInterfaces = {"PackageX", "FIRE", "Fermat", "QGRAF", "LoopTools", "pySecDec"}
 ];
 
 $FeynHelpersVersion="1.4.0";
 
 $FeynHelpersDirectory = FileNameJoin[{$FeynCalcDirectory, "AddOns", "FeynHelpers"}];
+
+If[ ($VersionNumber < 10.0) && StringFreeQ[$Version, "Mathics"],
+	Print[Style["You need at least Mathematica 10.0 to run FeynHelpers. Evaluation aborted.",Red, Bold]];
+	Abort[]
+];
 
 (* Load the intefaces *)
 BeginPackage["FeynCalc`"];
@@ -48,9 +53,9 @@ If[	!FreeQ[$FeynHelpersLoadInterfaces,"PackageX"],
 ];
 
 If[	!FreeQ[$FeynHelpersLoadInterfaces,"FIRE"],
-	load = FileNameJoin[{$FeynHelpersDirectory,"Interfaces","FIRE.m"}];
-	FCDeclareHeader[load];
-	Get[load]
+	load = FileNames[{"*.m"},FileNameJoin[{$FeynHelpersDirectory,"Interfaces","FIRE"}]];
+	FCDeclareHeader/@load;
+	Get/@load
 ];
 
 If[	!FreeQ[$FeynHelpersLoadInterfaces,"Fermat"],
@@ -73,6 +78,16 @@ If[	!FreeQ[$FeynHelpersLoadInterfaces,"QGRAF"],
 	FCDeclareHeader/@load;
 	Get/@load
 ];
+
+If[	!FreeQ[$FeynHelpersLoadInterfaces,"pySecDec"],
+	load = FileNameJoin[{$FeynHelpersDirectory,"Interfaces","pySecDec","PSDShared.m"}];
+	FCDeclareHeader[load];
+	Get[load];
+	load = FileNames[{"*.m"},FileNameJoin[{$FeynHelpersDirectory,"Interfaces","pySecDec"}]];
+	FCDeclareHeader/@load;
+	Get/@load
+];
+
 Remove["FeynCalc`load"];
 EndPackage[]
 
@@ -102,36 +117,37 @@ If[ $FeynCalcStartupMessages =!= False,
 	Style[DisplayForm@ButtonBox["examples.", BaseStyle -> "Hyperlink",	ButtonFunction :>
 							SystemOpen[FileNameJoin[{$FeynHelpersDirectory, "Examples"}]],
 							Evaluator -> Automatic, Method -> "Preemptive"], "Text"],
-	Style[" If you use FeynHelpers in your research, please cite","Text"]];
-	Print [Style[" \[Bullet] V. Shtabovenko, \"FeynHelpers: Connecting FeynCalc to FIRE and Package-X\", Comput. Phys. Commun., 218, 48-65, 2017, arXiv:1611.06793","Text"]];
-	Print[Style["Furthermore, remember to cite the authors of the tools that you are calling from FeynHelpers, which are","Text"]];
+	Style[" If you use FeynHelpers in your research, please evaluate FeynHelpersHowToCite[] to learn how to correctly cite this work.","Text"]];
 
-	If[	!FreeQ[$FeynHelpersLoadInterfaces,"FIRE"],
-		Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIRE",ButtonData :> {URL["https://bitbucket.org/feynmanIntegrals/fire/"], None},BaseStyle -> "Hyperlink",
-				ButtonNote -> "https://bitbucket.org/feynmanIntegrals/fire/"],"Text"], Style[" by A. Smirnov, if you are using the function FIREBurn.","Text"]];
-	];
-
-	If[	!FreeQ[$FeynHelpersLoadInterfaces,"PackageX"],
-		Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Package-X",ButtonData :> {URL["https://packagex.hepforge.org"], None},BaseStyle -> "Hyperlink",
-				ButtonNote -> "https://packagex.hepforge.org"],"Text"], Style[" by H. Patel, if you are using the function PaXEvaluate.","Text"]];
-	];
-
-	If[	!FreeQ[$FeynHelpersLoadInterfaces,"Fermat"],
-		Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Fermat",ButtonData :> {URL["https://home.bway.net/lewis"], None},BaseStyle -> "Hyperlink",
-				ButtonNote -> "https://home.bway.net/lewis"],"Text"], Style[" by R. Lewis, if you are using the function FerSolve.","Text"]];
-	];
-
-	If[	!FreeQ[$FeynHelpersLoadInterfaces,"QGRAF"],
-		Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["QGRAF",ButtonData :> {URL["http://cfif.ist.utl.pt/~paulo/qgraf.html"], None},BaseStyle -> "Hyperlink",
-				ButtonNote -> "http://cfif.ist.utl.pt/~paulo/qgraf.html"],"Text"], Style[" by P. Nogueira, if you are using functions that begin with QG.","Text"]];
-	];
-
-	If[	!FreeQ[$FeynHelpersLoadInterfaces,"LoopTools"],
-		Print [Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["LoopTools",ButtonData :> {URL["http://www.feynarts.de/looptools/"], None},BaseStyle -> "Hyperlink",
-				ButtonNote -> "http://www.feynarts.de/looptools"],"Text"], Style[" by T. Hahn, if you are using functions that begin with LT.","Text"]];
-	];
 
 ];
+
+FeynCalc`FeynHelpersHowToCite[]:=
+	(
+	Print[Style[" \[Bullet] V. Shtabovenko, \"FeynHelpers: Connecting FeynCalc to FIRE and Package-X\", Comput. Phys. Commun., 218, 48-65, 2017, arXiv:1611.06793","Text"]];
+	Print[Style["Furthermore, remember to cite the authors of the tools that you are calling from FeynHelpers, which are","Text"]];
+
+
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIRE",ButtonData :> {URL["https://bitbucket.org/feynmanIntegrals/fire/"], None},BaseStyle -> "Hyperlink",
+		ButtonNote -> "https://bitbucket.org/feynmanIntegrals/fire/"],"Text"], Style[" by A. Smirnov, if you are using functions that begin with FIRE.","Text"]];
+
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Package-X",ButtonData :> {URL["https://packagex.hepforge.org"], None},BaseStyle -> "Hyperlink",
+		ButtonNote -> "https://packagex.hepforge.org"],"Text"], Style[" by H. Patel, if you are using functions that begin with PaX.","Text"]];
+
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Fermat",ButtonData :> {URL["https://home.bway.net/lewis"], None},BaseStyle -> "Hyperlink",
+		ButtonNote -> "https://home.bway.net/lewis"],"Text"], Style[" by R. Lewis, if you are using functions that beging with Fer.","Text"]];
+
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["QGRAF",ButtonData :> {URL["http://cfif.ist.utl.pt/~paulo/qgraf.html"], None},BaseStyle -> "Hyperlink",
+		ButtonNote -> "http://cfif.ist.utl.pt/~paulo/qgraf.html"],"Text"], Style[" by P. Nogueira, if you are using functions that begin with QG.","Text"]];
+
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["LoopTools",ButtonData :> {URL["http://www.feynarts.de/looptools/"], None},BaseStyle -> "Hyperlink",
+		ButtonNote -> "http://www.feynarts.de/looptools"],"Text"], Style[" by T. Hahn, if you are using functions that begin with LT.","Text"]];
+
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["pySecDec",ButtonData :> {URL["https://secdec.readthedocs.io/en/stable/"], None},BaseStyle -> "Hyperlink",
+		ButtonNote -> "https://secdec.readthedocs.io/en/stable/"],"Text"], Style[" by the SecDec collaboration, if you are using functions that begin with PSD.","Text"]]
+
+	);
+
 
 If[ !ValueQ[FeynHelpers`Package`paxLoaded],
 	FeynHelpers`Package`paxLoaded = False
