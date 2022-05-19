@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2021-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Generates input for LoopIntegralFromPropagators				*)
@@ -12,16 +12,11 @@
 (* ------------------------------------------------------------------------ *)
 
 PSDLoopIntegralFromPropagators::usage=
-"PSDLoopIntegralFromPropagators[int, {q1, q2, ...}] is an auxiliary function
-that converts the given loop integral into input for pySecDec's
+"PSDLoopIntegralFromPropagators[int, topo] is an auxiliary function
+that converts the given loop integral (in the GLI representation) belonging
+to the topology topo into input for pySecDec's
 LoopIntegralFromPropagators routine. The output is given as a two element list,
 containing a string and the prefactor of the integral.
-
-
-It is also possible to invoke the function as PSDLoopIntegralFromPropagators[GLI[...],
-FCTopology[...]] or PSDLoopIntegralFromPropagators[FCTopology[...]]. Notice that in this
-case the value of the option FinalSubstitutions is ignored, as replacement
-rules will be extracted directly from the definition of the topology.
 ";
 
 PSDRegulators::usage=
@@ -55,8 +50,8 @@ PSDLoopIntegralFromPropagators[gli_GLI, topo_FCTopology, opts:OptionsPattern[]] 
 		int = FCLoopFromGLI[gli, topo, FCI->OptionValue[FCI]];
 
 		If[	OptionValue[FCI],
-			optFinalSubstitutions = topo[[5]],
-			optFinalSubstitutions = FCI[topo[[5]]]
+			optFinalSubstitutions = Join[topo[[5]], OptionValue[FinalSubstitutions]],
+			optFinalSubstitutions = FCI[Join[topo[[5]], OptionValue[FinalSubstitutions]]]
 		];
 
 		PSDLoopIntegralFromPropagators[int, topo[[3]], Join[{FCI->True,FinalSubstitutions->optFinalSubstitutions},

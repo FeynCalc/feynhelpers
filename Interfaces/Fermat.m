@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2020-2021 Vladyslav Shtabovenko
+	Copyright (C) 2020-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Interface between FeynCalc/Mathematica and Fermat			*)

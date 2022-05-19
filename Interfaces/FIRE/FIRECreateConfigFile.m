@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2015-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Generates FIRE config files out of FCTopology objects		*)
@@ -41,10 +41,10 @@ FIRELthreads::usage=
 FIRE interface. It specifies the #lthreads parameter to be set in FIRE's config file. \
 The default value is 4.";
 
-FIREBucket::usage=
-"FIREBucket is an option for FIRECreateConfigFile and other functions of the \
-FIRE interface. It specifies the #bucket parameter to be set in FIRE's config file. \
-The default value is 29.";
+FIREPosPref::usage=
+"FIREPosPref is an option for FIRECreateConfigFile and other functions of the \
+FIRE interface. It specifies the #pospref parameter to be set in FIRE's config file. \
+The default value is unset.";
 
 FIREBucket::usage=
 "FIREBucket is an option for FIRECreateConfigFile and other functions of the \
@@ -86,9 +86,20 @@ Options[FIRECreateConfigFile] = {
 };
 
 
+FIRECreateConfigFile[topos: {__FCTopology}, dir_String, opts:OptionsPattern[]] :=
+	Map[FIRECreateConfigFile[#,4242,dir,opts]&,topos];
+
+FIRECreateConfigFile[topos: {__FCTopology}, idRaw_List, dir__String, opts:OptionsPattern[]] :=
+	MapThread[FIRECreateConfigFile[#1,#2,dir,opts]&,{topos,idRaw}];
 
 FIRECreateConfigFile[topos: {__FCTopology}, idRaw_List, dirs: {__String}, opts:OptionsPattern[]] :=
-	MapThread[FIRECreateConfigFile[#1,idRaw,#2,opts]&,{topos,dirs}];
+	MapThread[FIRECreateConfigFile[#1,#2,#3,opts]&,{topos,idRaw,dirs}];
+
+FIRECreateConfigFile[topos: {__FCTopology}, dirs: {__String}, opts:OptionsPattern[]] :=
+	MapThread[FIRECreateConfigFile[#1,4242,#3,opts]&,{topos,dirs}];
+
+FIRECreateConfigFile[topos: {__FCTopology}, idRaw_List, dirs: {__String}, opts:OptionsPattern[]] :=
+	MapThread[FIRECreateConfigFile[#1,#2,#3,opts]&,{topos,idRaw,dirs}];
 
 FIRECreateConfigFile[topoRaw_FCTopology, dirRaw_String, opts:OptionsPattern[]] :=
 	FIRECreateConfigFile[topoRaw, 4242, dirRaw, opts];
@@ -187,6 +198,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 		FCPrint[2,"FIRECreateConfigFile: Variables: ", vars, FCDoControl->fpsfVerbose];
 
 		topoName = ToString[topo[[1]]];
+		(*TODO: More freedom here*)
 		dir = FileNameJoin[{dirRaw,topoName}];
 
 		Which[

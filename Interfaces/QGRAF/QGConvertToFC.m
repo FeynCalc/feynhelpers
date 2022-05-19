@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2018-2021 Vladyslav Shtabovenko
+	Copyright (C) 2018-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Runs QGRAF and generates the diagrams						*)
@@ -51,9 +51,9 @@ QGConvertToFC[amps_String, opts:OptionsPattern[]]/; FileExistsQ[amps] :=
 QGConvertToFC[diag_, opts:OptionsPattern[]] :=
 	QGConvertToFC[{diag}, opts]/; Head[diag]=!=List;
 
-QGConvertToFC[diags_List, OptionsPattern[]] :=
+QGConvertToFC[amps_List, OptionsPattern[]] :=
 	Block[{ repRuleInsertions, optQGInsertionRule, optHeads,
-			diagsConverted, repRuleLorentzIndices, headsList, headsListEval,
+			ampsConverted, repRuleLorentzIndices, headsList, headsListEval,
 			repRulePolVectors,liNames,polVecs,dim, loopMoms, repRuleHeads,
 			sunNames, sunfNames, repRuleSUNIndices, repRuleSUNFIndices,
 			prefactor,liOld,sunOld,sunfOld, len, repRuleMomenta},
@@ -87,25 +87,25 @@ QGConvertToFC[diags_List, OptionsPattern[]] :=
 		repRuleSUNFIndices={};
 		repRulePolVectors={};
 
-		diagsConverted = diags;
+		ampsConverted = amps;
 
-		If[	OptionValue[QGTruncatedPolarization] && !FreeQ[diagsConverted,QGPolarization],
-			diagsConverted = diagsConverted /. QGPolarization -> QGTruncatedPolarization
+		If[	OptionValue[QGTruncatedPolarization] && !FreeQ[ampsConverted,QGPolarization],
+			ampsConverted = ampsConverted /. QGPolarization -> QGTruncatedPolarization
 		];
 
-		headsList = Cases2[diagsConverted, optHeads];
+		headsList = Cases2[ampsConverted, optHeads];
 
 		headsListEval = headsList /. Dispatch[repRuleInsertions];
 
 		repRuleHeads = Thread[Rule[headsList,headsListEval]];
 
-		diagsConverted= diagsConverted /. Dispatch[repRuleHeads];
+		ampsConverted= ampsConverted /. Dispatch[repRuleHeads];
 
-		If[	!FreeQ2[diagsConverted, optHeads],
+		If[	!FreeQ2[ampsConverted, optHeads],
 			Print["Warning! Some insertion rules are missing."]
 		];
 
-		diagsConverted = prefactor diagsConverted;
+		ampsConverted = prefactor ampsConverted;
 
 		If[	loopMoms=!={},
 			repRuleMomenta = Join[repRuleMomenta,MapIndexed[Rule[ToExpression["LoopMom"<>ToString[First[#2]]],#1]&,loopMoms]]
@@ -141,34 +141,34 @@ QGConvertToFC[diags_List, OptionsPattern[]] :=
 				Polarization[#,x,Transversality->True]]&,polVecs]
 		];
 
-		diagsConverted = diagsConverted /. repRuleMomenta /.repRuleLorentzIndices/.repRuleSUNIndices/.
+		ampsConverted = ampsConverted /. repRuleMomenta /.repRuleLorentzIndices/.repRuleSUNIndices/.
 			repRuleSUNFIndices/. repRulePolVectors;
 
 		If[	OptionValue[ChangeDimension]=!=False,
-			diagsConverted= ChangeDimension[diagsConverted,dim]
+			ampsConverted= ChangeDimension[ampsConverted,dim]
 		];
 
 		If[	TrueQ[OptionValue[DiracChainJoin]],
-			diagsConverted = DiracChainJoin/@diagsConverted
+			ampsConverted = DiracChainJoin/@ampsConverted
 		];
 
 		If[	TrueQ[OptionValue[PauliChainJoin]],
-			diagsConverted = PauliChainJoin/@diagsConverted
+			ampsConverted = PauliChainJoin/@ampsConverted
 		];
 
 		If[	TrueQ[OptionValue[Contract]],
-			diagsConverted = Contract/@diagsConverted
+			ampsConverted = Contract/@ampsConverted
 		];
 
 		If[	!OptionValue[List],
-			diagsConverted = Total[diagsConverted]
+			ampsConverted = Total[ampsConverted]
 		];
 
 		If[	OptionValue[FinalSubstitutions]=!={},
-			diagsConverted = diagsConverted /. OptionValue[FinalSubstitutions]
+			ampsConverted = ampsConverted /. OptionValue[FinalSubstitutions]
 		];
 
-		Return[diagsConverted]
+		Return[ampsConverted]
 
 	];
 

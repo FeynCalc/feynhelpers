@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2018 Vladyslav Shtabovenko
+	Copyright (C) 2015-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Interface between FeynCalc and Package-X					*)
@@ -75,7 +75,7 @@ PaXDiscB::usage =
 "PaXDiscB corresponds to DiscB in Package-X.";
 
 PaXKallenLambda::usage =
-"PaXDiscB corresponds to Kallen\[Lambda] in Package-X.";
+"PaXKallenLambda corresponds to Kallen\[Lambda] in Package-X.";
 
 PaXDiLog::usage =
 "PaXDiLog corresponds to DiLog in Package-X.";
@@ -251,6 +251,17 @@ PaXKibblePhi[a_?NumericQ, b_?NumericQ, c_?NumericQ, d_?NumericQ, e_?NumericQ, f_
 
 PaXContinuedDiLog[{x1_?NumericQ, a1_?NumericQ}, {x2_?NumericQ, a2_?NumericQ}]:=
 	X`ContinuedDiLog[{x1,a1},{x2,a2}]/; paxLoaded;
+
+(* Series expansions *)
+
+Derivative[args1__][PaXLn][args2__]:=
+	(Derivative[args1][X`Ln][args2] /. {X`Ln->PaXLn,X`DiLog->PaXDiLog,X`ContinuedDiLog->PaXContinuedDiLog})/; paxLoaded;
+
+Derivative[args1__][PaXDiLog][args2__]:=
+	(Derivative[args1][X`DiLog][args2]/.{X`Ln->PaXLn,X`DiLog->PaXDiLog,X`ContinuedDiLog->PaXContinuedDiLog})/; paxLoaded;
+
+Derivative[args1__][PaXContinuedDiLog][args2__]:=
+	(Derivative[args1][X`ContinuedDiLog][args2]/.{X`Ln->PaXLn,X`DiLog->PaXDiLog,X`ContinuedDiLog->PaXContinuedDiLog})/; paxLoaded;
 
 (* FeynCalc->Package-X conversion of scalar products *)
 momConv[x_] :=

@@ -1,0 +1,27 @@
+(* :Title: LoopTools.test													*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2021-2022 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for LoopToopls				*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`LoopTools`Generic =
+({
+{"LoopTools-Generic-ID1","LToolsEvaluate[FAD[q, q - p], q,InitialSubstitutions -> {SPD[p] -> 0}]","0"},
+
+
+{"LoopTools-Generic-ID2","FCCompareNumbers[
+LToolsEvaluate[C0[0, 0, 0, 1/10, 1/15, 1/20],
+q], -7.0669821393830174, FCVerbose -> -1]","0"},
+
+{"LoopTools-Generic-ID3","FCCompareNumbers[
+LToolsEvaluate[C0[1, 0, 0, 0, 0, 0],
+q], (-4.274720994093324 - 5.409651492120762*I) +
+1./Epsilon^2 - (1.7219455507509331 - 3.141592653589793*I)/Epsilon,
+FCVerbose -> -1]","0"}
+
+})

@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2021-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Creates pySecDec sum_package input							*)
@@ -13,7 +13,7 @@
 
 PSDSumPackage::usage=
 "PSDSumPackage[name, packageGenerators, order] is an auxiliary function that
-creates input for pySecDec's loop_package routine. The results is returned as a string.";
+creates input for pySecDec's sum_package routine. The results is returned as a string.";
 
 PSDPyLinkQMCTransforms::usage=
 "PSDPyLinkQMCTransforms is an option for PSDSumPackage and other functions of the

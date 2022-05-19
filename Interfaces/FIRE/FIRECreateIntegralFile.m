@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2015-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Generates FIRE integral files out of GLIs					*)
@@ -30,11 +30,24 @@ fpsfVerbose::usage="";
 Options[FIRECreateIntegralFile] = {
 	FCI					-> False,
 	FCVerbose			-> False,
+	FIREIntegrals		-> "LoopIntegrals.m",
 	OverwriteTarget		-> True
 };
 
-FIRECreateIntegralFile[expr_, topos: {__FCTopology}, rest__, opts:OptionsPattern[]] :=
-	FIRECreateIntegralFile[expr,#,rest,opts]&/@topos;
+FIRECreateIntegralFile[expr_, topos: {__FCTopology}, dir_String, opts:OptionsPattern[]] :=
+	Map[FIRECreateIntegralFile[expr, #,4242,dir,opts]&,topos];
+
+FIRECreateIntegralFile[expr_, topos: {__FCTopology}, idRaw_List, dir__String, opts:OptionsPattern[]] :=
+	MapThread[FIRECreateIntegralFile[expr, #1,#2,dir,opts]&,{topos,idRaw}];
+
+FIRECreateIntegralFile[expr_, topos: {__FCTopology}, idRaw_List, dirs: {__String}, opts:OptionsPattern[]] :=
+	MapThread[FIRECreateIntegralFile[expr, #1,#2,#3,opts]&,{topos,idRaw,dirs}];
+
+FIRECreateIntegralFile[expr_, topos: {__FCTopology}, dirs: {__String}, opts:OptionsPattern[]] :=
+	MapThread[FIRECreateIntegralFile[expr, #1,4242,#3,opts]&,{topos,dirs}];
+
+FIRECreateIntegralFile[expr_, topos: {__FCTopology}, idRaw_List, dirs: {__String}, opts:OptionsPattern[]] :=
+	MapThread[FIRECreateIntegralFile[expr, #1,#2,#3,opts]&,{topos,idRaw,dirs}];
 
 FIRECreateIntegralFile[expr_, topoRaw_FCTopology, dirRaw_String, opts:OptionsPattern[]] :=
 	FIRECreateIntegralFile[expr, topoRaw, 4242, dirRaw, opts];
@@ -77,6 +90,7 @@ FIRECreateIntegralFile[expr_, topoRaw_FCTopology, idRaw_, dirRaw_String, Options
 
 
 		topoName = topo[[1]];
+		(*TODO: More freedom here*)
 		dir = FileNameJoin[{dirRaw,ToString[topoName]}];
 
 		FCPrint[2,"FIRECreateIntegralFile: Problem number: ", id, FCDoControl->fpsfVerbose];
@@ -107,7 +121,7 @@ FIRECreateIntegralFile[expr_, topoRaw_FCTopology, idRaw_, dirRaw_String, Options
 
 
 
-		filePath = FileNameJoin[{dir,"LoopIntegrals.m"}];
+		filePath = FileNameJoin[{dir, OptionValue[FIREIntegrals]}];
 
 		FCPrint[3,"FIRECreateIntegralFile: Integral file path: ", filePath, FCDoControl->fpsfVerbose];
 

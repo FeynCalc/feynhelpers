@@ -1,49 +1,15 @@
 (* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ *)
 
-(* :Title: LoopTools														*)
+(* :Title: LoopToolsSymbols													*)
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2015-2022 Vladyslav Shtabovenko
 *)
 
-(* :Summary: 	Interface between FeynCalc and LoopTools					*)
+(* :Summary: 	Access to LoopTools symbols									*)
 
 (* ------------------------------------------------------------------------ *)
-
-$LTools::usage =
-"$LTools denotes the LinkObject of the LoopTools MathLink executable."
-
-LToolsLoadLibrary::usage=
-"LToolsLoadLibrary[] loads the LoopTools library so that it can be
-used with FeynCalc. This command must be executed once before using any
-of the LoopTools functions";
-
-LToolsUnLoadLibrary::usage=
-"LToolsUnLoadLibrary[] is the inverse of LToolsLoadLibrary[], i.e. it
-unloads the LoopTools library.";
-
-LToolsEvaluate::usage=
-"LToolsEvaluate[expr,q] evaluates \
-Passarino-Veltman functions in expr nuimerically. The evaluation is using \
-T. Hahn's LoopTools.";
-
-LToolsImplicitPrefactor::usage=
-"LToolsImplicitPrefactor is an option for LToolsEvaluate. It specifies a prefactor \
-that doesn't show up explicitly in the input expression, but is understood \
-to appear in fron of every Passarino-Veltman function. LToolsEvaluate does not
-expand the result in Epsilon..";
-
-LToolsPath::usage=
-"LToolsPath is an option for LToolsLoadLibrary. It specifies the \
-full path, to the LoopTools MathLink executable.";
-
-LToolsFullResult::usage=
-"LToolsFullResult is an option for LToolsEvaluate, LToolsEvaluateUV,
-LToolsEvaluateIR and LToolsEvaluateUVIRSplit. When set to True (default),
-LToolsEvaluate* functions will return the full result including
-singularities and accompanying terms. Otherwise, only the finite part
-(standard output of LoopTools) will be provided.";
 
 LToolsA0i::usage=
 "LToolsA0i corresponds to the A0i function in LoopTools. The only \
@@ -305,53 +271,15 @@ error description reads: `1`";
 LTools::pavefail=
 "Warning! LoopTools failed to evaluate the following PaVe function: `1`";
 
-LTools::tens=
-"Warning! Your input contains tensor loop integrals. Those integrals \
-will be ignored, because LoopTools operates only on 1-loop scalar integrals.";
-
-LToolsLoadLibrary::nobinary=
-"Error! Cannot locate the LoopTools MathLink executable. Please specify the \
-full path to the correct binary file LoopTools (Linux/macOS) or LoopTools.exe (Windows) \
-via the option LToolsPath and evaluate LToolsLoadLibrary again."
-
 Begin["`Package`"]
+
+ltFailed;
 
 End[]
 
 Begin["`LoopTools`Private`"]
 
-$LTools = Null;
-ltLoaded = False;
-ltPath = "";
 ltVerbose::usage="";
-dummyLoopMom::usage="";
-failed::usage="";
-
-Options[LToolsLoadLibrary] = {
-	TimeConstrained -> 5,
-	Quiet -> True,
-	LToolsPath ->
-	FileNameJoin[{$UserBaseDirectory, "Applications", "LoopTools",
-		Switch[$System,
-			"Linux x86 (64-bit)",
-				"x86_64-Linux",
-			"Linux x86 (32-bit)",
-				"i686-Linux",
-			_,
-				"LToolsUnknownSystem"], "bin", "LoopTools"}]
-	}
-
-Options[LToolsEvaluate] = {
-	LToolsFullResult 		-> True,
-	LToolsImplicitPrefactor -> 1,
-	LToolsSetMudim 			-> 1.,
-	LToolsSetLambda 		-> 0,
-	LToolsSetDelta 			-> -EulerGamma- Log[Pi],
-	Head					-> Identity,
-	PaVeAutoOrder 			-> True,
-	FCVerbose 				-> False,
-	InitialSubstitutions	-> {}
-}
 
 idList = {
 	"aa0", "aa00", "bb0", "bb1", "bb00", "bb11", "bb001", "bb111",
@@ -385,171 +313,6 @@ idList = {
 	"ee3344", "ee3444", "ee4444"
 };
 
-LToolsLoadLibrary[OptionsPattern[]]:=
-	Block[{quiet, optLToolsPath},
-		If[	!ltLoaded,
-
-			If[OptionValue[Quiet],
-				quiet = Quiet
-			];
-
-			optLToolsPath = OptionValue[LToolsPath];
-
-			If[	!FileExistsQ[optLToolsPath],
-				Message[LTools::failmsg,"Cannot locate the LoopTools MathLink executable. Please specify the full path to the correct binary file LoopTools or LoopTools.exe"];
-				Abort[]
-			];
-
-
-			quiet[
-			Block[{$ContextPath},
-				TimeConstrained[
-					BeginPackage["LoopTools`"];
-					(* 	If we don't get an answer after X secs, then most likely it is because the MathLink
-						executable is not suitable ans Install got frozen.*)
-					$LTools = Install[optLToolsPath];
-					EndPackage[],
-					OptionValue[TimeConstrained]
-				];
-
-
-			],{General::shdw}];
-			If[	Head[$LTools]=!=LinkObject,
-				Message[LToolsLoadLibrary::nobinary];
-				Abort[]
-			];
-
-			ltLoaded=True;
-			FCPrint[0,"LoopTools library loaded."],
-			FCPrint[0,"Nothing to do: LoopTools library is already loaded."]
-		];
-	];
-
-
-
-
-
-LToolsUnLoadLibrary[]:=
-	Block[{},
-		If[ltLoaded,
-			Uninstall[$LTools];
-			ltLoaded=False,
-			FCPrint[0,"Nothing to do: LoopTools library is currently not loaded."];
-		];
-	];
-
-
-LToolsEvaluate[expr_, opts:OptionsPattern[]]:=
-	LToolsEvaluate[expr, dummyLoopMom, opts];
-
-LToolsEvaluate[expr_, q:Except[_?OptionQ], OptionsPattern[]]:=
-	Block[	{ex, fclsOutput, loopIntegral, ints, fcleOutput,
-			resultLT,resEps2,resEps1,resFinitePart,
-			lambda, mudim, delta, repRule, res, optLToolsImplicitPrefactor,
-			optInitialSubstitutions, optHead},
-
-		If [OptionValue[FCVerbose]===False,
-			ltVerbose=$VeryVerbose,
-			If[MatchQ[OptionValue[FCVerbose], _Integer],
-				ltVerbose=OptionValue[FCVerbose]
-			];
-		];
-
-		optLToolsImplicitPrefactor	= OptionValue[LToolsImplicitPrefactor];
-		optInitialSubstitutions 	= OptionValue[InitialSubstitutions];
-		optHead						= OptionValue[Head];
-
-		If[!ltLoaded,
-			LToolsLoadLibrary[];
-			ltLoaded=True
-		];
-
-		FCPrint[3,"LToolsEvaluate: Entering with: ", expr, FCDoControl->ltVerbose];
-
-		(*	First of all, let us convert all the scalar integrals to PaVe functions:	*)
-		ex = ToPaVe[expr,q,PaVeAutoReduce->False, PaVeAutoOrder -> OptionValue[PaVeAutoOrder]]//ToPaVe2;
-
-		FCPrint[1,"LToolsEvaluate: Applying FCLoopSplit.", FCDoControl->ltVerbose];
-		fclsOutput  = FCLoopSplit[ex,{q}];
-		FCPrint[3,"LToolsEvaluate: After FCLoopSplit: ", fclsOutput, FCDoControl->ltVerbose];
-
-		If [fclsOutput[[3]]=!=0 || fclsOutput[[4]]=!=0,
-			Message[LTools::tens]
-		];
-
-		FCPrint[1,"LToolsEvaluate: Applying FCLoopExtract.", FCDoControl-> ltVerbose];
-		fcleOutput=FCLoopExtract[fclsOutput[[2]], {q}, loopIntegral, FCI->True];
-		FCPrint[3,"LToolsEvaluate: After FCLoopExtract: ", fcleOutput, FCDoControl-> ltVerbose];
-
-		(*	The 3rd element in fcleOutput is our list of unique scalar integrals that
-			need to be computed. *)
-		ints = fcleOutput[[3]] /. Dispatch[optInitialSubstitutions];
-
-		FCPrint[3,"LToolsEvaluate: Unique integrals with numerical parameters: ", ints, FCDoControl-> ltVerbose];
-
-		If[	!MatchQ[(ints/.loopIntegral->Identity), {__PaVe}],
-			Message[LTools::failmsg,"List of unique scalar integrals contains integrals that are not written as PaVe functions."];
-			FCPrint[1,"LToolsEvaluate: ints: ", (ints/.loopIntegral->Identity), " ", FCDoControl-> ltVerbose];
-			Abort[];
-		];
-
-
-		If[	!MatchQ[(ints/.loopIntegral->Identity), {PaVe[__?NumberQ, {___?NumberQ}, {__?NumberQ}, OptionsPattern[]] ..}],
-			Message[LTools::failmsg,"Arguments of PaVe functions are not purely numerical."];
-			FCPrint[1,"LToolsEvaluate: ints: ", (ints/.loopIntegral->Identity), " ", FCDoControl-> ltVerbose];
-			Abort[];
-		];
-
-
-		lambda = LToolsGetLambda[];
-		mudim = LToolsGetMudim[];
-		delta = LToolsGetDelta[];
-
-		LToolsSetMudim[OptionValue[LToolsSetMudim]];
-		LToolsSetDelta[OptionValue[LToolsSetDelta]];
-		If[	OptionValue[LToolsFullResult],
-			FCPrint[1,"LToolsEvaluate: Calculating full result.", FCDoControl->ltVerbose];
-
-			LToolsSetLambda[-2];
-			resEps2 = ints /. loopIntegral->optHead /. PaVe -> LToolsPaVe;
-			FCPrint[3,"LToolsEvaluate: 1/Epsilon^2 term: ", resEps2, " ", FCDoControl->ltVerbose];
-
-			LToolsSetLambda[-1];
-			resEps1 = ints /. loopIntegral->optHead /. PaVe -> LToolsPaVe;
-			FCPrint[3,"LToolsEvaluate: 1/Epsilon term: ", resEps1, " ", FCDoControl->ltVerbose];
-
-			LToolsSetLambda[OptionValue[LToolsSetLambda]];
-			resFinitePart = ints /.loopIntegral->optHead /. PaVe -> LToolsPaVe;
-			FCPrint[3,"LToolsEvaluate: finite part: ", resFinitePart, " ", FCDoControl->ltVerbose];
-
-			resultLT = optLToolsImplicitPrefactor*((resEps2/. failed[_] -> 0)/Epsilon^2 + (resEps1/. failed[_] -> 0)/Epsilon + resFinitePart),
-
-
-			FCPrint[1,"LToolsEvaluate: Calculating only the finite part.", FCDoControl->ltVerbose];
-			LToolsSetLambda[OptionValue[LToolsSetLambda]];
-			resultLT = optLToolsImplicitPrefactor * (ints /.loopIntegral->optHead /. PaVe -> LToolsPaVe);
-			FCPrint[3,"LToolsEvaluate: resultLT: ", FCDoControl->ltVerbose]
-		];
-
-		If[	resultLT=!=Identity,
-				resultLT = resultLT /. optHead[0.]->0
-		];
-
-		LToolsSetLambda[lambda];
-		LToolsSetMudim[mudim];
-		LToolsSetDelta[delta];
-
-		FCPrint[3,"LToolsEvaluate: resultLT: ", FCDoControl->ltVerbose];
-
-		repRule = MapThread[Rule[#1,#2]&,{fcleOutput[[3]],resultLT}];
-
-		res = fcleOutput[[1]] + (fcleOutput[[2]]/. Dispatch[repRule]);
-
-		res
-
-	];
-
-
 LToolsA0i[id_String, m_]:=
 	Block[{idVal},
 
@@ -560,7 +323,7 @@ LToolsA0i[id_String, m_]:=
 		];
 
 		LoopTools`A0i[idVal,m]
-	]/; ltLoaded;
+	]/; FeynCalc`Package`ltLoaded;
 
 LToolsB0i[id_String, p_, m1_, m2_]:=
 	Block[{idVal},
@@ -572,7 +335,7 @@ LToolsB0i[id_String, p_, m1_, m2_]:=
 		];
 
 		LoopTools`B0i[idVal, p, m1, m2]
-	]/; ltLoaded;
+	]/; FeynCalc`Package`ltLoaded;
 
 LToolsC0i[id_String, p1_, p2_, p1p2_, m1_, m2_, m3_]:=
 	Block[{idVal},
@@ -584,7 +347,7 @@ LToolsC0i[id_String, p1_, p2_, p1p2_, m1_, m2_, m3_]:=
 		];
 
 		LoopTools`C0i[idVal, p1, p2, p1p2, m1, m2, m3]
-	]/; ltLoaded;
+	]/; FeynCalc`Package`ltLoaded;
 
 LToolsD0i[id_String, p1_, p2_, p3_, p4_, p1p2_, p2p3_, m1_, m2_, m3_, m4_]:=
 	Block[{idVal},
@@ -596,7 +359,7 @@ LToolsD0i[id_String, p1_, p2_, p3_, p4_, p1p2_, p2p3_, m1_, m2_, m3_, m4_]:=
 		];
 
 		LoopTools`D0i[idVal, p1, p2, p3, p4, p1p2, p2p3, m1, m2, m3, m4]
-	]/; ltLoaded;
+	]/; FeynCalc`Package`ltLoaded;
 
 LToolsE0i[id_String, p1_, p2_, p3_, p4_, p5_, p1p2_, p2p3_, p3p4_, p4p5_, p5p1_, m1_, m2_, m3_, m4_, m5_]:=
 	Block[{idVal},
@@ -608,165 +371,165 @@ LToolsE0i[id_String, p1_, p2_, p3_, p4_, p5_, p1p2_, p2p3_, p3p4_, p4p5_, p5p1_,
 		];
 
 		LoopTools`E0i[idVal, p1, p2, p3, p4, p5, p1p2, p2p3, p3p4, p4p5, p5p1, m1, m2, m3, m4, m5]
-	]/; ltLoaded;
+	]/; FeynCalc`Package`ltLoaded;
 
 
 LToolsPaVe[i__Integer, {p___}, {m__}, OptionsPattern[]]:=
 	Block[{res},
 		(*  LoopTools`PaVe[i,{p},{m}]] won't work, as the id (e.g. bb0) will end up in the global context. So we
 			essentially duplicate the original LoopTools function here *)
-		res = (ToExpression["LoopTools`" <> #1 <> "0i"][ToExpression["LoopTools`" <> #2 <> #2 <> ToString /@ Sort[{i}]],
+		res = (ToExpression["Hold[LoopTools`" <> #1 <> "0i]"][ToExpression["LoopTools`" <> #2 <> #2 <> ToString /@ Sort[{i}]],
 			p, m] &)[FromCharacterCode[Length[{m}] + 64], FromCharacterCode[Length[{m}] + 96]];
+		res = ReleaseHold[res];
 		If[	res===Indeterminate,
 			Message[LTools::pavefail,ToString[PaVe[i,{p},{m}],InputForm]];
-			res = failed[PaVe[i,{p},{m},PaVeAutoReduce->False]]
+			res = FCGV["LToolsFailed"][PaVe[i,{p},{m},PaVeAutoReduce->False]]
 		];
 		res
 
-	]/; ltLoaded;
+	]/; FeynCalc`Package`ltLoaded;
 
 LToolsLi2[x_]:=
-	LoopTools`Li2[x]/; ltLoaded;
-
+	LoopTools`Li2[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsLi2omx[x_]:=
-	LoopTools`Li2omx[x]/; ltLoaded;
+	LoopTools`Li2omx[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetMudim[x_]:=
-	LoopTools`SetMudim[x]/; ltLoaded;
+	LoopTools`SetMudim[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetMudim[]:=
-	LoopTools`GetMudim[]/; ltLoaded;
+	LoopTools`GetMudim[]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetDelta[x_]:=
-	LoopTools`SetDelta[x]/; ltLoaded;
+	LoopTools`SetDelta[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetDelta[]:=
-	LoopTools`GetDelta[]/; ltLoaded;
+	LoopTools`GetDelta[]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetUVDiv[x_]:=
-	LoopTools`SetUVDiv[x]/; ltLoaded;
+	LoopTools`SetUVDiv[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetUVDiv[]:=
-	LoopTools`GetUVDiv[]/; ltLoaded;
+	LoopTools`GetUVDiv[]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetLambda[x_]:=
-		LoopTools`SetLambda[x]/; ltLoaded;
+		LoopTools`SetLambda[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetLambda[]:=
-	LoopTools`GetLambda[]/; ltLoaded;
+	LoopTools`GetLambda[]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetMinMass[x_]:=
-	LoopTools`SetMinMass[x]/; ltLoaded;
+	LoopTools`SetMinMass[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetMinMass[]:=
-	LoopTools`GetMinMass[]/; ltLoaded;
+	LoopTools`GetMinMass[]/; FeynCalc`Package`ltLoaded;
 
 LToolsClearCache[]:=
-	LoopTools`ClearCache[]/; ltLoaded;
+	LoopTools`ClearCache[]/; FeynCalc`Package`ltLoaded;
 
 LToolsMarkCache[]:=
-	LoopTools`MarkCache[]/; ltLoaded;
+	LoopTools`MarkCache[]/; FeynCalc`Package`ltLoaded;
 
 LToolsRestoreCache[]:=
-	LoopTools`RestoreCache[]/; ltLoaded;
+	LoopTools`RestoreCache[]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetMaxDev[x_]:=
-	LoopTools`SetMaxDev[x]/; ltLoaded;
+	LoopTools`SetMaxDev[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetMaxDev[]:=
-	LoopTools`GetMaxDev[]/; ltLoaded;
+	LoopTools`GetMaxDev[]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetWarnDigits[x_]:=
-	LoopTools`SetWarnDigits[x]/; ltLoaded;
+	LoopTools`SetWarnDigits[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetWarnDigits[]:=
-	LoopTools`GetWarnDigits[]/; ltLoaded;
+	LoopTools`GetWarnDigits[]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetErrDigits[x_]:=
-	LoopTools`SetErrDigits[x]/; ltLoaded;
+	LoopTools`SetErrDigits[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetErrDigits[]:=
-	LoopTools`GetErrDigits[]/; ltLoaded;
+	LoopTools`GetErrDigits[]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetVersionKey[x_]:=
-	LoopTools`SetVersionKey[x]/; ltLoaded;
+	LoopTools`SetVersionKey[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetVersionKey[]:=
-	LoopTools`GetVersionKey[]/; ltLoaded;
+	LoopTools`GetVersionKey[]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetDebugKey[x_]:=
-	LoopTools`SetDebugKey[x]/; ltLoaded;
+	LoopTools`SetDebugKey[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetDebugKey[]:=
-	LoopTools`GetDebugKey[]/; ltLoaded;
+	LoopTools`GetDebugKey[]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetDebugRange[x_,y_]:=
-	LoopTools`SetDebugRange[x,y]/; ltLoaded;
+	LoopTools`SetDebugRange[x,y]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetCmpBits[x_]:=
-	LoopTools`SetCmpBits[x]/; ltLoaded;
+	LoopTools`SetCmpBits[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetCmpBits[]:=
-	LoopTools`GetCmpBits[]/; ltLoaded;
+	LoopTools`GetCmpBits[]/; FeynCalc`Package`ltLoaded;
 
 LToolsSetDiffEps[x_]:=
-	LoopTools`SetDiffEps[x]/; ltLoaded;
+	LoopTools`SetDiffEps[x]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetDiffEps[]:=
-	LoopTools`GetDiffEps[]/; ltLoaded;
+	LoopTools`GetDiffEps[]/; FeynCalc`Package`ltLoaded;
 
 LToolsGetZeroEps[]:=
-	LoopTools`GetZeroEps[]/; ltLoaded;
+	LoopTools`GetZeroEps[]/; FeynCalc`Package`ltLoaded;
 
 LToolsDRResult[c0_,c1_,c2_]:=
-	LoopTools`DRResult[c0,c1,c2]/; ltLoaded;
+	LoopTools`DRResult[c0,c1,c2]/; FeynCalc`Package`ltLoaded;
 
 LToolsDR1eps=
-	LoopTools`DR1eps/; ltLoaded;
+	LoopTools`DR1eps/; FeynCalc`Package`ltLoaded;
 
 
 LToolsKeyA0=
-	LoopTools`KeyA0/; ltLoaded;
+	LoopTools`KeyA0/; FeynCalc`Package`ltLoaded;
 
 LToolsKeyBget=
-	LoopTools`KeyBget/; ltLoaded;
+	LoopTools`KeyBget/; FeynCalc`Package`ltLoaded;
 
 LToolsKeyC0=
-	LoopTools`KeyC0/; ltLoaded;
+	LoopTools`KeyC0/; FeynCalc`Package`ltLoaded;
 
 LToolsKeyD0=
-	LoopTools`KeyD0/; ltLoaded;
+	LoopTools`KeyD0/; FeynCalc`Package`ltLoaded;
 
 LToolsKeyE0=
-	LoopTools`KeyE0/; ltLoaded;
+	LoopTools`KeyE0/; FeynCalc`Package`ltLoaded;
 
 LToolsKeyEget=
-	LoopTools`KeyEget/; ltLoaded;
+	LoopTools`KeyEget/; FeynCalc`Package`ltLoaded;
 
 LToolsKeyCEget=
-	LoopTools`KeyCEget/; ltLoaded;
+	LoopTools`KeyCEget/; FeynCalc`Package`ltLoaded;
 
 LToolsKeyAll=
-	LoopTools`KeyAll/; ltLoaded;
+	LoopTools`KeyAll/; FeynCalc`Package`ltLoaded;
 
 LToolsDebugA=
-	LoopTools`DebugA/; ltLoaded;
+	LoopTools`DebugA/; FeynCalc`Package`ltLoaded;
 
 LToolsDebugB=
-	LoopTools`DebugB/; ltLoaded;
+	LoopTools`DebugB/; FeynCalc`Package`ltLoaded;
 
 LToolsDebugC=
-	LoopTools`DebugC/; ltLoaded;
+	LoopTools`DebugC/; FeynCalc`Package`ltLoaded;
 
 LToolsDebugD=
-	LoopTools`DebugD/; ltLoaded;
+	LoopTools`DebugD/; FeynCalc`Package`ltLoaded;
 
 LToolsDebugE=
-	LoopTools`DebugE/; ltLoaded;
+	LoopTools`DebugE/; FeynCalc`Package`ltLoaded;
 
-LToolsDebugAll=
-	LoopTools`DebugAll/; ltLoaded;
+LToolsDebugAll:=
+	LoopTools`DebugAll/; FeynCalc`Package`ltLoaded;
 
 LToolsA0[args__]:=
 	LToolsA0i["aa0",args];

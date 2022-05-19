@@ -6,7 +6,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2015-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Interfaces between FeynCalc and other useful HEP package	*)
@@ -64,11 +64,16 @@ If[	!FreeQ[$FeynHelpersLoadInterfaces,"Fermat"],
 	Get[load]
 ];
 
+
 If[	!FreeQ[$FeynHelpersLoadInterfaces,"LoopTools"],
-	load = FileNameJoin[{$FeynHelpersDirectory,"Interfaces","LoopTools.m"}];
+	load = FileNameJoin[{$FeynHelpersDirectory,"Interfaces","LoopTools","LoopToolsShared.m"}];
 	FCDeclareHeader[load];
-	Get[load]
+	Get[load];
+	load = FileNames[{"*.m"},FileNameJoin[{$FeynHelpersDirectory,"Interfaces","LoopTools"}]];
+	FCDeclareHeader/@load;
+	Get/@load
 ];
+
 
 If[	!FreeQ[$FeynHelpersLoadInterfaces,"QGRAF"],
 	load = FileNameJoin[{$FeynHelpersDirectory,"Interfaces","QGRAF","QGRAFShared.m"}];

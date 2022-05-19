@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2015-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Generates FIRE start files out of FCTopology objects		*)
@@ -41,6 +41,9 @@ Options[FIREPrepareStartFile] = {
 	OverwriteTarget		-> True,
 	SetDimensions		-> {3, 4, D, D-1}
 };
+
+FIREPrepareStartFile[topos: {__FCTopology}, dir_String, opts:OptionsPattern[]] :=
+	Map[FIREPrepareStartFile[#,dir,opts]&,topos];
 
 FIREPrepareStartFile[topos: {__FCTopology}, dirs: {__String}, opts:OptionsPattern[]] :=
 	MapThread[FIREPrepareStartFile[#1,#2,opts]&,{topos,dirs}];
@@ -137,6 +140,7 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 		topoName = ToString[topo[[1]]];
 		internal = topo[[3]];
 		external = topo[[4]];
+		(*TODO: More freedom here*)
 		dir = FileNameJoin[{dirRaw,topoName}];
 
 

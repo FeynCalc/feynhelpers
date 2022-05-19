@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2021-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Creates pySecDec input for the integration					*)
@@ -12,9 +12,9 @@
 (* ------------------------------------------------------------------------ *)
 
 PSDIntegrate::usage=
-"PSDIntegrate[name, order] is an auxiliary function that
+"PSDIntegrate[] is an auxiliary function that
 creates input for pySecDec's numerical integration routines.
-The output is given as a list of two strings.";
+The output is returned in form of a string.";
 
 PSDIntegrator::usage=
 "PSDIntegrator is an option of PSDIntegrate and other functions of the
@@ -49,7 +49,7 @@ pySecDec interface. It specifies the value of the epsrel parameter to
 be passed to pySecDec's pySecDec's IntegralLibrary function.";
 
 PSDEpsAbs::usage=
-"PSDFlags is an option for PSDIntegrate and other functions of the
+"PSDEpsAbs is an option for PSDIntegrate and other functions of the
 pySecDec interface. It specifies the value of the epsabs parameter to
 be passed to pySecDec's pySecDec's IntegralLibrary function.";
 
@@ -81,12 +81,12 @@ be passed to pySecDec's numerical integration library.";
 
 
 PSDMaxEpsRel::usage=
-"PSDMinEpsRel is an option for PSDIntegrate and other functions of the
+"PSDMaxEpsRel is an option for PSDIntegrate and other functions of the
 pySecDec interface. It specifies the value of the max_epsrel parameter to
 be passed to pySecDec's numerical integration library.";
 
 PSDMaxEpsAbs::usage=
-"PSDMinEpsAbs is an option for PSDIntegrate and other functions of the
+"PSDMaxEpsAbs is an option for PSDIntegrate and other functions of the
 pySecDec interface. It specifies the value of the max_epsabs parameter to
 be passed to pySecDec's numerical integration library.";
 
@@ -122,7 +122,7 @@ be passed to pySecDec's numerical integration library.";
 
 (*Qmc specific*)
 
-PSDErrorMode::usage=
+PSDErrorModeQmc::usage=
 "PSDErrorMode is an option for PSDIntegrate and other functions of the
 pySecDec interface. It specifies the value of the errormode parameter to
 be passed to pySecDec's integral_interface function. Notice that this

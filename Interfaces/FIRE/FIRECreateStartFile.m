@@ -4,20 +4,21 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2015-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Creates FIRE start files									*)
 
 (* ------------------------------------------------------------------------ *)
 
-FIREMathematicaKernelPath::usage="FIREMathematicaKernelPath is an option for the interface to FIRE. \
-It specifies the full path to the Mathematica Kernel that will be started to run FIRE.
-The default value is Automatic.";
-
 FIRECreateStartFile::usage=
 "FIRECreateStartFile[path] runs FIRE to create a start FILE using the
 script CreateStartFile.m in path.";
+
+FIREMathematicaKernelPath::usage=
+"FIREMathematicaKernelPath is an option for the interface to FIRE. \
+It specifies the full path to the Mathematica Kernel that will be started to run FIRE.
+The default value is Automatic.";
 
 FIRECreateStartFile::failmsg =
 "Error! FIRECreateStartFile has encountered a fatal problem and must abort the computation. \
@@ -41,6 +42,9 @@ FIRECreateStartFile[pathsRaw:{__String}, opts:OptionsPattern[]] :=
 
 FIRECreateStartFile[pathRaw_String, topos:{__FCTopology}, opts:OptionsPattern[]] :=
 	FIRECreateStartFile[FileNameJoin[{pathRaw,ToString[#[[1]]]}], opts]&/@topos;
+
+FIRECreateStartFile[pathRaw_String, topo_FCTopology, opts:OptionsPattern[]] :=
+	FIRECreateStartFile[FileNameJoin[{pathRaw,ToString[topo[[1]]]}], opts];
 
 FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 	Block[{ path, optFIREMathematicaKernelPath, scriptFile, out, dir, exitCode, res},

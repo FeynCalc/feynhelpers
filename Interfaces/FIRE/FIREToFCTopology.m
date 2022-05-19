@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2015-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Converts FIRE topologies to FCTopology objects				*)
@@ -119,7 +119,7 @@ FIREToFCTopology[props_List, lmoms_List, emoms_List /; (emoms === {} || ! Option
 
 		FCPrint[3, "FIREToFCTopology: Split propagators: ", propsSplit, FCDoControl->ftfVerbose];
 		tmp = propToSFAD[#, lmoms, emoms] & /@ propsSplit;
-
+		(*Todo add propsToCFAD and custom conversion rules *)
 		FCPrint[3, "FIREToFCTopology: After propToSFAD: ", tmp, FCDoControl->ftfVerbose];
 
 		If[	!FreeQ[tmp, propToSFAD],
@@ -161,12 +161,14 @@ FIREToFCTopology[props_List, lmoms_List, emoms_List /; (emoms === {} || ! Option
 	]/; !MatchQ[props,{___,_List,___}];
 
 (* (p1+...)^2 +/- m^2*)
-propToSFAD[{(mom_ + re_ : 0)^2, mass_}, lmoms_List, (*emoms*)_List] :=
-	FeynAmpDenominator[StandardPropagatorDenominator[Momentum[mom + re, optDimension], 0, mass, {1, optEtaSign}]] /; MemberQ[lmoms, mom];
+propToSFAD[{(c_. mom_ + re_ : 0)^2, mass_}, lmoms_List, emoms_List] :=
+	FeynAmpDenominator[StandardPropagatorDenominator[Momentum[c mom + re, optDimension], 0, mass, {1, optEtaSign}]] /;
+	(MemberQ[lmoms, mom] && FreeQ2[c,Join[lmoms,emoms]]);
 
 (* -(p1+...)^2 +/- m^2*)
-propToSFAD[{-(mom_ + re_ : 0)^2, mass_}, lmoms_List, (*emoms*)_List] :=
-	FeynAmpDenominator[StandardPropagatorDenominator[I Momentum[mom+ re, optDimension], 0, mass, {1, optEtaSign}]] /; MemberQ[lmoms, mom];
+propToSFAD[{-(c_. mom_ + re_ : 0)^2, mass_}, lmoms_List, emoms_List] :=
+	FeynAmpDenominator[StandardPropagatorDenominator[I Momentum[c mom+ re, optDimension], 0, mass, {1, optEtaSign}]] /;
+	(MemberQ[lmoms, mom] && FreeQ2[c,Join[lmoms,emoms]]);
 
 (* c*(p1+...).x +/- m^2*)
 propToSFAD[{c_. (a_+ a1_:0) (b_+b1_:0) , mass_}, lmoms_List, emoms_List] :=

@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2021-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Generates input for LoopIntegralFromPropagators				*)
@@ -12,15 +12,12 @@
 (* ------------------------------------------------------------------------ *)
 
 PSDCreatePythonScripts::usage=
-"PSDCreatePythonScripts[int, {q1, q2, ...}, dir] creates a set of Python
-scripts needed for the evaluation of the integral int using pySecDec. The
-scripts are saved to the directory dir.
+"PSDCreatePythonScripts[int, topo, path] creates a set of Python
+scripts needed for the evaluation of the integral int (in the GLI representation)
+belonging to the topology topo. The files are saved to the directory path.
 
-It is also possible to invoke the function as PSDCreatePythonScripts[GLI[...],
-FCTopology[...]] or PSDCreatePythonScripts[FCTopology[...]]. Notice that in this
-case the value of the option FinalSubstitutions is ignored, as replacement
-rules will be extracted directly from the definition of the topology.
-";
+It is also possible to invoke the function as PSDCreatePythonScripts[ints, topos,
+paths] if you have a list of integrals to evaluate.";
 
 PSDLoopIntegralName::usage=
 "PSDLoopIntegralName is an option for PSDCreatePythonScripts and other functions of the
@@ -38,14 +35,14 @@ pySecDec interface. It specifies the needed order in the eps-expansion. The defa
 value is 0.";
 
 PSDExpansionByRegionsOrder::usage=
-"PSDRequestedOrder is an option for PSDCreatePythonScripts and other functions of the
+"PSDExpansionByRegionsOrder is an option for PSDCreatePythonScripts and other functions of the
 pySecDec interface. It specifies up to which order the expression should be expanded
 in a small parameter using the method of regions. The default value is 0.
 
 The small parameter must be specified via the option PSDExpansionByRegionsParameter.";
 
 PSDExpansionByRegionsParameter::usage=
-"PSDRequestedOrder is an option for PSDCreatePythonScripts and other functions of the
+"PSDExpansionByRegionsParameter is an option for PSDCreatePythonScripts and other functions of the
 pySecDec interface. It specifies the small parameter in which the given loop integral
 will be expanded using the method of regions. The default value is None, meaning that
 no expansion takes place.
@@ -140,7 +137,7 @@ Options[PSDCreatePythonScripts] = {
 	PSDNumberOfPresamples					-> Default,
 	PSDNumberOfThreads						-> Default,
 	PSDOutputDirectory						-> "loopint",
-	PSDOverwritePackageDirectory				-> False,
+	PSDOverwritePackageDirectory			-> False,
 	PSDPyLinkQMCTransforms					-> Default,
 	PSDRealParameterRules					-> {},
 	PSDRegulators							-> {Epsilon},
@@ -152,23 +149,28 @@ Options[PSDCreatePythonScripts] = {
 	PSDVerbosity							-> Default,
 	PSDWallClockLimit						-> Default
 };
-
+(*Todo regulatrors: Epsilon - eps???*)
 
 PSDCreatePythonScripts[gli_GLI, topos:{__FCTopology}, path_String, opts:OptionsPattern[]] :=
 	PSDCreatePythonScripts[gli, FCLoopSelectTopology[gli,topos], path, opts];
 
 PSDCreatePythonScripts[gli_GLI, topo_FCTopology, path_String, opts:OptionsPattern[]] :=
-	Block[{int,optFinalSubstitutions},
+	Block[{int,optFinalSubstitutions, optPSDRealParameterRules, optPSDComplexParameterRules},
 
 		int = FCLoopFromGLI[gli, topo, FCI->OptionValue[FCI]];
 
+		optPSDRealParameterRules			= OptionValue[PSDRealParameterRules];
+		optPSDComplexParameterRules			= OptionValue[PSDComplexParameterRules];
+
 		If[	OptionValue[FCI],
-			optFinalSubstitutions = topo[[5]],
-			optFinalSubstitutions = FCI[topo[[5]]]
+			optFinalSubstitutions = Join[topo[[5]], OptionValue[FinalSubstitutions]],
+			{optFinalSubstitutions, optPSDRealParameterRules, optPSDComplexParameterRules} =
+				FCI[{Join[topo[[5]], OptionValue[FinalSubstitutions]], optPSDRealParameterRules, optPSDComplexParameterRules}]
 		];
 
-		PSDCreatePythonScripts[int, topo[[3]], path, Join[{FCI->True,FinalSubstitutions->optFinalSubstitutions},
-			FilterRules[{opts}, Except[FCI | FinalSubstitutions]]]]
+		PSDCreatePythonScripts[int, topo[[3]], FileNameJoin[{path,ToString[FCLoopGLIToSymbol[gli]]}], Join[{FCI->True,FinalSubstitutions->optFinalSubstitutions,
+			PSDRealParameterRules -> optPSDRealParameterRules, PSDComplexParameterRules -> optPSDComplexParameterRules},
+			FilterRules[{opts}, Except[FCI | FinalSubstitutions | PSDRealParameterRules | PSDComplexParameterRules]]]]
 	];
 
 
@@ -179,14 +181,14 @@ PSDCreatePythonScripts[glis:{__GLI}, topos:{__FCTopology}, paths:{__String}, opt
 PSDCreatePythonScripts[glis:{__GLI}, topos:{__FCTopology}, path_String, opts:OptionsPattern[]] :=
 	Block[{toposOneToOne},
 		toposOneToOne=FCLoopSelectTopology[#,topos]&/@glis;
-		MapThread[PSDCreatePythonScripts[#1,#2,FileNameJoin[{path,ToString[FCLoopGLIToSymbol[#1]]}],opts]&,{glis,toposOneToOne}]
+		MapThread[PSDCreatePythonScripts[#1,#2,path,opts]&,{glis,toposOneToOne}]
 	];
 
 PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_String, OptionsPattern[]] :=
 	Block[{	ex, loopPackage, loopIntegralFromPropagators, nLoops, optPSDLoopIntegralName, lmoms,
 			optPSDOutputDirectory, optPSDRequestedOrder, generateFileString, status,
 			optPSDGenerateFileName, optPSDIntegrateFileName, filePath, file,
-			integratorString, integrationString, optPSDOverwritePackageDirectory,
+			integratorString, integrationString, optPSDOverwritePackageDirectory, optPSDAdditionalPrefactor,
 			optOverwriteTarget, integrateFileString, numParamsReal, numParamsComplex, sumPackage,
 			optFinalSubstitutions, fp, vars, realParameters, optPSDExpansionByRegionsParameter,
 			complexParameters, optPSDRealParameterRules, extraPref, optPSDExpansionByRegionsOrder,
@@ -203,7 +205,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		optPSDOverwritePackageDirectory		= OptionValue[PSDOverwritePackageDirectory];
 		optPSDExpansionByRegionsParameter	= OptionValue[PSDExpansionByRegionsParameter];
 		optPSDExpansionByRegionsOrder		= OptionValue[PSDExpansionByRegionsOrder];
-
+		optPSDAdditionalPrefactor			= OptionValue[PSDAdditionalPrefactor];
 
 		(*Need to validate all options first*)
 
@@ -214,6 +216,11 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 
 		If[ !(Head[optPSDOutputDirectory]===String || optPSDOutputDirectory===Default),
 			Message[PSDCreatePythonScripts::failmsg, "Incorrect value of the PSDOutputDirectory option."];
+			Abort[];
+		];
+
+		If[ !(Head[optPSDAdditionalPrefactor]===String || optPSDAdditionalPrefactor===Default),
+			Message[PSDCreatePythonScripts::failmsg, "Incorrect value of the PSDAdditionalPrefactor option."];
 			Abort[];
 		];
 
@@ -262,7 +269,8 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 
 
 		If[	!OptionValue[FCI],
-			{ex, optFinalSubstitutions} = FCI[{expr, optFinalSubstitutions}],
+			{ex, optFinalSubstitutions, optPSDRealParameterRules, optPSDComplexParameterRules} =
+				FCI[{expr, optFinalSubstitutions, optPSDRealParameterRules, optPSDComplexParameterRules}],
 			ex = expr
 		];
 
@@ -291,7 +299,6 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		FCPrint[2,"PSDCreatePythonScripts: Relevant loop momenta: ", lmoms, FCDoControl->psdpVerbose];
 
 		nLoops = Length[lmoms];
-
 		vars = SelectFree[Variables2[FCFeynmanPrepare[Abs[ex] /. Abs -> Identity, lmoms, Names -> fp, FCI->True,FinalSubstitutions->optFinalSubstitutions][[2]]], fp];
 
 		If[optFinalSubstitutions=!={},
@@ -331,7 +338,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		(*TODO Could also set all variables to 1 if the user didn't bother to specify them...*)
 
 		If[	!FCSubsetQ[Union[realParameters,complexParameters],vars],
-				Message[PSDCreatePythonScripts::failmsg, "The integral depends on variables that are not specified via the PSDRealParameters or PSDComplexParameters options."];
+				Message[PSDCreatePythonScripts::failmsg, "The integral depends on variables that are not specified via the PSDRealParameterRules or PSDComplexParameterRules options."];
 				Abort[];
 		];
 
@@ -342,12 +349,17 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		FCPrint[3,"PSDCreatePythonScripts: loopIntegralFromPropagators: ", loopIntegralFromPropagators, FCDoControl->psdpVerbose];
 		FCPrint[3,"PSDCreatePythonScripts: extraPref: ", extraPref, FCDoControl->psdpVerbose];
 
+		If[	optPSDAdditionalPrefactor===Default,
+			optPSDAdditionalPrefactor = "("<>ToString[extraPref,InputForm]<>")*exp("<>ToString[nLoops]<>"*EulerGamma*eps)",
+			optPSDAdditionalPrefactor = "("<>ToString[extraPref,InputForm]<>")*" <> optPSDAdditionalPrefactor
+		];
+
 		If[	optPSDExpansionByRegionsParameter===None,
 
 			(*Normal mode*)
 
 			loopPackage = PSDLoopPackage[optPSDOutputDirectory, optPSDLoopIntegralName, optPSDRequestedOrder,
-				PSDAdditionalPrefactor		-> (*OptionValue[PSDAdditionalPrefactor]*) "("<>ToString[extraPref,InputForm]<>")*exp("<>ToString[nLoops]<>"*EulerGamma*eps)",
+				PSDAdditionalPrefactor		-> optPSDAdditionalPrefactor,
 				PSDComplexParameters		-> complexParameters,
 				PSDContourDeformation 		-> OptionValue[PSDContourDeformation],
 				PSDDecompositionMethod		-> OptionValue[PSDDecompositionMethod],

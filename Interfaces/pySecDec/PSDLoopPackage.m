@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2021-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Creates pySecDec loop_package input							*)
@@ -136,7 +136,7 @@ PSDLoopPackage[name_String, loopIntegral_String, order_Integer, OptionsPattern[]
 		optPSDEnforceComplex		= OptionValue[PSDEnforceComplex];
 		optPSDSplit					= OptionValue[PSDSplit];
 
-		(*Need to validate all options first*)
+		(*TODO Need to validate all options first*)
 
 		If[	!MatchQ[optPSDRealParameters, {(_Symbol | _String) ...}],
 			Message[PSDLoopPackage::failmsg, "Incorrect value of the PSDRealParameters option."];

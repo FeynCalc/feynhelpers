@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This software is covered by the GNU General Public License 3.
-# Copyright (C) 2015-2018 Vladyslav Shtabovenko
+# Copyright (C) 2015-2022 Vladyslav Shtabovenko
 
 # Description:
 

@@ -4,14 +4,15 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2015-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Runs FIRE 													*)
 
 (* ------------------------------------------------------------------------ *)
 
-FIREBinaryPath::usage="FIREBinaryPath is an option for the interface to FIRE. \
+FIREBinaryPath::usage=
+"FIREBinaryPath is an option for the interface to FIRE. \
 It specifies the full location of the C++ FIRE binary. \
 The default value is FileNameJoin[{$UserBaseDirectory, \"Applications\", \"FIRE6\", \"bin\", \"FIRE6\"}].";
 
@@ -64,16 +65,16 @@ FIRERunReduction[pathRaw_String, OptionsPattern[]] :=
 			FileExistsQ[pathRaw] && DirectoryQ[pathRaw],
 				path = FileNameJoin[{pathRaw,FileBaseName[pathRaw]<>".config"}];
 				If[	!FileExistsQ[path],
-					Message[FIRERunReduction::failmsg, "The file ", path, " does not exist."];
+					Message[FIRERunReduction::failmsg, "The file " <> path <> " does not exist."];
 					Abort[]
 				],
 			True,
-			Message[FIRERunReduction::failmsg, "The path ", pathRaw, " does not exist."];
+			Message[FIRERunReduction::failmsg, "The path " <> pathRaw <> " does not exist."];
 			Abort[]
 		];
 
 		If[	!FileExistsQ[optFIREBinaryPath],
-			Message[FIRERunReduction::failmsg, "C++ FIRE binary  ", optFIREBinaryPath, " does not exist."];
+			Message[FIRERunReduction::failmsg, "C++ FIRE binary  " <> optFIREBinaryPath <> " does not exist."];
 			Abort[]
 		];
 

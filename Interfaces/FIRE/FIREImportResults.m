@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2021 Vladyslav Shtabovenko
+	Copyright (C) 2015-2022 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Imports FIRE tables											*)
@@ -31,15 +31,15 @@ optComplex::usage="";
 
 
 Options[FIREImportResults] = {
-	FCI					-> False,
-	FCVerbose			-> False,
-	Head				-> Identity
+	FCI			-> False,
+	FCVerbose	-> False,
+	Head		-> Identity
 };
 
 FIREImportResults[topos:{__FCTopology}, filePathRaw_String, opts:OptionsPattern[]] :=
 	FIREImportResults[#[[1]],filePathRaw,opts]&/@topos;
 
-FIREImportResults[topoName_/;Head[topoName]=!=List, pathRaw_String, OptionsPattern[]] :=
+FIREImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, OptionsPattern[]] :=
 	Block[{	topo, res, tmp, id, optHead, tableData,holdGLI, repRule, pn, path},
 
 		If[	OptionValue[FCVerbose]===False,
@@ -52,7 +52,6 @@ FIREImportResults[topoName_/;Head[topoName]=!=List, pathRaw_String, OptionsPatte
 		optHead = OptionValue[Head];
 
 		FCPrint[1,"FIREImportResults: Entering.", FCDoControl->firVerbose];
-
 
 		Which[
 			FileExistsQ[pathRaw] && !DirectoryQ[pathRaw],
@@ -69,11 +68,16 @@ FIREImportResults[topoName_/;Head[topoName]=!=List, pathRaw_String, OptionsPatte
 		];
 
 		tableData = Get[path];
+
+		FCPrint[1,"FIREImportResults: Reduction table loaded.", FCDoControl->firVerbose];
+
 		If[	MatchQ[topoName,{__Rule}],
 			pn = First[tableData[[2]]][[2]][[1]];
 			id = pn/.topoName,
 			id = topoName
 		];
+
+		FCPrint[1,"FIREImportResults: id to be used: ", id, FCDoControl->firVerbose];
 
 
 		tmp = {holdGLI[##[[1]]], {holdGLI[##[[1]]], ##[[2]]} & /@ ##[[2]]} & /@ tableData[[1]];
