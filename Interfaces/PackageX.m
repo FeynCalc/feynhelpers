@@ -11,65 +11,75 @@
 
 (* ------------------------------------------------------------------------ *)
 
-PaXEvaluate::usage="PaXEvaluate[expr,q] evaluates \
-scalar 1-loop integrals (up to 4-point functions) in expr that depend \
-on the loop momentum q in D dimensions. The evaluation is using \
-H. Patel's Package-X.";
+PaXEvaluate::usage=
+"PaXEvaluate[expr, q] evaluates scalar 1-loop integrals (up to 4-point
+functions) in expr that depend on the loop momentum q in D dimensions.
 
-PaXEvaluateIR::usage="PaXEvaluateIR[expr,q] is like PaXEvaluate \
-but with the difference that it returns only the IR-divergent part
-of the result.";
+The evaluation is using H. Patel's Package-X.";
 
-PaXEvaluateUV::usage="PaXEvaluateUV[expr,q] is like PaXEvaluate \
-but with the difference that it returns only the UV-divergent part
-of the result.";
+PaXEvaluateIR::usage=
+"PaXEvaluateIR[expr,q] is like PaXEvaluate but with the difference that it
+returns only the IR-divergent part of the result.";
 
-PaXEvaluateUVIRSplit::usage="PaXEvaluateUVIRSplit[expr,q] is like PaXEvaluate, \
-but with the difference that it explicilty distinguishes between UV- and \
-IR-divergenves.";
+PaXEvaluateUV::usage=
+"PaXEvaluateUV[expr,q] is like PaXEvaluate but with the difference that it
+returns only the UV-divergent part of the result.
+
+The evaluation is using H. Patel's Package-X.";
+
+PaXEvaluateUVIRSplit::usage=
+"PaXEvaluateUVIRSplit[expr,q] is like PaXEvaluate, but with the difference that
+it explicitly distinguishes between UV- and IR-divergences.
+
+The evaluation is using H. Patel's Package-X.";
 
 PaXSubstituteEpsilon::usage=
-"PaXSubstituteEpsilon is an option for PaXEvaluate. For brevity, \
-Package-X normally abbreviates 1/Epsilon - EulerGamma + Log[4Pi] \
-by 1/Epsilon (see DimRegEpsilon in the Documentation of Package-X). \
-When SubstituteEpsilon is set to True, PaXEvaluate will undo this
-abbreviation to obtain the complete result.";
+"PaXSubstituteEpsilon is an option for PaXEvaluate. For brevity, Package-X
+normally abbreviates 1/Epsilon - EulerGamma + Log[4Pi] with 1/Epsilon (see
+DimRegEpsilon in the Documentation of Package-X).
+
+When SubstituteEpsilon is set to True, PaXEvaluate will undo this abbreviation
+to obtain the full result.";
 
 PaXExpandInEpsilon::usage=
-"PaXExpandInEpsilon is an option for PaXEvaluate. If ImplicitPrefactor is \
-not unity and SubstituteEpsilon is set to True, then the value of ExpandInEpsilon \
-determines wheter the final result should be again expanded in Epsilon. Only the \
-1/Epsilon pole is kept. The default value is True.";
+"PaXExpandInEpsilon is an option for PaXEvaluate. If ImplicitPrefactor is not 1
+and SubstituteEpsilon is set to True, then the value of PaXExpandInEpsilon
+determines whether the final result should be again expanded in Epsilon.
+
+The expansion is done only up to $\\mathcal{O}(\\varepsilon^0)$. The default
+value is True.";
 
 PaXSimplifyEpsilon::usage=
-"PaXSimplifyEpsilon is an option for PaXEvaluate. When set to True, PaXEvaluate will \
-attempt to simplify the final result by applying simplifications to the Epsilon-free parts \
-of the expression. The default value is True.";
+"PaXSimplifyEpsilon is an option for PaXEvaluate. When set to True, PaXEvaluate
+will attempt to simplify the final result by applying simplifications to the
+Epsilon-free parts of the expression. The default value is True.";
 
 PaXImplicitPrefactor::usage=
-"PaXImplicitPrefactor is an option for PaXEvaluate. It specifies a prefactor \
-that doesn't show up explicitly in the input expression, but is understood \
-to appear in front of every 1-loop integral. For technical reasons, PaXImplicitPrefactor \
-shouldn't depend on the number of dimensions D. Instead you should explicitly specify \
-what D is (e.g. 4-2 Epsilon). The default value is 1. \
-If the standard prefactor 1/(2Pi)^D is implicit in your calculations then you set \
-ImplicitPrefactor to 1/(2 Pi)^(4 - 2 Epsilon).";
+"PaXImplicitPrefactor is an option for PaXEvaluate. It specifies the prefactor
+that does not show up explicitly in the input expression, but is understood to
+appear in front of every 1-loop integral. For technical reasons,
+PaXImplicitPrefactor should not depend on the number of dimensions D. Instead
+you should explicitly specify what D is (e.g. 4-2 Epsilon). The default value
+is 1.
+
+If the standard prefactor $1/(2 \\pi)^D$ is implicit in your calculations, use
+ImplicitPrefactor -> 1/(2 Pi)^(4 - 2 Epsilon) .";
 
 PaXpvA::usage=
-"PaXpvA corresponds to the PVA function in Package-X";
+"PaXpvA corresponds to the PVA function in Package-X.";
 
 PaXpvB::usage=
-"PaXpvB corresponds to the PVB function in Package-X";
+"PaXpvB corresponds to the PVB function in Package-X.";
 
 PaXpvC::usage=
 "PaXpvC corresponds to the PVC function in Package-X";
 
 PaXpvD::usage=
-"PaXpvD corresponds to the PVD function in Package-X";
+"PaXpvD corresponds to the PVD  function in Package-X.";
 
 PaXEpsilonBar::usage =
-"PaXEpsilonBar corresponds to DimRegEpsilon in Package-X, i.e. \
-1/PaXEpsilonBar means 1/Epsilon - EulerGamma + Log[4Pi].";
+"PaXEpsilonBar corresponds to DimRegEpsilon in Package-X, i.e. 1/PaXEpsilonBar
+means 1/Epsilon - EulerGamma + Log[4Pi].";
 
 PaXDiscB::usage =
 "PaXDiscB corresponds to DiscB in Package-X.";
@@ -90,52 +100,51 @@ PaXLn::usage =
 "PaXLn corresponds to Ln in Package-X.";
 
 PaXDiscExpand::usage =
-"PaXDiscExpand is an option for PaXEvaluate. If set to True, \
-Package-X function DiscExpand will be applied to the output \
+"PaXDiscExpand is an option for PaXEvaluate. If set to True, Package-X function
+DiscExpand will be applied to the output
 of Package-X thus replacing DiscB by its explicit form.";
 
 PaXKallenExpand::usage =
-"PaXKallenExpand is an option for PaXEvaluate. If set to True, \
-Package-X function KallenExpand will be applied to the output \
-of Package-X thus replacing KallenLambda by its explicit form.";
+"PaXKallenExpand is an option for PaXEvaluate. If set to True, Package-X
+function KallenExpand will be applied to the output of Package-X thus
+replacing Kallen\[Lambda] by its explicit form.";
 
 PaXKibbleExpand::usage =
-"PaXKibbleExpand is an option for PaXEvaluate. If set to True, \
-Package-X function KibbleExpand will be applied to the output \
-of Package-X thus replacing Kibble\[Phi] by its explicit form.";
+"PaXKibbleExpand is an option for PaXEvaluate. If set to True, Package-X
+function KibbleExpand will be applied to the output of Package-X thus
+replacing Kibble\[Phi] by its explicit form.";
 
 PaXC0Expand::usage =
-"PaXC0Expand is an option for PaXEvaluate. If set to True, \
-Package-X function C0Expand will be applied to the output \
-of Package-X.";
+"PaXC0Expand is an option for PaXEvaluate. If set to True, Package-X function
+C0Expand will be applied to the output of Package-X.";
 
 PaXD0Expand::usage =
-"PaXD0Expand is an Option for PaXEvaluate. If set to True, \
-Package-X function C0Expand will be applied to the output \
-of Package-X.";
+"PaXD0Expand is an option for PaXEvaluate. If set to True, Package-X function
+D0Expand will be applied to the output of Package-X.";
 
 PaXLoopRefineOptions::usage =
-"PaXLoopRefineOptions is an option for PaXEvaluate. It allows \
-you to directly specify the options supplied to LoopRefine, the \
-Package-X function which returns analytic expressions for loop \
-integrals. The options should be given using X` context, i.e. \
-PaXLoopRefineOptions -> {X`ExplicitC0 -> All};
-";
+"PaXLoopRefineOptions is an option for PaXEvaluate. It allows you to directly
+specify the options supplied to LoopRefine, the Package-X function which
+returns analytic expressions for loop integrals.
+
+The options should be given using X  context, i.e. PaXLoopRefineOptions ->
+{XExplicitC0 -> All}.";
 
 PaXSeries::usage =
-"PaXSeries is an option for PaXEvaluate. It allows \
-to expand Passarino-Veltman functions around given variables. \
-The expansion is done by LoopRefineSeries and the syntax is \
-the same as with the ordinary Series, e.g. \
-PaXSeries -> {{m0,0,2}} or PaXSeries -> {{SPD[p1,p1],pp1,0},{SPD[p2,p2],pp2,0}}.";
+"PaXSeries is an option for PaXEvaluate. It allows to expand Passarino-Veltman
+functions around given variables.
+
+The expansion is done by LoopRefineSeries and the syntax is the same as with
+the ordinary Series, e.g. PaXSeries -> {{m0,0,2}} or PaXSeries ->
+{{SPD[p1,p1],pp1,0},{SPD[p2,p2],pp2,0}}.";
 
 PaXAnalytic::usage =
-"PaXAnalytic is an option for PaXEvaluate. If set to True,
-LoopRefine and LoopRefineSeries will be called with Analyic->True.";
+"PaXAnalytic is an option for PaXEvaluate. If set to True, LoopRefine and
+LoopRefineSeries will be called with Analytic->True.";
 
 PaXPath::usage=
-"PaXPath is an option for PaXEvaluate. It specifies the \
-directory, in which Package-X is installed";
+"PaXPath is an option for PaXEvaluate. It specifies the directory in which
+Package-X is installed.";
 
 PaXEvaluate::convFail=
 "Warning! Not all scalar loop integrals in the expression could be \

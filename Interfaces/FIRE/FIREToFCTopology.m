@@ -12,9 +12,11 @@
 (* ------------------------------------------------------------------------ *)
 
 FIREToFCTopology::usage=
-"FIREToFCTopology[props, lmoms, emoms] converts the list of FIRE propagators props \
-that depend on the loop momenta lmoms and external momenta emoms into a proper FCTopology \
-object. Use the option Names to specify the id of the resulting topology.";
+"FIREToFCTopology[props, lmoms, emoms] converts the list of FIRE propagators
+props that depend on the loop momenta lmoms and external momenta emoms into a
+proper FCTopology object.
+
+Use the option Names to specify the id of the resulting topology.";
 
 FIREToFCTopology::failmsg =
 "Error! FIREToFCTopology has encountered a fatal problem and must abort the computation. \

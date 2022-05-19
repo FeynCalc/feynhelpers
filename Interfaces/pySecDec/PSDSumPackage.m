@@ -13,22 +13,23 @@
 
 PSDSumPackage::usage=
 "PSDSumPackage[name, packageGenerators, order] is an auxiliary function that
-creates input for pySecDec's sum_package routine. The results is returned as a string.";
+creates input for pySecDec's sum_package routine. The result is returned as a
+string.";
 
 PSDPyLinkQMCTransforms::usage=
-"PSDPyLinkQMCTransforms is an option for PSDSumPackage and other functions of the
-pySecDec interface. It specifies the required QMC transformations and will be passed
-to pySecDec's pylink_qmc_transforms argument.";
+"PSDPyLinkQMCTransforms is an option for PSDSumPackage and other functions of
+the pySecDec interface. It specifies the required QMC transformations and will
+be passed to pySecDec's pylink_qmc_transforms argument.";
 
 PSDCoefficients::usage=
 "PSDCoefficients is an option for PSDSumPackage and other functions of the
-pySecDec interface. It specifies coefficients of the integrals in the sum
-and will be passed to pySecDec's coefficients argument. The default value is None.";
+pySecDec interface. It specifies coefficients of the integrals in the sum and
+will be passed to pySecDec's coefficients argument. The default value is None.";
 
 PSDFormExecutable::usage=
 "PSDFormExecutable is an option for PSDSumPackage and other functions of the
-pySecDec interface. It specifies the path to the FORM executable and
-will be passed to pySecDec's form_executable argument. The default value is None.";
+pySecDec interface. It specifies the path to the FORM executable and will be
+passed to pySecDec's form_executable argument. The default value is None.";
 
 (*TODO add other stuff as well ... *)
 

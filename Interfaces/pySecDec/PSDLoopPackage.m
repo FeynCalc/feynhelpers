@@ -13,47 +13,53 @@
 
 PSDLoopPackage::usage=
 "PSDLoopPackage[name, loopIntegral, order] is an auxiliary function that
-creates input for pySecDec's loop_package routine. The results is returned as a string.";
+creates input for pySecDec's loop_package routine. The result is returned as a
+string.
+
+PSDLoopPackage is used by PSDCreatePythonScripts when assembling the
+generation script.";
 
 PSDRealParameters::usage=
 "PSDRealParameters is an option for PSDLoopPackage and other functions of the
-pySecDec interface. It is a list of symbols (or strings) that will be passed to
-pySecDec's loop_package argument real_parameters";
+pySecDec interface. It is a list of symbols (or strings) that will be passed
+to pySecDec's loop_package argument real_parameters.";
 
 PSDComplexParameters::usage=
-"PSDComplexParameters is an option for PSDLoopPackage and other functions of the
-pySecDec interface. It is a list of symbols (or strings) that will be passed to
-pySecDec's loop_package argument real_parameters";
+"PSDComplexParameters is an option for PSDLoopPackage and other functions of
+the pySecDec interface. It is a list of symbols (or strings) that will be
+passed to pySecDec's loop_package argument real_parameters.";
 
 PSDContourDeformation::usage=
-"PSDContourDeformation is an option for PSDLoopPackage and other functions of the
-pySecDec interface. It is a boolean switch that will be passed to pySecDec's
-loop_package argument contour_deformation. The default value is True. However,
-if you know in advance that your integral has no imaginary part, setting this option
-to False will greatly improve the peformance.";
+"PSDContourDeformation is an option for PSDLoopPackage and other functions of
+the pySecDec interface. It is a boolean switch that will be passed to
+pySecDec's loop_package argument contour_deformation. The default value is
+True. However, if you know in advance that your integral has no imaginary
+part, setting this option to False will greatly improve the peformance.";
 
 PSDAdditionalPrefactor::usage=
-"PSDAdditionalPrefactor is an option for PSDLoopPackage and other functions of the
-pySecDec interface. It specifies an implicit prefactor multiplying the loop integral
-and will be passed to pySecDec's loop_package argument additional_prefactor. The
-value should be a string representing a valid pySecDec expression.";
+"PSDAdditionalPrefactor is an option for PSDLoopPackage and other functions of
+the pySecDec interface. It specifies an implicit prefactor multiplying the
+loop integral and will be passed to pySecDec's loop_package argument
+additional_prefactor. The value should be a string representing a valid
+pySecDec expression.";
 
 PSDFormOptimizationLevel::usage=
-"PSDFormOptimizationLevel is an option for PSDLoopPackage and other functions of the
-pySecDec interface. It specifies the optimization level to be used in FORM
-and will be passed to pySecDec's loop_package argument form_optimization_level.
-The default value is 2.";
+"PSDFormOptimizationLevel is an option for PSDLoopPackage and other functions
+of the pySecDec interface. It specifies the optimization level to be used in
+FORM and will be passed to pySecDec's loop_package argument
+form_optimization_level. The default value is 2.";
 
 PSDFormWorkSpace::usage=
 "PSDFormWorkSpace is an option for PSDLoopPackage and other functions of the
 pySecDec interface. It specifies the size of the FORM WorkSpace and will be
-passed to pySecDec's loop_package argument form_work_space.
-The default value is '50M'.";
+passed to pySecDec's loop_package argument form_work_space. The default value
+is \"50M\".";
 
 PSDFormMemoryUse::usage=
 "PSDFormMemoryUse is an option for PSDLoopPackage and other functions of the
-pySecDec interface. It specifies the target FORM memory usage and will be passed to
-pySecDec's loop_package argument form_memory_use. The default value is None.";
+pySecDec interface. It specifies the target FORM memory usage and will be
+passed to pySecDec's loop_package argument form_memory_use. The default value
+is None.";
 
 PSDFormThreads::usage=
 "PSDFormThreads is an option for PSDLoopPackage and other functions of the
@@ -61,25 +67,27 @@ pySecDec interface. It specifies the number of threads (T)FORM will use and
 will be passed to pySecDec's form_threads argument. The default value is 2.";
 
 PSDDecompositionMethod::usage=
-"PSDDecompositionMethod is an option for PSDLoopPackage and other functions of the
-pySecDec interface. It specifies pySecDec's strategy for decomposing the polynomials
-will be passed to the loop_package argument decomposition_method. The default value is \"geometric\".";
+"PSDDecompositionMethod is an option for PSDLoopPackage and other functions of
+the pySecDec interface. It specifies pySecDec's strategy for decomposing the
+polynomials will be passed to the loop_package argument decomposition_method.
+The default value is \"geometric\".";
 
 PSDNormalizExecutable::usage=
-"PSDNormalizExecutable is an option for PSDLoopPackage and other functions of the
-pySecDec interface. It specifies the command to run normaliz and will be passed to the
-loop_package argument normaliz_executable";
+"PSDNormalizExecutable is an option for PSDLoopPackage and other functions of
+the pySecDec interface. It specifies the command to run normaliz and will be
+passed to the loop_package argument normaliz_executable.";
 
 PSDEnforceComplex::usage=
 "PSDEnforceComplex is an option for PSDLoopPackage and other functions of the
-pySecDec interface. It specifies whether or not the generated integrand functions
-should have a complex return type even though they might be purely real. The option
-value will be passed to the loop_package argument enforce_complex.";
+pySecDec interface. It specifies whether or not the generated integrand
+functions should have a complex return type even though they might be purely
+real. The option value will be passed to the loop_package argument
+enforce_complex.";
 
 PSDSplit::usage=
-"PSDSplit is an option for PSDLoopPackage and other functions of the
-pySecDec interface. It specifies whether or not to split the integration
-domain in order to map singularities from 1 to 0.";
+"PSDSplit is an option for PSDLoopPackage and other functions of the pySecDec
+interface. It specifies whether or not to split the integration domain in
+order to map singularities from 1 to 0.";
 
 (*TODO add other stuff as well ... *)
 

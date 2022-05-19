@@ -11,13 +11,17 @@
 
 (* ------------------------------------------------------------------------ *)
 
-QGLoadInsertions::usage="
-QGLoadInsertions[\"insertion.m\"] loads insertion rules from insertion.m for amplitudes \
-generated with QGRAF. Specifying only the file name means that QGLoadInsertions will \
-search for the file first in $QGInsertionsDirectory and then in the current directory. \
-Specifying the full path will force the function to load the file from there directly. \n
-Evaluating QGLoadInsertions[] loads some common insertions from QGCommonInsertions.m that \
-are shipped with this interface.";
+QGLoadInsertions::usage=
+"QGLoadInsertions[\"insertions.m\"] loads insertion rules from insertions.m for
+amplitudes generated with QGRAF.
+
+Specifying only the file name means that QGLoadInsertions will search for the
+file first in $QGInsertionsDirectory and then in the current directory.
+Specifying the full path will force the function to load the file from there
+directly.
+
+Evaluating QGLoadInsertions[] loads some common insertions from
+QGCommonInsertions.m that are shipped with this interface.";
 
 QGLoadInsertions::fail=
 "QGLoadInsertions has encountered an error and must abort the evaluation. The \

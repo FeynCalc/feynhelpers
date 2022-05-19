@@ -12,16 +12,19 @@
 (* ------------------------------------------------------------------------ *)
 
 PSDLoopIntegralFromPropagators::usage=
-"PSDLoopIntegralFromPropagators[int, topo] is an auxiliary function
-that converts the given loop integral (in the GLI representation) belonging
-to the topology topo into input for pySecDec's
-LoopIntegralFromPropagators routine. The output is given as a two element list,
-containing a string and the prefactor of the integral.
-";
+"PSDLoopIntegralFromPropagators[int, topo] is an auxiliary function that
+converts the given loop integral (in the GLI representation) belonging to the
+topology topo into input for pySecDec's LoopIntegralFromPropagators routine.
+The output is given as a list of two elements, containing a string and the
+prefactor of the integral. PSDLoopIntegralFromPropagators
+
+PSDLoopIntegralFromPropagators is used by PSDCreatePythonScripts when
+assembling the generation script.";
 
 PSDRegulators::usage=
-"PSDRegulators is an option for PSDLoopIntegralFromPropagators and other functions of the
-pySecDec interface. It specifies a list of symbols to be used for the regulators.";
+"PSDRegulators is an option for PSDLoopIntegralFromPropagators and other
+functions of the pySecDec interface. It specifies a list of symbols to be used
+for the regulators.";
 
 PSDLoopIntegralFromPropagators::failmsg =
 "Error! PSDLoopIntegralFromPropagators has encountered a fatal problem and must abort the computation. \

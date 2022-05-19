@@ -12,14 +12,19 @@
 (* ------------------------------------------------------------------------ *)
 
 PSDLoopRegions::usage=
-"PSDLoopRegions[name, loopIntegral, order, smallnessParameter] is an auxiliary function that
-creates input for pySecDec's loop_regions routine. The results is returned as a string.";
+"PSDLoopRegions[name, loopIntegral, order, smallnessParameter] is an auxiliary
+function that creates input for pySecDec's loop_regions routine. The results
+is returned as a string.
+
+PSDLoopPackage is used by PSDCreatePythonScripts when assembling the
+generation script for an asymptotic expansion.";
 
 
 PSDAddMonomialRegulatorPower::usage=
-"PSDEnforceComplex is an option for PSDLoopRegions and other functions of the
-pySecDec interface. It specifies the name of the regulator used to introduce
-monomial factors regulating integrals arising from the expansion by regions.";
+"PSDAddMonomialRegulatorPower is an option for PSDLoopRegions and other
+functions of the pySecDec interface. It specifies the name of the regulator
+used to introduce monomial factors regulating integrals arising from the
+expansion by regions.";
 
 (*TODO add other stuff as well ... *)
 

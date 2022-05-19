@@ -15,17 +15,20 @@ $LTools::usage =
 "$LTools denotes the LinkObject of the LoopTools MathLink executable."
 
 LToolsLoadLibrary::usage=
-"LToolsLoadLibrary[] loads the LoopTools library so that it can be
-used with FeynCalc. This command must be executed once before using any
-of the LoopTools functions";
+"LToolsLoadLibrary[] loads the LoopTools library so that it can be used with
+FeynCalc. This command must be executed once before using any of the LTools*
+functions.";
 
 LToolsUnLoadLibrary::usage=
-"LToolsUnLoadLibrary[] is the inverse of LToolsLoadLibrary[], i.e. it
-unloads the LoopTools library.";
+"LToolsUnLoadLibrary[] is the inverse of LToolsLoadLibrary[], i.e. it unloads
+the LoopTools library.";
 
 LToolsPath::usage=
-"LToolsPath is an option for LToolsLoadLibrary. It specifies the \
-full path, to the LoopTools MathLink executable.";
+"LToolsPath is an option for LToolsLoadLibrary. It specifies the full path, to
+the LoopTools MathLink executable.
+
+The default value is FileNameJoin[{$FeynHelpersDirectory, \"ExternalTools\",
+\"LoopTools\", \"LoopTools\"}].";
 
 Begin["`Package`"]
 

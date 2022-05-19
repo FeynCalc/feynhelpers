@@ -12,8 +12,17 @@
 (* ------------------------------------------------------------------------ *)
 
 FIREImportResults::usage=
-"FIREImportResults[topoName, path] can be used to import results after a FIRE reduction.
-";
+"FIREImportResults[topoName, path]  imports the content of a FIRE .tables file
+and converts the results to replacement rules for GLIs with the id topoName.
+
+Notice that topoName can be also a list of replacement rules that link FIRE
+ids to FCTopology ids. For the sake of convenience one can also use full
+FCTopology objects instead of their ids as in  FIREImportResults[topo, path]
+or FIREImportResults[{topo1, topo2, ...}, path].
+
+If path represents a full path to a file, then this file is loaded. If it is
+just a path to a directory, then path/topoName/topoName is assumed to be the
+full path.";
 
 FIREImportResults::failmsg =
 "Error! FIREImportResults has encountered a fatal problem and must abort the computation. \

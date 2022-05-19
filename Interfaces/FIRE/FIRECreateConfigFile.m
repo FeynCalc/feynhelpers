@@ -12,49 +12,101 @@
 (* ------------------------------------------------------------------------ *)
 
 FIRECreateConfigFile::usage=
-"FIRECreateConfigFile[topo, id, path] can be used to generate a config file for FIRE.
-";
+"FIRECreateConfigFile[topo, fireID, path] automatically generates a FIRE
+.config file  for the given topology topo with the FIRE-identifier fireID and
+saves it to path/topoName as topoName.config where topoName is the
+FCTopology-identifier. The function returns the full path to the generated
+.config file.
+
+If the directory specified in path/topoName does not exist, it will be created
+automatically. If it already exists, its content will be automatically
+overwritten, unless the option OverwriteTarget is set to False.
+
+If no fireID is given, i.e. the function is called as
+FIRECreateConfigFile[topo,  path], then the default value 4242 is used.
+
+It is also possible to invoke  the routine as FIRECreateConfigFile[{topo1,
+topo2, ...}, {id1, id2, ...}, {path1, path2, ...}] or
+FIRECreateConfigFile[{topo1, topo2, ...}, {path1, path2, ...}]if one needs to
+process a list of topologies.
+
+The syntax  FIRECreateConfigFile[{topo1, topo2, ...}, {id1, id2, ...}, path]
+or FIRECreateConfigFile[{topo1, topo2, ...}, path] is also allowed. This
+implies that all config files will go into the corresponding subdirectories of
+path, e.g. path/topoName1, path/topoName2 etc.
+
+The default name of the file containing loop integrals for the reduction is
+\"LoopIntegrals.m\". It can be changed via the option FIREIntegrals.
+
+To customize the content of the .config file one can use following  options:
+
+- FIREBucket (corresponds to #bucket, default value 29)
+- FIRECompressor (corresponds to #compressor, default value \"zstd\")
+- FIREFThreads (corresponds to #fthreads, default value $2 \\times N_{CPU}$)
+- FIRELThreads (corresponds to #lthreads, default value 2)
+- FIREPosPref (corresponds to #pospref, unset by default)
+- FIRESThreads (corresponds to #sthreads, default value $N_{CPU}$)
+- FIREThreads (corresponds to #threads, default value $N_{CPU}$)";
 
 FIRECompressor::usage=
-"FIRECompressor is an option for FIRECreateConfigFile and other functions of the \
-FIRE interface. It specifies the #compressor parameter to be set in FIRE's config file. \
-The default value is zstd";
+"FIRECompressor is an option for FIRECreateConfigFile and other functions of
+the FIRE interface.
+
+It specifies the #compressor parameter to be set in a FIRE .config-file. The
+default value is \"zstd\".";
 
 FIREThreads::usage=
-"FIREThreads is an option for FIRECreateConfigFile and other functions of the \
-FIRE interface. It specifies the #threads parameter to be set in FIRE's config file. \
-The default value is the number of physical cores ($ProcessorCount) on your machine.";
+"FIREThreads is an option for FIRECreateConfigFile and other functions of the
+FIRE interface.
+
+It specifies the #threads parameter to be set in a FIRE .config-file. The
+default value is the number of physical cores ($ProcessorCount) on your
+machine.";
 
 FIREFthreads::usage=
-"FIREFthreads is an option for FIRECreateConfigFile and other functions of the \
-FIRE interface. It specifies the #fthreads parameter to be set in FIRE's config file. \
-The default value is twice times the number of physical cores ($ProcessorCount) on your machine
-with the separate fermat mode being active.";
+"FIREFthreads is an option for FIRECreateConfigFile and other functions of the
+FIRE interface.
+
+It specifies the #fthreads parameter to be set in a FIRE .config-file. The
+default value is twice times the number of physical cores ($ProcessorCount) on
+your machine with the separate [FERMAT](home.bway.net/lewis/) mode being
+active.";
 
 FIRESthreads::usage=
-"FIRESthreads is an option for FIRECreateConfigFile and other functions of the \
-FIRE interface. It specifies the #sthreads parameter to be set in FIRE's config file. \
-The default value is the number of physical cores ($ProcessorCount) on your machine.";
+"FIRESthreads is an option for FIRECreateConfigFile and other functions of the
+FIRE interface.
+
+It specifies the #lthreads parameter to be set in a FIRE .config-file. The
+default value is the number of physical cores ($ProcessorCount) on your
+machine.";
 
 FIRELthreads::usage=
-"FIRELthreads is an option for FIRECreateConfigFile and other functions of the \
-FIRE interface. It specifies the #lthreads parameter to be set in FIRE's config file. \
-The default value is 4.";
+"FIRELthreads is an option for FIRECreateConfigFile and other functions of the
+FIRE interface.
+
+It specifies the #lthreads parameter to be set in a FIRE .config-file. The
+default value is 4.";
 
 FIREPosPref::usage=
-"FIREPosPref is an option for FIRECreateConfigFile and other functions of the \
-FIRE interface. It specifies the #pospref parameter to be set in FIRE's config file. \
-The default value is unset.";
+"FIREPosPref is an option for FIRECreateConfigFile and other functions of the
+FIRE interface.
+
+It specifies the #pospref parameter to be set in a FIRE .config-file. The
+default value is Default meaning that this parameters is not set.";
 
 FIREBucket::usage=
-"FIREBucket is an option for FIRECreateConfigFile and other functions of the \
-FIRE interface. It specifies the #bucket parameter to be set in FIRE's config file. \
-The default value is 29.";
+"FIREBucket is an option for FIRECreateConfigFile and other functions of the
+FIRE interface.
+
+It specifies the #bucket parameter to be set in a FIRE .config-file. The
+default value is 29.";
 
 FIREIntegrals::usage=
-"FIREIntegrals is an option for FIREIntegrals and other functions of the \
-FIRE interface. It specifies the #integrals parameter to be set in FIRE's config file. \
-The default value is LoopIntegrals.m";
+"FIREIntegrals is an option for FIRECreateConfigFile and other functions of the
+FIRE interface.
+
+It specifies the #integrals parameter to be set in a FIRE .config file. The
+default value is \"LoopIntegrals.m\".";
 
 FIRECreateConfigFile::failmsg =
 "Error! FIRECreateConfigFile has encountered a fatal problem and must abort the computation. \

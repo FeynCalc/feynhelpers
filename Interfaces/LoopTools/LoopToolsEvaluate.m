@@ -12,25 +12,74 @@
 (* ------------------------------------------------------------------------ *)
 
 LToolsEvaluate::usage=
-"LToolsEvaluate[expr,q] evaluates \
-Passarino-Veltman functions in expr nuimerically. The evaluation is using \
-T. Hahn's LoopTools.";
+"LToolsEvaluate[expr, q] evaluates Passarino-Veltman functions in expr
+numerically using LoopTools by T. Hahn.
+
+In contrast to the default behavior of LoopTools, the function returns not
+just the finite part but also the singular pieces proportional to
+$1\\varepsilon$ and $1\\varepsilon^2$. This behavior is controlled by the option
+LToolsFullResult.
+
+Notice that the normalization of Passarino-Veltman functions differs between
+FeynCalc and LoopTools, cf. Section 1.2 of the LoopTools manual. In FeynCalc
+the overall prefactor is just $1/(i \\pi^2)$, while LoopTools employs $1/(i
+\\pi^{D/2} r_{\\Gamma})$ with $D = 4 -2 \\varepsilon$ and $r_{\\Gamma} = \\Gamma^2
+(1 - \\varepsilon) \\Gamma (1 + \\varepsilon) / \\Gamma(1-2 \\varepsilon)$.
+
+When the option LToolsFullResult is set to True,  LToolsEvaluate will
+automatically  account for this difference by multiplying the LoopTools output
+with  $1/\\pi^{\\varepsilon} r_\\Gamma$.
+
+However, for LToolsFullResult -> False no such conversion will occur. This is
+because  the proper conversion between different $\\varepsilon$-dependent
+normalizations requires the knowledge of the poles: when terms proportional to
+$\\varepsilon$ multiply the poles, they generate finite contributions. In this
+sense it is not recommended to use LToolsEvaluate with LToolsFullResult set to
+False, unless you precisely understand what you are doing.";
 
 LToolsExpandInEpsilon::usage=
-"";
+"LToolsExpandInEpsilon is an option for LToolsEvaluate. When set to True
+(default), the result returned by LoopTools and multiplied with proper
+conversion factors will be expanded around $\\varepsilon = 0$ to
+$\\mathcal{O}(\\varepsilon^0)$.
+
+The $\\varepsilon$-dependent conversion factors arise from the differences in
+the normalization between Passarino-Veltman functions in FeynCalc and
+LoopTools. In addition to that, the prefactor specified via
+LToolsImplicitPrefactor may also depend on $\\varepsilon$.
+
+Setting this option to False will leave the prefactors unexpanded, which 
+might sometimes be useful when examining the obtained results.";
 
 LToolsImplicitPrefactor::usage=
-"LToolsImplicitPrefactor is an option for LToolsEvaluate. It specifies a prefactor \
-that doesn't show up explicitly in the input expression, but is understood \
-to appear in fron of every Passarino-Veltman function. LToolsEvaluate does not
-expand the result in Epsilon..";
+"LToolsImplicitPrefactor is an option for LToolsEvaluate. It specifies a
+prefactor that does not show up explicitly in the input expression, but is
+understood to appear in front of every Passarino-Veltman function. The default
+value is 1.
+
+You may want to use LToolsImplicitPrefactor->1/(2Pi)^D when working with
+1-loop amplitudes, if no explicit prefactor has been introduced from the very
+beginning.";
 
 LToolsFullResult::usage=
-"LToolsFullResult is an option for LToolsEvaluate, LToolsEvaluateUV,
-LToolsEvaluateIR and LToolsEvaluateUVIRSplit. When set to True (default),
-LToolsEvaluate* functions will return the full result including
-singularities and accompanying terms. Otherwise, only the finite part
-(standard output of LoopTools) will be provided.";
+"LToolsFullResult is an option for LToolsEvaluate. When set to True (default), 
+LToolsEvaluate will return the full result including singularities and
+accompanying terms. Otherwise, only the finite part (standard output of
+LoopTools) will be provided.
+
+The full result is assembled from pieces returned by LoopTools for the
+$\\lambda^2$-parameter set to $-2$, $-1$ and $0$ respectively. The correct
+prefactor that accounts for the normalization differences between
+Passarino-Veltman function in FeynCalc and LoopTools is added as well.
+
+As long as LToolsFullResult is set to True, the value of the LToolsSetLambda
+option is ignored.
+
+Disabling LToolsFullResult will most likely lead to incorrect normalization of
+the results (especially if you are only interested in the finite part). The
+reason for this are missing contributions to the finite part generated from
+poles being multiplied by terms proportional to $\\varepsilon$ or
+$\\varepsilon^2$.";
 
 LToolsEvaluate::failmsg=
 "LToolsEvaluate has encountered an error and must abort the evaluation. The \

@@ -12,257 +12,407 @@
 (* ------------------------------------------------------------------------ *)
 
 LToolsA0i::usage=
-"LToolsA0i corresponds to the A0i function in LoopTools. The only \
-difference is that the id should be entered as a string, e.g. \"a0\" \
-instead of a0.\n
-See ?LoopTools`A0i for more details about the LoopTools function.";
+"LToolsA0i corresponds to the A0i function in LoopTools. The only difference is
+that the id should be entered as a string, e.g. \"a0\" instead of a0.
+
+See ?LoopToolsA0i for further information regarding this LoopTools symbol.";
 
 LToolsB0i::usage=
-"LToolsB0i corresponds to the B0i function in LoopTools. The only \
-difference is that the id should be entered as a string, e.g. \"b0\" \
-instead of b0.\n
-See ?LoopTools`B0i for more details about the LoopTools function.";
+"LToolsB0i corresponds to the B0i function in LoopTools. The only difference is
+that the id should be entered as a string, e.g. \"b0\" instead of b0.
+
+See ?LoopToolsB0i for further information regarding this LoopTools symbol.";
 
 LToolsC0i::usage=
-"LToolsC0i corresponds to the C0i function in LoopTools. The only \
-difference is that the id should be entered as a string, e.g. \"c0\" \
-instead of c0.\n
-See ?LoopTools`C0i for more details about the LoopTools function.";
+"LToolsC0i corresponds to the C0i function in LoopTools. The only difference is
+that the id should be entered as a string, e.g. \"c0\" instead of c0.
+
+See ?LoopToolsC0i for further information regarding this LoopTools symbol.";
 
 LToolsD0i::usage=
-"LToolsD0i corresponds to the D0i function in LoopTools. The only \
-difference is that the id should be entered as a string, e.g. \"d0\" \
-instead of d0.\n
-See ?LoopTools`D0i for more details about the LoopTools function.";
+"LToolsD0i corresponds to the D0i function in LoopTools. The only difference is
+that the id should be entered as a string, e.g. \"d0\" instead of d0.
+
+See ?LoopToolsD0i for further information regarding this LoopTools symbol.";
 
 LToolsE0i::usage=
-"LToolsE0i corresponds to the E0i function in LoopTools. The only \
-difference is that the id should be entered as a string, e.g. \"e0\" \
-instead of e0.\n
-See ?LoopTools`E0i for more details about the LoopTools function.";
+"LToolsE0i corresponds to the E0i function in LoopTools. The only difference is
+that the id should be entered as a string, e.g. \"e0\" instead of e0.
+
+See ?LoopToolsE0i for further information regarding this LoopTools symbol.";
 
 LToolsPaVe::usage=
-"LToolsPaVe corresponds to the PaVe function in LoopTools.\n
-See ?LoopTools`PaVe for more details about the LoopTools function.";
+"LToolsPaVe corresponds to the PaVe function in LoopTools.
+
+See ?LoopToolsPaVe for further information regarding this LoopTools symbol.";
 
 LToolsLi2::usage=
-"LToolsLi2 corresponds to the Li2 function in LoopTools.\n
-See ?LoopTools`Li2 for more details about the LoopTools function.";
+"LToolsLi2 corresponds to the Li2 function in LoopTools.
+
+See ?LoopToolsLi2 for further information regarding this LoopTools symbol.";
 
 LToolsLi2omx::usage=
-"LToolsLi2omx corresponds to the Li2omx function in LoopTools.\n
-See ?LoopTools`Li2omx for more details about the LoopTools function.";
+"LToolsLi2omx corresponds to the Li2omx function in LoopTools.
+
+See ?LoopToolsLi2omx for further information regarding this LoopTools symbol.";
 
 LToolsSetMudim::usage=
-"LToolsSetMudim corresponds to the SetMudim function in LoopTools.\n
-See ?LoopTools`SetMudim for more details about the LoopTools function.";
+"LToolsSetMudim corresponds to the SetMudim function in LoopTools.
+
+See ?LoopToolsSetMudim for further information regarding this LoopTools
+symbol.
+
+LToolsSetMudim is also an option for LToolsEvaluate that sets the numerical
+value for the scale parameter $\\mu^2$. The default value is 1.";
 
 LToolsGetMudim::usage=
-"LToolsGetMudim corresponds to the GetMudim function in LoopTools.\n
-See ?LoopTools`GetMudim for more details about the LoopTools function.";
+"LToolsGetMudim corresponds to the GetMudim function in LoopTools.
+
+See ?LoopToolsGetMudim for further information regarding this LoopTools
+symbol.";
 
 LToolsSetDelta::usage=
-"LToolsSetDelta corresponds to the SetDelta function in LoopTools.\n
-See ?LoopTools`SetDelta for more details about the LoopTools function.";
+"LToolsSetDelta corresponds to the SetDelta function in LoopTools.
+
+See ?LoopToolsSetDelta for further information regarding this LoopTools
+symbol.";
 
 LToolsGetDelta::usage=
-"LToolsGetDelta corresponds to the GetDelta function in LoopTools.\n
-See ?LoopTools`GetDelta for more details about the LoopTools function.";
+"LToolsGetDelta corresponds to the GetDelta function in LoopTools.
+
+See ?LoopToolsGetDelta for further information regarding this LoopTools
+symbol.";
 
 LToolsSetUVDiv::usage=
-"LToolsSetUVDiv corresponds to the SetUVDiv function in LoopTools.\n
-See ?LoopTools`SetUVDiv for more details about the LoopTools function.";
+"LToolsSetUVDiv corresponds to the SetUVDiv function in LoopTools.
+
+See ?LoopToolsSetUVDiv for further information regarding this LoopTools
+symbol.";
 
 LToolsGetUVDiv::usage=
-"LToolsGetUVDiv corresponds to the GetUVDiv function in LoopTools.\n
-See ?LoopTools`GetUVDiv for more details about the LoopTools function.";
+"LToolsGetUVDiv corresponds to the GetUVDiv function in LoopTools.
+
+See ?LoopToolsGetUVDiv for further information regarding this LoopTools
+symbol.";
 
 LToolsSetLambda::usage=
-"LToolsSetLambda corresponds to the SetLambda function in LoopTools.\n
-See ?LoopTools`SetLambda for more details about the LoopTools function.";
+"LToolsSetLambda corresponds to the SetLambda function in LoopTools.
+
+See ?LoopToolsSetLambda for further information regarding this LoopTools
+symbol.
+
+LToolsSetLambda is also an option for LToolsEvaluate that sets the numerical
+value for the IR regularization parameter $\\lambda^2$.
+
+Setting $\\lambda^2$  to -2 or -1 will make LoopTools return the coefficients
+of the $1/\\varepsilon$ and $1/\\varepsilon$-poles respectively. The value 0
+yields the finite part of the integral where IR divergences are regularized
+dimensionally.
+
+When $\\lambda^2$ is set to some positive value (say 2.), LoopTools will return
+the finite part of the integral with IR divergences being regularized using a
+fictitious mass. The result will naturally depend on the value of $\\lambda^2$.
+
+It is important to keep in mind that for  $\\lambda^2 = -1$ LoopTools also
+returns the UV-pole, although this not so clearly stated in the official
+manual.
+
+Notice that the option LToolsSetLambda is ignored, as long as LToolsFullResult
+is set to True.";
 
 LToolsGetLambda::usage=
-"LToolsGetLambda corresponds to the GetLambda function in LoopTools.\n
-See ?LoopTools`GetLambda for more details about the LoopTools function.";
+"LToolsGetLambda corresponds to the GetLambda function in LoopTools.
+
+See ?LoopToolsGetLambda for further information regarding this LoopTools
+symbol.";
 
 LToolsSetMinMass::usage=
-"LToolsSetMinMass corresponds to the SetMinMass function in LoopTools.\n
-See ?LoopTools`SetMinMass for more details about the LoopTools function.";
+"LToolsSetMinMass corresponds to the SetMinMass function in LoopTools.
+
+See ?LoopToolsSetMinMass for further information regarding this LoopTools
+symbol.";
 
 LToolsGetMinMass::usage=
-"LToolsGetMinMass corresponds to the GetMinMass function in LoopTools.\n
-See ?LoopTools`GetMinMass for more details about the LoopTools function.";
+"LToolsGetMinMass corresponds to the GetMinMass function in LoopTools.
+
+See ?LoopToolsGetMinMass for further information regarding this LoopTools
+symbol.";
 
 LToolsClearCache::usage=
-"LToolsClearCache corresponds to the ClearCache function in LoopTools.\n
-See ?LoopTools`ClearCache for more details about the LoopTools function.";
+"LToolsClearCache corresponds to the ClearCache function in LoopTools.
+
+See ?LoopToolsClearCache for further information regarding this LoopTools
+symbol.";
 
 LToolsMarkCache::usage=
-"LToolsMarkCache corresponds to the MarkCache function in LoopTools.\n
-See ?LoopTools`MarkCache for more details about the LoopTools function.";
+"LToolsMarkCache corresponds to the MarkCache function in LoopTools.
+
+See ?LoopToolsMarkCache for further information regarding this LoopTools
+symbol.";
 
 LToolsRestoreCache::usage=
-"LToolsRestoreCache corresponds to the RestoreCache function in LoopTools.\n
-See ?LoopTools`RestoreCache for more details about the LoopTools function.";
+"LToolsRestoreCache corresponds to the RestoreCache function in LoopTools.
+
+See ?LoopToolsRestoreCache for further information regarding this LoopTools
+symbol.";
 
 LToolsSetMaxDev::usage=
-"LToolsSetMaxDev corresponds to the SetMaxDev function in LoopTools.\n
-See ?LoopTools`SetMaxDev for more details about the LoopTools function.";
+"LToolsSetMaxDev corresponds to the SetMaxDev function in LoopTools.
+
+See ?LoopToolsSetMaxDev for further information regarding this LoopTools
+symbol.";
 
 LToolsGetMaxDev::usage=
-"LToolsGetMaxDev corresponds to the GetMaxDev function in LoopTools.\n
-See ?LoopTools`GetMaxDev for more details about the LoopTools function.";
+"LToolsGetMaxDev corresponds to the GetMaxDev function in LoopTools.
+
+See ?LoopToolsGetMaxDev for further information regarding this LoopTools
+symbol.";
 
 LToolsSetWarnDigits::usage=
-"LToolsSetWarnDigits corresponds to the SetWarnDigits function in LoopTools.\n
-See ?LoopTools`SetWarnDigits for more details about the LoopTools function.";
+"LToolsSetWarnDigits corresponds to the SetWarnDigits function in LoopTools.
+
+See ?LoopToolsSetWarnDigits for further information regarding this LoopTools
+symbol.";
 
 LToolsGetWarnDigits::usage=
-"LToolsGetWarnDigits corresponds to the GetWarnDigits function in LoopTools.\n
-See ?LoopTools`GetWarnDigits for more details about the LoopTools function.";
+"LToolsGetWarnDigits corresponds to the GetWarnDigits function in LoopTools.
+
+See ?LoopToolsGetWarnDigits for further information regarding this LoopTools
+symbol.";
 
 LToolsSetErrDigits::usage=
-"LToolsSetErrDigits corresponds to the SetErrDigits function in LoopTools.\n
-See ?LoopTools`SetErrDigits for more details about the LoopTools function.";
+"LToolsSetErrDigits corresponds to the SetErrDigits function in LoopTools.
+
+See ?LoopToolsSetErrDigits for further information regarding this LoopTools
+symbol.";
 
 LToolsGetErrDigits::usage=
-"LToolsGetErrDigits corresponds to the GetErrDigits function in LoopTools.\n
-See ?LoopTools`GetErrDigits for more details about the LoopTools function.";
+"LToolsGetErrDigits corresponds to the GetErrDigits function in LoopTools.
+
+See ?LoopToolsGetErrDigits for further information regarding this LoopTools
+symbol.";
 
 LToolsSetVersionKey::usage=
-"LToolsSetVersionKey corresponds to the SetVersionKey function in LoopTools.\n
-See ?LoopTools`SetVersionKey for more details about the LoopTools function.";
+"LToolsSetVersionKey corresponds to the SetVersionKey function in LoopTools.
+
+See ?LoopToolsSetVersionKey for further information regarding this LoopTools
+symbol.";
 
 LToolsGetVersionKey::usage=
-"LToolsGetVersionKey corresponds to the SetVersionKey function in LoopTools.\n
-See ?LoopTools`GetVersionKey for more details about the LoopTools function.";
+"LToolsGetVersionKey corresponds to the SetVersionKey function in LoopTools.
+
+See ?LoopToolsGetVersionKey for further information regarding this LoopTools
+symbol.";
 
 LToolsSetDebugKey::usage=
-"LToolsSetDebugKey corresponds to the SetVersionKey function in LoopTools.\n
-See ?LoopTools`SetDebugKey for more details about the LoopTools function.";
+"LToolsSetDebugKey corresponds to the SetDebugKey function in LoopTools.
+
+See ?LoopToolsSetDebugKey for further information regarding this LoopTools
+symbol.
+
+Use LToolsSetDebugKey[-1] to obtain the most complete debugging output. This
+can be useful when investigating issues with the evaluation of certain
+kinematic limits in LoopTools.";
 
 LToolsGetDebugKey::usage=
-"LToolsGetDebugKey corresponds to the SetVersionKey function in LoopTools.\n
-See ?LoopTools`GetDebugKey for more details about the LoopTools function.";
+"LToolsGetDebugKey corresponds to the GetDebugKey function in LoopTools.
+
+See ?LoopToolsGetDebugKey for further information regarding this LoopTools
+symbol.";
 
 LToolsSetDebugRange::usage=
-"LToolsSetDebugRange corresponds to the SetVersionKey function in LoopTools.\n
-See ?LoopTools`SetDebugRange for more details about the LoopTools function.";
+"LToolsSetDebugRange corresponds to the SetVersionKey function in LoopTools.
+
+See ?LoopToolsSetDebugRange for further information regarding this LoopTools
+symbol.";
 
 LToolsSetCmpBits::usage=
-"LToolsSetCmpBits corresponds to the SetCmpBits function in LoopTools.\n
-See ?LoopTools`SetCmpBits for more details about the LoopTools function.";
+"LToolsSetCmpBits corresponds to the SetCmpBits function in LoopTools.
+
+See ?LoopToolsSetCmpBits for further information regarding this LoopTools
+symbol.";
 
 LToolsGetCmpBits::usage=
-"LToolsGetCmpBits corresponds to the SetCmpBits function in LoopTools.\n
-See ?LoopTools`GetCmpBits for more details about the LoopTools function.";
+"LToolsGetCmpBits corresponds to the SetCmpBits function in LoopTools.
+
+See ?LoopToolsGetCmpBits for further information regarding this LoopTools
+symbol.";
 
 LToolsSetDiffEps::usage=
-"LToolsSetDiffEps corresponds to the SetDiffEps function in LoopTools.\n
-See ?LoopTools`SetDiffEps for more details about the LoopTools function.";
+"LToolsSetDiffEps corresponds to the SetDiffEps function in LoopTools.
+
+See ?LoopToolsSetDiffEps for further information regarding this LoopTools
+symbol.";
 
 LToolsGetDiffEps::usage=
-"LToolsGetDiffEps corresponds to the GetDiffEps function in LoopTools.\n
-See ?LoopTools`GetDiffEps for more details about the LoopTools function.";
+"LToolsGetDiffEps corresponds to the GetDiffEps function in LoopTools.
+
+See ?LoopToolsGetDiffEps for further information regarding this LoopTools
+symbol.";
 
 LToolsGetZeroEps::usage=
-"LToolsGetZeroEps corresponds to the GetZeroEps function in LoopTools.\n
-See ?LoopTools`GetZeroEps for more details about the LoopTools function.";
+"LToolsGetZeroEps corresponds to the GetZeroEps function in LoopTools.
+
+See ?LoopToolsGetZeroEps for further information regarding this LoopTools
+symbol.";
 
 LToolsDRResult::usage=
-"LToolsDRResult corresponds to the DRResult function in LoopTools.\n
-See ?LoopTools`DRResult for more details about the LoopTools function.";
+"LToolsDRResult corresponds to the DRResult function in LoopTools.
+
+See ?LoopToolsDRResult for further information regarding this LoopTools
+symbol.";
 
 LToolsDR1eps::usage=
-"LToolsDR1eps corresponds to the DRResult function in LoopTools.\n
-See ?LoopTools`DR1eps for more details about the LoopTools function.";
+"LToolsDR1eps corresponds to the DRResult function in LoopTools.
+
+See ?LoopToolsDR1eps for further information regarding this LoopTools symbol.";
 
 LToolsA0::usage=
-"LToolsA0 corresponds to the A0 function in LoopTools.";
+"LToolsA0 corresponds to the A0 function in LoopTools.
+
+See ?LoopToolsA0 for further information regarding this LoopTools symbol.";
 
 LToolsA00::usage=
-"LToolsA00 corresponds to the A00 function in LoopTools.";
+"LToolsA00 corresponds to the A00 function in LoopTools.
+
+See ?LoopToolsA00 for further information regarding this LoopTools symbol.";
 
 LToolsB0::usage=
-"LToolsB0 corresponds to the B0 function in LoopTools.";
+"LToolsB0 corresponds to the B0 function in LoopTools.
+
+See ?LoopToolsB0 for further information regarding this LoopTools symbol.";
 
 LToolsB1::usage=
-"LToolsB1 corresponds to the B1 function in LoopTools.";
+"LToolsB1 corresponds to the B1 function in LoopTools.
+
+See ?LoopToolsB1 for further information regarding this LoopTools symbol.";
 
 LToolsB00::usage=
-"LToolsB00 corresponds to the B00 function in LoopTools.";
+"LToolsB00 corresponds to the B00 function in LoopTools.
+
+See ?LoopToolsB00 for further information regarding this LoopTools symbol.";
 
 LToolsB11::usage=
-"LToolsB11 corresponds to the B11 function in LoopTools.";
+"LToolsB11 corresponds to the B11 function in LoopTools.
+
+See ?LoopToolsB11 for further information regarding this LoopTools symbol.";
 
 LToolsB001::usage=
-"LToolsB001 corresponds to the B001 function in LoopTools.";
+"LToolsB001 corresponds to the B001 function in LoopTools.
+
+See ?LoopToolsB001 for further information regarding this LoopTools symbol.";
 
 LToolsB111::usage=
-"LToolsB111 corresponds to the B111 function in LoopTools.";
+"LToolsB111 corresponds to the B111 function in LoopTools.
+
+See ?LoopToolsB111 for further information regarding this LoopTools symbol.";
 
 LToolsDB0::usage=
-"LToolsDB0 corresponds to the DB0 function in LoopTools.";
+"LToolsDB0 corresponds to the DB0 function in LoopTools.
+
+See ?LoopToolsDB0 for further information regarding this LoopTools symbol.";
 
 LToolsDB1::usage=
-"LToolsDB1 corresponds to the DB1 function in LoopTools.";
+"LToolsDB1 corresponds to the DB1 function in LoopTools.
+
+See ?LoopToolsDB1 for further information regarding this LoopTools symbol.";
 
 LToolsDB00::usage=
-"LToolsDB00 corresponds to the DB00 function in LoopTools.";
+"LToolsDB00 corresponds to the DB00 function in LoopTools.
+
+See ?LoopToolsDB00 for further information regarding this LoopTools symbol.";
 
 LToolsDB11::usage=
-"LToolsDB11 corresponds to the DB11 function in LoopTools.";
+"LToolsDB11 corresponds to the DB11 function in LoopTools.
+
+See ?LoopToolsDB11 for further information regarding this LoopTools symbol.";
 
 LToolsC0::usage=
-"LToolsC0 corresponds to the C0 function in LoopTools.";
+"LToolsC0 corresponds to the C0 function in LoopTools.
+
+See ?LoopToolsC0 for further information regarding this LoopTools symbol.";
 
 LToolsD0::usage=
-"LToolsD0 corresponds to the D0 function in LoopTools.";
+"LToolsD0 corresponds to the D0 function in LoopTools.
+
+See ?LoopToolsD0 for further information regarding this LoopTools symbol.";
 
 LToolsE0::usage=
-"LToolsE0 corresponds to the E0 function in LoopTools.";
+"LToolsE0 corresponds to the E0 function in LoopTools.
+
+See ?LoopToolsE0 for further information regarding this LoopTools symbol.";
 
 LToolsKeyA0::usage=
-"LToolsKeyA0 corresponds to KeyA0 in LoopTools.";
+"LToolsKeyA0 corresponds to KeyA0 in LoopTools.
+
+See ?LoopToolsKeyA0 for further information regarding this LoopTools symbol.";
 
 LToolsKeyBget::usage=
-"LToolsKeyBget corresponds to KeyBget in LoopTools.";
+"LToolsKeyBget corresponds to KeyBget in LoopTools.
+
+See ?LoopToolsKeyBget for further information regarding this LoopTools symbol.";
 
 LToolsKeyC0::usage=
-"LToolsKeyC0 corresponds to KeyC0 in LoopTools.";
+"LToolsKeyC0 corresponds to KeyC0 in LoopTools.
+
+See ?LoopToolsKeyC0 for further information regarding this LoopTools symbol.";
 
 LToolsKeyD0::usage=
-"LToolsKeyD0 corresponds to KeyD0 in LoopTools.";
+"LToolsKeyD0 corresponds to KeyD0 in LoopTools.
+
+See ?LoopToolsKeyD0 for further information regarding this LoopTools symbol.";
 
 LToolsKeyE0::usage=
-"LToolsKeyE0 corresponds to KeyE0 in LoopTools.";
+"LToolsKeyE0 corresponds to KeyE0 in LoopTools.
+
+See ?LoopToolsKeyE0 for further information regarding this LoopTools symbol.";
 
 LToolsKeyEget::usage=
-"LToolsKeyEget corresponds to KeyEget in LoopTools.";
+"LToolsKeyEget corresponds to KeyEget in LoopTools.
+
+See ?LoopToolsKeyEget for further information regarding this LoopTools symbol.";
 
 LToolsKeyCEget::usage=
-"LToolsKeyCEget corresponds to KeyCEget in LoopTools.";
+"LToolsKeyCEget corresponds to KeyCEget in LoopTools.
+
+See ?LoopToolsKeyCEget for further information regarding this LoopTools
+symbol.";
 
 LToolsKeyAll::usage=
-"LToolsKeyAll corresponds to KeyAll in LoopTools.";
+"LToolsKeyAll corresponds to KeyAll in LoopTools.
+
+See ?LoopToolsKeyAll for further information regarding this LoopTools symbol.";
 
 LToolsDebugA::usage=
-"LToolsDebugA corresponds to DebugA in LoopTools.";
+"LToolsDebugA corresponds to DebugA in LoopTools.
+
+See ?LoopToolsDebugA for further information regarding this LoopTools symbol.";
 
 LToolsDebugB::usage=
-"LToolsDebugB corresponds to DebugB in LoopTools.";
+"LToolsDebugB corresponds to DebugB in LoopTools.
+
+See ?LoopToolsDebugB for further information regarding this LoopTools symbol.";
 
 LToolsDebugC::usage=
-"LToolsDebugC corresponds to DebugC in LoopTools.";
+"LToolsDebugC corresponds to DebugC in LoopTools.
+
+See ?LoopToolsDebugC for further information regarding this LoopTools symbol.";
 
 LToolsDebugD::usage=
-"LToolsDebugD corresponds to DebugD in LoopTools.";
+"LToolsDebugD corresponds to DebugD in LoopTools.
+
+See ?LoopToolsDebugD for further information regarding this LoopTools symbol.";
 
 LToolsDebugE::usage=
-"LToolsDebugE corresponds to DebugE in LoopTools.";
+"LToolsDebugE corresponds to DebugE in LoopTools.
+
+See ?LoopToolsDebugE for further information regarding this LoopTools symbol.";
 
 LToolsDebugAll::usage=
-"LToolsDebugAll corresponds to DebugAll in LoopTools.";
+"LToolsDebugAll corresponds to DebugAll in LoopTools.
+
+See ?LoopToolsDebugAll for further information regarding this LoopTools
+symbol.";
 
 LTools::failmsg=
 "Interface to LoopTools has encountered an error and must abort the evaluation. The \

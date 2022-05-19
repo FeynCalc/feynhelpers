@@ -12,56 +12,61 @@
 (* ------------------------------------------------------------------------ *)
 
 PSDIntegrate::usage=
-"PSDIntegrate[] is an auxiliary function that
-creates input for pySecDec's numerical integration routines.
-The output is returned in form of a string.";
+"PSDIntegrate[] is an auxiliary function that creates input for pySecDec's
+numerical integration routines. The output is returned in form of a string.
+
+PSDIntegrate is used by PSDCreatePythonScripts when assembling the integration
+script.";
 
 PSDIntegrator::usage=
-"PSDIntegrator is an option of PSDIntegrate and other functions of the
-pySecDec interface. It specifies the integrator to be used when performing
-the numerical evaluation of the integral. The default value is \"Qmc\"";
+"PSDIntegrator is an option of PSDIntegrate and other functions of the pySecDec
+interface. It specifies the integrator to be used when performing the
+numerical evaluation of the integral. The default value is \"Qmc\".";
 
 (*https://secdec.readthedocs.io/en/stable/full_reference.html?highlight=loop_package#integral-interface*)
 
 PSDNumberOfPresamples::usage=
 "PSDNumberOfPresamples is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the number_of_presamples parameter to
-be passed to pySecDec's IntegralLibrary function.";
+pySecDec interface. It specifies the value of the number_of_presamples
+parameter to be passed to pySecDec's IntegralLibrary function.";
 
 PSDDeformationParametersMaximum::usage=
-"PSDDeformationParametersMaximum is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the deformation_parameters_maximum parameter to
-be passed to pySecDec's IntegralLibrary function.";
+"PSDDeformationParametersMaximum is an option for PSDIntegrate and other
+functions of the pySecDec interface. It specifies the value of the
+deformation_parameters_maximum parameter to be passed to pySecDec's
+IntegralLibrary function.";
 
 PSDDeformationParametersMinimum::usage=
-"PSDDeformationParametersMinimum is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the deformation_parameters_minimum parameter to
-be passed to pySecDec's IntegralLibrary function.";
+"PSDDeformationParametersMinimum is an option for PSDIntegrate and other
+functions of the pySecDec interface. It specifies the value of the
+deformation_parameters_minimum parameter to be passed to pySecDec's
+IntegralLibrary function.";
 
 PSDDeformationParametersDecreaseFactor::usage=
-"PSDDeformationParametersMinimum is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the deformation_parameters_decrease_factor parameter to
-be passed to pySecDec's IntegralLibrary function.";
+"PSDDeformationParametersDecreaseFactor is an option for PSDIntegrate and other
+functions of the pySecDec interface. It specifies the value of the
+deformation_parameters_decrease_factor parameter to be passed to pySecDec's
+IntegralLibrary function.";
 
 PSDEpsRel::usage=
-"PSDEpsRel is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the epsrel parameter to
-be passed to pySecDec's pySecDec's IntegralLibrary function.";
+"PSDEpsRel is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the epsrel parameter to be passed to
+pySecDec's IntegralLibrary function.";
 
 PSDEpsAbs::usage=
-"PSDEpsAbs is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the epsabs parameter to
-be passed to pySecDec's pySecDec's IntegralLibrary function.";
+"PSDEpsAbs is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the epsabs parameter to be passed to
+pySecDec's pySecDec's IntegralLibrary function.";
 
 PSDMaxEval::usage=
-"PSDMaxEval is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the maxeval parameter to
-be passed to pySecDec's numerical integration library.";
+"PSDMaxEval is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the maxeval parameter to be passed to
+pySecDec's numerical integration library.";
 
 PSDMinEval::usage=
-"PSDMinEval is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the mineval parameter to
-be passed to pySecDec's numerical integration library.";
+"PSDMinEval is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the mineval parameter to be passed to
+pySecDec's numerical integration library.";
 
 
 PSDMaxIncreaseFac::usage=
@@ -70,132 +75,141 @@ pySecDec interface. It specifies the value of the maxincreasefac parameter to
 be passed to pySecDec's numerical integration library.";
 
 PSDMinEpsRel::usage=
-"PSDMinEpsRel is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the min_epsrel parameter to
-be passed to pySecDec's numerical integration library.";
+"PSDMinEpsRel is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the min_epsrel parameter to be passed to
+pySecDec's numerical integration library.";
 
 PSDMinEpsAbs::usage=
-"PSDMinEpsAbs is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the min_epsabs parameter to
-be passed to pySecDec's numerical integration library.";
+"PSDMinEpsAbs is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the min_epsabs parameter to be passed to
+pySecDec's numerical integration library.";
 
 
 PSDMaxEpsRel::usage=
-"PSDMaxEpsRel is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the max_epsrel parameter to
-be passed to pySecDec's numerical integration library.";
+"PSDMaxEpsRel is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the max_epsrel parameter to be passed to
+pySecDec's numerical integration library.";
 
 PSDMaxEpsAbs::usage=
-"PSDMaxEpsAbs is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the max_epsabs parameter to
-be passed to pySecDec's numerical integration library.";
+"PSDMaxEpsAbs is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the max_epsabs parameter to be passed to
+pySecDec's numerical integration library.";
 
 PSDMinDecreaseFactor::usage=
 "PSDMinDecreaseFactor is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the min_decrease_factor parameter to
-be passed to pySecDec's numerical integration library.";
+pySecDec interface. It specifies the value of the min_decrease_factor
+parameter to be passed to pySecDec's numerical integration library.";
 
 PSDDecreaseToPercentage::usage=
-"PSDDecreaseToPercentage is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the decrease_to_percentage parameter to
-be passed to pySecDec's numerical integration library.";
+"PSDDecreaseToPercentage is an option for PSDIntegrate and other functions of
+the pySecDec interface. It specifies the value of the decrease_to_percentage
+parameter to be passed to pySecDec's numerical integration library.";
 
 PSDNumberOfThreads::usage=
 "PSDNumberOfThreads is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the number_of_threads parameter to
-be passed to pySecDec's numerical integration library.";
+pySecDec interface. It specifies the value of the number_of_threads parameter
+to be passed to pySecDec's numerical integration library.";
 
 PSDResetCudaAfter::usage=
 "PSDResetCudaAfter is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the reset_cuda_after parameter to
-be passed to pySecDec's numerical integration library.";
+pySecDec interface. It specifies the value of the reset_cuda_after parameter
+to be passed to pySecDec's numerical integration library.";
 
 PSDVerbose::usage=
-"PSDVerbose is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the verbose parameter to
-be passed to pySecDec's numerical integration library.";
+"PSDVerbose is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the verbose parameter to be passed to
+pySecDec's numerical integration library.";
 
 PSDErrorMode::usage=
-"PSDErrorMode is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the errormode parameter to
-be passed to pySecDec's numerical integration library.";
+"PSDErrorMode is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the errormode parameter to be passed to
+pySecDec's numerical integration library.";
 
 (*Qmc specific*)
 
 PSDErrorModeQmc::usage=
-"PSDErrorMode is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the errormode parameter to
-be passed to pySecDec's integral_interface function. Notice that this
-option applies only to the Qmc integrator.";
+"PSDErrorModeQmc is an option for PSDIntegrate and other functions of the
+pySecDec interface. It specifies the value of the errormode parameter to be
+passed to pySecDec's integral_interface function.
+
+Notice that this option applies only to the Qmc integrator.";
 
 PSDTransform::usage=
-"PSDTransform is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the transform parameter to
-be passed to pySecDec's integral_interface function. Notice that this
-option applies only to the Qmc integrator.";
+"PSDTransform is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the transform parameter to be passed to
+pySecDec's integral_interface function.
+
+Notice that this option applies only to the Qmc integrator.";
 
 PSDFitFunction::usage=
 "PSDFitFunction is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the fitfunction parameter to
-be passed to pySecDec's integral_interface function. Notice that this
-option applies only to the Qmc integrator.";
+pySecDec interface. It specifies the value of the fitfunction parameter to be
+passed to pySecDec's integral_interface function.
+
+Notice that this option applies only to the Qmc integrator.";
 
 PSDGeneratingVectors::usage=
 "PSDGeneratingVectors is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the generatingvectors parameter to
-be passed to pySecDec's integral_interface function. Notice that this
-option applies only to the Qmc integrator.";
+pySecDec interface. It specifies the value of the generatingvectors parameter
+to be passed to pySecDec's integral_interface function.
+
+Notice that this option applies only to the Qmc integrator.";
 
 PSDCPUThreads::usage=
 "PSDCPUThreads is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the cputhreads parameter to
-be passed to pySecDec's integral_interface function. Notice that this
-option applies only to the Qmc integrator.";
+pySecDec interface. It specifies the value of the cputhreads parameter to be
+passed to pySecDec's integral_interface function. Notice that this option
+applies only to the Qmc integrator.";
 
 
 PSDEvaluateMinn::usage=
 "PSDEvaluateMinn is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the evaluateminn parameter to
-be passed to pySecDec's integral_interface function. Notice that this
-option applies only to the Qmc integrator.";
+pySecDec interface. It specifies the value of the evaluateminn parameter to be
+passed to pySecDec's integral_interface function.
+
+Notice that this option applies only to the Qmc integrator.";
 
 PSDMinn::usage=
-"PSDMinn is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the minn parameter to
-be passed to pySecDec's integral_interface function. Notice that this
-option applies only to the Qmc integrator.";
+"PSDMinn is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the minn parameter to be passed to
+pySecDec's integral_interface function. Notice that this option applies only
+to the Qmc integrator.";
 
 PSDMinm::usage=
-"PSDMinm is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the minm parameter to
-be passed to pySecDec's integral_interface function. Notice that this
-option applies only to the Qmc integrator.";
+"PSDMinm is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the minm parameter to be passed to
+pySecDec's integral_interface function.
+
+Notice that this option applies only to the Qmc integrator.";
 
 PSDVerbosity::usage=
-"PSDVerbosity is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the verbosity parameter to
-be passed to pySecDec's integral_interface function. Notice that this
-option applies only to the Qmc integrator.";
+"PSDVerbosity is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the verbosity parameter to be passed to
+pySecDec's integral_interface function.
+
+Notice that this option applies only to the Qmc integrator.";
 
 (*Vegas specific*)
 
 PSDFlags::usage=
-"PSDFlags is an option for PSDIntegrate and other functions of the
-pySecDec interface. It specifies the value of the flags parameter to
-be passed to pySecDec's integral_interface function. Notice that this
-option applies only to the Vegas, Suave, Cuhre and Divonne integrators.";
+"PSDFlags is an option for PSDIntegrate and other functions of the pySecDec
+interface. It specifies the value of the flags parameter to be passed to
+pySecDec's integral_interface function.
+
+Notice that this option applies only to the Vegas, Suave, Cuhre and Divonne
+integrators.";
 
 (**)
 
 PSDRealParameterValues::usage=
-"PSDRealParameterValues is an option for PSDIntegrate and other functions of the
-pySecDec interface. It is a list of real numbers that will be passed to
-pySecDec's IntegralLibrary function via the argument real_parameters";
+"PSDRealParameterValues is an option for PSDIntegrate and other functions of
+the pySecDec interface. It is a list of real numbers that will be passed to
+pySecDec's IntegralLibrary function via the argument real_parameters.";
 
 PSDComplexParameterValues::usage=
-"PSDComplexParameterValues is an option for PSDIntegrate and other functions of the
-pySecDec interface. It is a list of real numbers that will be passed to
-pySecDec's IntegralLibrary function via the argument complex_parameters";
+"PSDComplexParameterValues is an option for PSDIntegrate and other functions of
+the pySecDec interface. It is a list of real numbers that will be passed to
+pySecDec's IntegralLibrary function via the argument complex_parameters.";
 
 PSDIntegrate::failmsg =
 "Error! PSDIntegrate has encountered a fatal problem and must abort the computation. \

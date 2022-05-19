@@ -12,12 +12,25 @@
 (* ------------------------------------------------------------------------ *)
 
 FIREBinaryPath::usage=
-"FIREBinaryPath is an option for the interface to FIRE. \
-It specifies the full location of the C++ FIRE binary. \
-The default value is FileNameJoin[{$UserBaseDirectory, \"Applications\", \"FIRE6\", \"bin\", \"FIRE6\"}].";
+"FIREBinaryPath is an option for FIRERunReduction. It specifies the full path
+to the C++ FIRE binary.
+
+The default value is FileNameJoin[{$UserBaseDirectory, \"Applications\",
+\"FIRE6\", \"bin\", \"FIRE6\"}].";
 
 FIRERunReduction::usage=
-"FIRERunReduction[path] reduces the given topology using C++ FIRE.";
+"FIRERunReduction[path] runs C++ FIRE on the FIRE .config file specified by
+path.  To that aim the FIRE binary is started in the background via
+RunProcess. The function returns True if the evaluation succeeds and False
+otherwise.
+
+If path represents a full path to a file, then this file is used as the
+.config file. If it is just a path to a directory, then
+path/topoName/topoName.config is assumed to be the full path.
+
+The default path to the FIRE binary is FileNameJoin[{$UserBaseDirectory,
+\"Applications\", \"FIRE6\", \"bin\", \"FIRE6\"}]. It can be modified via the
+option FIREBinaryPath.";
 
 FIRERunReduction::failmsg =
 "Error! FIRERunReduction has encountered a fatal problem and must abort the computation. \

@@ -13,11 +13,9 @@
 
 
 QGConvertToFC::usage=
-"QGConvertToFC converts a QGRAF amplitude to FeynCalc."
-
-QGConvertToFC::fail=
-"QGConvertToFC has encountered an error and must abort the evaluation. The \
-error description reads: `1`";
+"QGConvertToFC[{amp1, amp2, ...}] converts a list of QGRAF amplitudes generated
+using the styling file feyncalc.sty into amplitudes suitable for further
+evaluation using FeynCalc.";
 
 Begin["`Package`"]
 

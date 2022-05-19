@@ -12,97 +12,121 @@
 (* ------------------------------------------------------------------------ *)
 
 QGCreateAmp::usage=
-"QGCreateAmp[nLoops, {\"InParticle1[p1]\", \"InParticle1[p2]\", ...} -> \
-{\"OutParticle1[k1]\", \"OutParticle1[k2]\", ...}] \
-calls QGRAF to generate Feynman amplitudes and (optionally) the corresponding diagrams, \
-using the specified  model and style files. The function returns a list with the \
-paths to two files, where the first file contains the amplitudes and the second file the \
-diagrams (a graphical representation of the amplitudes).";
+"QGCreateAmp[nLoops, {\"InParticle1[p1]\",\"InParticle1[p2]\", ...} ->
+{\"OutParticle1[k1]\", \"OutParticle1[k2]\", ...}] 
+calls QGRAF to generate Feynman amplitudes and (optionally) the corresponding
+diagrams, using the specified  model and style files.
+
+The function returns a list with the paths to two files,  where the first file
+contains the amplitudes and the second file the diagrams (graphical
+representations of the amplitudes).";
 
 QGOutputAmplitudes::usage=
-"QGOutputAmplitudes is an option for QGCreateAmp. It specifies the filename to which \
-the QGRAF output containing the generated amplitudes will be saved. The default name is \
-\"amplitudes.m\" in the current working directory.";
+"QGOutputAmplitudes is an option for QGCreateAmp. It specifies the file into
+which the QGRAF output containing the generated amplitudes will be saved. The
+default name is \"amplitudes.m\" in the current working directory.";
 
 QGOutputDiagrams::usage=
-"QGOutputAmplitudes is an option for QGCreateAmp. It specifies, the filename to which \
-the QGRAF output containing the generated diagrams will be saved. The default name is \
-\"diagrams.tex\" in the current working directory.";
+"QGOutputDiagrams is an option for QGCreateAmp. It specifies, the file to which
+the QGRAF output containing the generated diagrams will be saved. The default
+name is \"diagrams.tex\" in the current working directory.";
 
 QGOutputDirectory::usage=
-"QGOutputDirectory is an option for QGCreateAmp. It specifies the directory in \
-which the QGRAF output containing the generated amplitudes and diagrams will be saved. \
-The default location is the current working directory (Directory[])";
+"QGOutputDirectory is an option for QGCreateAmp. It specifies the directory in
+which the QGRAF output containing the generated amplitudes and diagrams will
+be saved. The default location is the current working directory (Directory[])";
 
 QGModel::usage=
-"QGMode is an option for QGCreateAmp, which specifies the QGRAF model file. \
-If you provide only the file name, they model will be loaded from the standard \
-directory containing model files ($QGModelsDirectory). \
-If you specify the full path, the model file will be loaded from there. The default \
-value is a model for one flavour QCD, \"QCDOneFlavor\"";
+"QGModel is an option for QGCreateAmp, which specifies the QGRAF model file.
+
+If you provide only the file name, they model will be loaded from the standard
+directory containing model files ($QGModelsDirectory). If you specify the full
+path, the model file will be loaded from there. The default value is a model
+for one flavour QCD, \"QCDOneFlavor\".";
 
 QGAmplitudeStyle::usage=
-"QGAmplitudeStyle is an option for QGCreateAmp, which specifies the QGRAF style file \
-for generating the amplitudes. If you provide only the file name, they style will be \
-loaded from the standard directory containing style files ($QGStylesDirectory). \
-If you specify the full path, the style file will be loaded from there. The default \
-value is a custom style file for FeynCalc \"feyncalc.sty\".";
+"QGAmplitudeStyle is an option for QGCreateAmp, which specifies the QGRAF style
+file for generating the amplitudes. If you provide only the file name, they
+style will be loaded from the standard directory containing style files
+($QGStylesDirectory).
+
+If you specify the full path, the style file will be loaded from there. The
+default value is a custom style file for FeynCalc \"feyncalc.sty\".";
 
 QGDiagramStyle::usage=
-"QGDiagramStyle is an option for QGCreateAmp, which specifies the QGRAF style file \
-for generating the diagrams. If you provide only the file name, they style will be \
-loaded from the standard directory containing model and style files ($QGStylesDirectory). \
-If you specify the full path, the style file will be loaded from there. The default \
-value is a custom style file for FeynMP \"latex.sty\". \n
+"QGDiagramStyle is an option for QGCreateAmp, which specifies the QGRAF style
+file for generating the diagrams. If you provide only the file name, they
+style will be loaded from the standard directory containing model and style
+files ($QGStylesDirectory).
 
-If the options value is set to an empty string, no diagram file will be generated.";
+If you specify the full path, the style file will be loaded from there. The
+default value is a custom style file for FeynMP \"latex.sty\". If the option
+value is set to an empty string, no diagram file will be generated.";
 
 QGSaveInputFile::usage =
-"QGSaveInputFile is an option for QGCreateAmp, which specifies where to save the QGRAF input file \
-\"qgraf.dat\". This file is automatically created from the input parameters of QGCreateAmp \
-but it must be located in the same directory as the QGRAF binary when QGRAF is invoked. The default
-value is False, which means that \"qgraf.dat\" will be deleted after the succesful QGRAF run. \
-When set to True, \"qgraf.dat\" will be copied to the current directory. Specifying an explicit path \
-will make QGCreateAmp put \"qgraf.dat\" there. Notice that only the file for generating the amplitudes
-is saved. The file for generating the diagrams (if exists) is identical except for the difference in the
-style line.";
+"QGSaveInputFile is an option for QGCreateAmp, which specifies where to save
+the QGRAF input file \"qgraf.dat\". This file is automatically created from
+the input parameters of QGCreateAmp but it must be located in the same
+directory as the QGRAF binary when QGRAF is invoked. The default value is
+False, which means that \"qgraf.dat\" will be deleted after the successful
+QGRAF run. When set to True, \"qgraf.dat\" will be copied to the current
+directory.
+
+Specifying an explicit path will make QGCreateAmp put \"qgraf.dat\" there.
+Notice that only the file for generating the amplitudes is saved. The file for
+generating the diagrams (if exists) is identical except for the difference in
+the style line.";
 
 QGBinaryFile::usage=
-"QGBinaryFile is an option for QGCreateAmp, which specifies full path to the QGRAF binary. When set \
-to Automatic, the default binary is qgraf on Linux and macOS or qgraf.exe on Windows, which resides in \
-FileNameJoin[{$FeynHelpersDirectory, \"ExternalTools\", \"QGRAF\", \"Binary\"}]. If you provide a different \
-location, you must ensure that the containing directory is user-writable, since QGCreateAmp will need to \
-save an automatically genearated \"qgraf.dat\" in that directory and delete it afterwards.";
+"QGBinaryFile is an option for QGCreateAmp, which specifies the full path to
+the QGRAF binary. When set to Automatic, the default binary is\"qgraf\" on
+Linux and macOS or \"qgraf.exe\" on Windows, which resides in
+FileNameJoin[{$FeynHelpersDirectory, \"ExternalTools\", \"QGRAF\",
+\"Binary\"}].
+
+If you provide a different location, you must ensure that the containing
+directory is user-writable, since QGCreateAmp will need to save an
+automatically generated \"qgraf.dat\" in that directory and delete it
+afterwards.";
 
 QGLoopMomentum::usage =
-"QGLoopMomentum is an option for QGCreateAmp, which specifies the names of the loop momenta. The default values \
-is LoopMom, which means that the loop momenta will be named LoopMom1, LoopMom2, etc.";
+"QGLoopMomentum is an option for QGCreateAmp, which specifies the names of the
+loop momenta. The default value is LoopMom, which means that the loop momenta
+will be named LoopMom1, LoopMom2, etc.";
 
 QGOptions::usage =
-"QGOptions is an option for QGCreateAmp, which specifies the options to be passed to QGRAF. It is a list of \
-strings, where each string is a valid QGRAF option.";
+"QGOptions is an option for QGCreateAmp, which specifies the options to be
+passed to QGRAF. It is a list of strings, where each string is a valid QGRAF
+option.";
 
 QGOptionalStatements::usage =
-"QGOptionalStatements is an option for QGCreateAmp, which specifies optional statements to be passed to QGRAF. It is a list of \
-strings, where each string is a valid QGRAF optional statement.";
+"QGOptionalStatements is an option for QGCreateAmp which specifies optional
+statements to be passed to QGRAF. It is a list of strings, where each string
+is a valid QGRAF optional statement.";
 
 QGOverwriteExistingAmplitudes::usage =
-"QGOverwriteExistingAmplitudes is an option for QGCreateAmp, which determines the behavior of the function when the \
-file for the generated amplitudes already exists. The default value is True, which means that the file will be silently \
-overwritten. Setting it to False, will prevent the overwriting by aborting the evaluation.";
+"QGOverwriteExistingAmplitudes is an option for QGCreateAmp, which determines
+the behavior of the function when the file for the generated amplitudes
+already exists. The default value is True, which means that the file will be
+silently overwritten. Setting it to False will prevent the overwriting by
+aborting the evaluation.";
 
 QGOverwriteExistingDiagrams::usage =
-"QGOverwriteExistingDiagrams is an option for QGCreateAmp, which determines the behavior of the function when the \
-file for the generated diagrams already exists. The default value is True, which means that the file will be silently \
-overwritten. Setting it to False, will prevent the overwriting by aborting the evaluation.";
+"QGOverwriteExistingDiagrams is an option for QGCreateAmp, which determines the
+behavior of the function when the file for the generated diagrams already
+exists. The default value is True, which means that the file will be silently
+overwritten. Setting it to False will prevent the overwriting by aborting the
+evaluation.";
 
 QGCleanUpOutputDirectory::usage =
-"QGCleanUpOutputDirectory is an option for QGCreateAmp, which determines whether all temporary files created in the \
-directory that contains the QGRAF binary should be deleted after a succesfull QGRAF run. Tge default value is True.";
+"QGCleanUpOutputDirectory is an option for QGCreateAmp which determines whether
+all temporary files created in the directory that contains the QGRAF binary
+should be deleted after a successful QGRAF run. The default value is True.";
 
 QGShowOutput::usage=
-"QGShowOutput is an option for QGCreateAmp. When set to True, the output of the current QGRAF run will be shown via \
-Print. When set to False the ouput is suppressed.";
+"QGShowOutput is an option for QGCreateAmp. When set to True, the output of the
+current QGRAF run will be shown via Print. When set to False the output is
+suppressed.";
 
 QGCreateAmp::fail=
 "QGCreateAmp has encountered an error and must abort the evaluation. The error description reads: `1`";

@@ -12,9 +12,33 @@
 (* ------------------------------------------------------------------------ *)
 
 FIRECreateIntegralFile::usage=
-"FIRECreateIntegralFile[ex, topo, id, path] extracts GLI symbols from ex belonging
-to the topology topo and saves them as a list of integrals for FIRE.
-";
+"FIRECreateIntegralFile[ex, topo, fireID, path] extracts GLI symbols from ex
+that belong to the topology topo. The resulting list of integrals is saved to
+path/topoName/LoopIntegrals.m and can be referred to in the corresponding FIRE
+.config file.
+
+If the directory specified in path/topoName does not exist, it will be created
+automatically. If it already exists, its content will be automatically
+overwritten, unless the option OverwriteTarget is set to False.
+
+If no fireID is given, i.e. the function is called as
+FIRECreateIntegralFile[topo,  path], then the default value 4242 is used.
+
+Notice that ex may also contain integrals from different topologies, as long
+as all those topologies are provided as a list in the topo argument.
+
+It is also possible to invoke  the routine as FIRECreateIntegralFile[ex,
+{topo1, topo2, ...}, {id1, id2, ...}, {path1, path2, ...}] or
+FIRECreateIntegralFile[ex, {topo1, topo2, ...}, {path1, path2, ...}]if one
+needs to process a list of topologies.
+
+The syntax  FIRECreateIntegralFile[ex, {topo1, topo2, ...}, {id1, id2, ...},
+path] or FIRECreateIntegralFile[ex, {topo1, topo2, ...}, path] is also
+allowed. This implies that all config files will go into the corresponding
+subdirectories of path, e.g. path/topoName1, path/topoName2 etc.
+
+The default name of the file containing loop integrals for the reduction is
+\"LoopIntegrals.m\". It can be changed via the option FIREIntegrals.";
 
 FIRECreateIntegralFile::failmsg =
 "Error! FIRECreateIntegralFile has encountered a fatal problem and must abort the computation. \

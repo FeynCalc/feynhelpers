@@ -12,13 +12,28 @@
 (* ------------------------------------------------------------------------ *)
 
 FIRECreateStartFile::usage=
-"FIRECreateStartFile[path] runs FIRE to create a start FILE using the
-script CreateStartFile.m in path.";
+"FIRECreateStartFile[path] creates a FIRE .start file using the script
+CreateStartFile.m in path. To that aim a Mathematica kernel is started in the
+background via RunProcess. The function returns True if the evaluation
+succeeds and False otherwise.
+
+Alternatively, one can use FIRECreateStartFile[path, topo] where topo is an
+FCTopology symbol and the full path is implied to be
+path/topoName/CreateStartFile.m.
+
+If you need to process a list of topologies, following syntaxes are possible
+FIRECreateStartFile[{path1,path2, ...}], FIRECreateStartFile[path, {topo1,
+topo2, ...}]
+
+The path to the Mathematica Kernel can be specified via
+FIREMathematicaKernelPath. The default value is Automatic.";
 
 FIREMathematicaKernelPath::usage=
-"FIREMathematicaKernelPath is an option for the interface to FIRE. \
-It specifies the full path to the Mathematica Kernel that will be started to run FIRE.
-The default value is Automatic.";
+"FIREMathematicaKernelPath is an option for FIRECreateStartFile and other
+functions of the FIRE interface.
+
+It specifies the full path to the Mathematica Kernel that will be used to run
+FIRE. The default value is Automatic.";
 
 FIRECreateStartFile::failmsg =
 "Error! FIRECreateStartFile has encountered a fatal problem and must abort the computation. \

@@ -12,11 +12,21 @@
 (* ------------------------------------------------------------------------ *)
 
 FIREPrepareStartFile::usage=
-"FIREPrepareStartFile[topo, path] can be used to convert an FCTopology
-object topo into a FIRE start file.  The functions creates the corresponding
-Mathematica script and saves it under path. Notice that the script still
-needs to be evaluated in Mathematica to generate the actual start file.
-";
+"FIREPrepareStartFile[topo, path] can be used to convert an FCTopology object
+topo into a FIRE. start-file.
+
+The functions creates the corresponding Mathematica script CreateStartFile.m
+and saves it in path/topoName. Notice that the script still needs to be
+evaluated in Mathematica to generate the actual FIRE .start-file. This can be
+conveniently done using FIRECreateStartFile.
+
+Using FIREPrepareStartFile[{topo1, topo2, ...},  path] will save the scripts
+to path/topoName1, path/topoName2 etc. The syntax FIREPrepareStartFile[{topo1,
+topo2, ...},  {path1, path2, ...}] is also possible.
+
+The default path to the FIRE package is FileNameJoin[{$UserBaseDirectory,
+\"Applications\", \"FIRE6\", \"FIRE6.m\"}]. It can be adjusted using the
+option FIREPath.";
 
 FIREPrepareStartFile::failmsg =
 "Error! FIREPrepareStartFile has encountered a fatal problem and must abort the computation. \
