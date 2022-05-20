@@ -3,4 +3,5 @@ ExternalTools/Fermat/ferm6/*
 ExternalTools/QGRAF/Binary/*
 ExternalTools/QGRAF/LaTeX/*.aux
 ExternalTools/QGRAF/LaTeX/*.log
-
+ExternalTools/LoopTools/LoopTools
+ExternalTools/LoopTools/LoopTools.exe
