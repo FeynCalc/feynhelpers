@@ -225,8 +225,8 @@ Options[InstallPackageX] = {
 
 Options[InstallFIRE]={
 	AutoOverwriteFIREDirectory 				-> None,
-	FIRELink								-> "https://bitbucket.org/feynmanIntegrals/fire/get/5.2.zip",
-	InstallFIRETo							->	FileNameJoin[{$UserBaseDirectory, "Applications","FIRE5"}]
+	FIRELink								-> "https://bitbucket.org/feynmanIntegrals/fire/get/master.zip",
+	InstallFIRETo							->	FileNameJoin[{$UserBaseDirectory, "Applications","FIRE6"}]
 };
 
 InstallPackageX[OptionsPattern[]]:=
@@ -329,8 +329,7 @@ InstallFIRE[OptionsPattern[]]:=
 			Quiet@DeleteFile[tmpzip]
 		];
 
-
-		fullPath 	= FileNameJoin[{First[FileNames["feynmanIntegrals-fire-*", {unzipDir}]],"FIRE5"}];
+		fullPath 	= FileNameJoin[{First[FileNames["feynmanIntegrals-fire-*", {unzipDir}]],"FIRE6"}];
 
 
 
@@ -445,7 +444,7 @@ InstallFeynHelpers[OptionsPattern[]]:=
 		];
 
 
-
+		(*
 		If[ OptionValue[AutoInstallFIRE],
 			fireInstalled=True;
 			InstallFIRE[],
@@ -455,6 +454,7 @@ InstallFeynHelpers[OptionsPattern[]]:=
 				InstallFIRE[]
 			]
 		];
+		*)
 
 
 		WriteString["stdout","\nInstallation complete!"];

@@ -127,7 +127,7 @@ Options[FIREBurn] = {
 	FIREConfigFiles -> {FileNameJoin[{$FeynCalcDirectory, "Database", "FIREp1.m"}],
 						FileNameJoin[{$FeynCalcDirectory, "Database", "FIREp2.m"}],
 						FileNameJoin[{$FeynCalcDirectory, "Database", "FIRERepList.m"}]},
-	FIREPath -> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE5", "FIRE5.m"}],
+	FIREPath -> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE6", "FIRE6.m"}],
 	FIRERun -> True,
 	FIRESilentMode -> True,
 	FIREStartFile -> FileNameJoin[{$FeynCalcDirectory, "Database", "FIREStartFile"}],
