@@ -32,7 +32,7 @@ If[ !ValueQ[FeynCalc`$FeynHelpersLoadInterfaces],
 	FeynCalc`$FeynHelpersLoadInterfaces = {"PackageX", "FIRE", "Fermat", "QGRAF", "LoopTools", "pySecDec"}
 ];
 
-$FeynHelpersVersion="1.4.0";
+$FeynHelpersVersion="2.0.0";
 
 $FeynHelpersDirectory = FileNameJoin[{$FeynCalcDirectory, "AddOns", "FeynHelpers"}];
 
