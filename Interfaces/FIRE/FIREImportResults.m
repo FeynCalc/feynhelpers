@@ -114,7 +114,7 @@ FIREImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, O
 
 		FCPrint[1,"FIREImportResults: Applying ToExpression.", FCDoControl->firVerbose];
 		time=AbsoluteTime[];
-		Global`XXX = tmp;
+
 		res = Map[Function[x,Rule[x[[1]],Total@Map[optHead[ToExpression[#[[2]]]] #[[1]] &, x[[2]]]]],tmp];
 		FCPrint[1,"FIREImportResults: Done applying ToExpression, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->firVerbose];
 
