@@ -49,7 +49,7 @@ FIREImportResults[topos:{__FCTopology}, filePathRaw_String, opts:OptionsPattern[
 	FIREImportResults[#[[1]],filePathRaw,opts]&/@topos;
 
 FIREImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, OptionsPattern[]] :=
-	Block[{	topo, res, tmp, id, optHead, tableData,holdGLI, repRule, pn, path},
+	Block[{	topo, res, tmp, id, optHead, tableData,holdGLI, repRule, pn, path, time},
 
 		If[	OptionValue[FCVerbose]===False,
 			firVerbose=$VeryVerbose,
@@ -76,9 +76,10 @@ FIREImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, O
 			Abort[]
 		];
 
+		FCPrint[1,"FIREImportResults: Loading the reduction table.", FCDoControl->firVerbose];
+		time=AbsoluteTime[];
 		tableData = Get[path];
-
-		FCPrint[1,"FIREImportResults: Reduction table loaded.", FCDoControl->firVerbose];
+		FCPrint[1,"FIREImportResults: Reduction table loaded, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->firVerbose];
 
 		If[	MatchQ[topoName,{__Rule}],
 			pn = First[tableData[[2]]][[2]][[1]];
@@ -89,6 +90,9 @@ FIREImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, O
 		FCPrint[1,"FIREImportResults: id to be used: ", id, FCDoControl->firVerbose];
 
 
+		FCPrint[1,"FIREImportResults: Processing the input.", FCDoControl->firVerbose];
+
+		time=AbsoluteTime[];
 		tmp = {holdGLI[##[[1]]], {holdGLI[##[[1]]], ##[[2]]} & /@ ##[[2]]} & /@ tableData[[1]];
 
 		FCPrint[3,"FIREImportResults: Preliminary tmp: ", tmp, FCDoControl->firVerbose];
@@ -97,10 +101,22 @@ FIREImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, O
 		tmp = Replace[tmp, {holdGLI[x_], {{holdGLI[x_], "1"}}} :> Unevaluated[Sequence[]], 1];
 
 		repRule = Rule[holdGLI[#[[1]]], GLI[id, #[[2]][[2]]]] & /@ tableData[[2]];
+		FCPrint[1,"FIREImportResults: Processing done, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->firVerbose];
 
+		FCPrint[1,"FIREImportResults: Applying the replacement rule.", FCDoControl->firVerbose];
+		time=AbsoluteTime[];
 		tmp = tmp /. Dispatch[repRule];
+		FCPrint[1,"FIREImportResults: Done applying the replacement rule, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->firVerbose];
 
+		FCPrint[1,"FIREImportResults: Number of entries to process:", Length[tmp], FCDoControl->firVerbose];
+		FCPrint[1,"FIREImportResults: LeafCount: ", LeafCount[tmp], FCDoControl->firVerbose];
+		FCPrint[1,"FIREImportResults: ByteCount: ", ByteCount[tmp], FCDoControl->firVerbose];
+
+		FCPrint[1,"FIREImportResults: Applying ToExpression.", FCDoControl->firVerbose];
+		time=AbsoluteTime[];
+		Global`XXX = tmp;
 		res = Map[Function[x,Rule[x[[1]],Total@Map[optHead[ToExpression[#[[2]]]] #[[1]] &, x[[2]]]]],tmp];
+		FCPrint[1,"FIREImportResults: Done applying ToExpression, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->firVerbose];
 
 		res
 
