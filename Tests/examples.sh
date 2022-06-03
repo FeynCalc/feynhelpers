@@ -19,6 +19,15 @@ echo $(pwd)
 
 MATH=$1
 
+#pySecDec Examples
+#-------------------------------------------------------------------------------
+for exFile in 'eik2Lv1' 'V1001'
+
+do
+  echo
+  echo -e "* \c"
+  $MATH -nopromt -script ../Examples/pySecDec/$exFile/convert_int.m
+done
 
 #QED Examples
 #-------------------------------------------------------------------------------
@@ -59,5 +68,7 @@ do
   echo -e "* \c"
   $MATH -nopromt -script ../Examples/$exFile
 done
+
+
 
 notify-send "Finished running examples for FeynHelpers."

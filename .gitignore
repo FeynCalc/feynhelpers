@@ -5,3 +5,4 @@ ExternalTools/QGRAF/LaTeX/*.aux
 ExternalTools/QGRAF/LaTeX/*.log
 ExternalTools/LoopTools/LoopTools
 ExternalTools/LoopTools/LoopTools.exe
+Examples/pySecDec/*/loopint
