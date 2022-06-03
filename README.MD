@@ -10,64 +10,23 @@ FeynHelpers is a collection of interfaces that allow you to use other HEP-relate
 
 FeynHelpers is designed as an add-on for FeynCalc. To use it you need at least FeynCalc 9.2 and Mathematica 8.
 
-# Supported tools
+The development version of FeynHelpers requires the latest development version of FeynCalc and Mathematica 10.
 
-Tools that are currently supported are
+# Manual
 
- * [FIRE 5.2](https://bitbucket.org/feynmanIntegrals/fire)
- * [Package-X 2.1](https://packagex.hepforge.org)
+FeynHelpers manual is still work in progress but is already mature enough to be useful for normal users. 
+
+The PDF version of the manual can be found [here](https://github.com/FeynCalc/feynhelpers-manual/releases/tag/dev-manual). If you prefer the web version, please visit this [website](https://feyncalc.github.io/referenceFeynHelpersDev).
+
+For usage information see also the accompanying paper [arXiv:1611.06793](https://arxiv.org/abs/1611.06793) and the supplied examples.
+
+Notice that the current manual applies to the development version of FeynHelpers. Hence, it may describe functionality that is not available in the stable version.
 
 # Installation
 
-## Automatic installation
-
-* Run the following instruction in a Kernel or Notebook session of Mathematica
+The installation instructions can be found [here](https://feyncalc.github.io/FeynHelpersBookDev/Extra/Install.html)
 
 
-    ```
-    Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
-    InstallFeynHelpers[]
-    ```
-
-  If the above code fails with `URLFetch::invhttp: SSL connect error` (e.g. on Mathematica 9 under OS X), try
-
-    ```
-    ImportString[URLFetch["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]]
-    InstallFeynHelpers[]
-    ```
-
-* The automatic installer can also install Package-X and FIRE for you. It will offer you this possiblity at the end of the installation process
-
-## Manual installation
-
-* Create a directory _FeynHelpers_ inside
-
-	```
-	FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns"}]
-	```
-
-	and put the source code there.
-
-* Install Package-X and FIRE packages.  It should be possible to load Package-X via
-
-	```
-	<<X`
-	```
-
-	and FIRE via
-
-	```
-	<< FIRE5`
-	```
-
-## Development version
-
-If you like the bleeding edge and you are already using the development version of FeynCalc, you can also install the development version of FeynHelpers
-
-```
-Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
-InstallFeynHelpers[InstallFeynHelpersDevelopmentVersion->True]
-```
 
 ## Experimental Fermat interface
 
@@ -125,7 +84,7 @@ Tdec[{{p1, mu1}, {p1, mu2}, {p1, mu3}, {p1, mu4}, {p2, mu5}, {p2,
 
 ## Experimental QGRAF interface
 
-The interface to QGRAF is still very unstable and full of bugs and missing features. Just to 
+The interface to QGRAF is still work in progress. Just to 
 give a general idea of how it is supposed to work, here is a simple QED 2-loop example
 
 ```
@@ -140,21 +99,9 @@ QGPrepareDiagramsTeX[out[[2]], "dias.tex"]
 (*or QGPrepareDiagramsTeX[out[[2]], "Dias", Split -> True] *)
 ```
 
-# Usage
-
-For usage information see the accompanying paper [arXiv:1611.06793](https://arxiv.org/abs/1611.06793) and the supplied examples.
-
 # Acknowledgments
 
-If you use FeynHelpers in you work, please cite
-
-* V. Shtabovenko, "FeynHelpers: Connecting FeynCalc to FIRE and Package-X", Comput. Phys. Commun., 218, 48-65, 2017, arXiv:1611.06793
-
-Also don't forget to cite the authors of the tools that you are calling from FeynHelpers, which are
-
-* [FIRE](http://inspirehep.net/record/1310407?ln=en) if you use FIREBurn
-* [Package X](http://inspirehep.net/record/1347391/) if you use PaXEvaluate
-* [Fermat](https://home.bway.net/lewis) if you use FerSolve
+If you use FeynHelpers in you work, please have a look [here](https://feyncalc.github.io/FeynHelpersBookDev/Extra/Cite.html).
 
 # License
 
