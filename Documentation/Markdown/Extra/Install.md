@@ -17,15 +17,15 @@ a particular tools please contact the corresponding developer team.*
 
 #### Automatic installation
 
-* Run the following instruction in a Kernel or Notebook session of Mathematica to install the stable version
+Run the following instruction in a Kernel or Notebook session of Mathematica to install the stable version
 
 
-    ```
-    Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
-    InstallFeynHelpers[]
-    ```
+```
+Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
+InstallFeynHelpers[]
+```
 
-* If you like the bleeding edge and you are already using the development version of FeynCalc, you can also install the development version of FeynHelpers
+If you like the bleeding edge and you are already using the development version of FeynCalc, you can also install the development version of FeynHelpers
 
 ```
 Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
@@ -35,13 +35,13 @@ InstallFeynHelpers[InstallFeynHelpersDevelopmentVersion->True]
 
 #### Manual installation
 
-* Create a directory _FeynHelpers_ inside
+Create a directory _FeynHelpers_ inside
 
-	```
-	FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns"}]
-	```
+```
+FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns"}]
+```
 
-	and put the source code there.
+and put the source code there.
 
 ### Fermat
 
@@ -49,15 +49,15 @@ You can download FERMAT binaries for Linux or macOS from the [developer's websit
 
 #### Linux
 
-* Copy the directory `ferl64` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "Fermat"}]`.
+Copy the directory `ferl64` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "Fermat"}]`.
 
 #### macOS
 
-* Copy the directory `ferm64` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "Fermat"}]`.
+Copy the directory `ferm64` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "Fermat"}]`.
 
 #### Windows
 
-* Currently there is no native Windows version of FERMAT. The Linux version appears to be usable via WSL, but currently there is no support for that in FeynHelpers.
+Currently there is no native Windows version of FERMAT. The Linux version appears to be usable via WSL, but currently there is no support for that in FeynHelpers.
 
 ### FIRE
 
@@ -65,15 +65,15 @@ You can download the source code of FIRE from the [developer's website](https://
 
 #### Linux
 
-* The instructions for compiling FIRE from source on Linux are provided [here](https://bitbucket.org/feynmanIntegrals/fire/src/master/README.md).
+The instructions for compiling FIRE from source on Linux are provided [here](https://bitbucket.org/feynmanIntegrals/fire/src/master/README.md).
 
 #### macOS
 
-* The instructions for compiling FIRE from source on macOS can be found [here](https://bitbucket.org/feynmanIntegrals/fire/issues/10/issue-of-the-installation-on-macos).
+The instructions for compiling FIRE from source on macOS can be found [here](https://bitbucket.org/feynmanIntegrals/fire/issues/10/issue-of-the-installation-on-macos).
 
 #### Windows
 
-* There is no native Windows port of FIRE. It should be possible to compile FIRE on WSL with an Ubuntu installation, but currently there is no support for that in FeynHelpers.
+There is no native Windows port of FIRE. It should be possible to compile FIRE on WSL with an Ubuntu installation, but currently there is no support for that in FeynHelpers.
 
 
 ### LoopTools
@@ -82,11 +82,11 @@ On the [developer's website](http://www.feynarts.de/looptools/) you can download
 
 #### Linux or macOS
 
-* Copy the self-compiled or precompiled MathLink executable `LoopTools`  to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "LoopTools"}]`.
+Copy the self-compiled or precompiled MathLink executable `LoopTools`  to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "LoopTools"}]`.
 
 #### Windows
 
-* Rename the self-compiled or precompiled MathLink executable `LoopTools.exe` to `LoopTools` and copy it to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "LoopTools"}]`.
+Rename the self-compiled or precompiled MathLink executable `LoopTools.exe` to `LoopTools` and copy it to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "LoopTools"}]`.
 
 ### pySecDec
 
@@ -118,8 +118,24 @@ The compilation instructions can be found in the section "Compiling" of the manu
 
 #### Windows
 
-You can download and install the [MinGW compiler](https://sourceforge.net/projects/mingw-w64/files/mingw-w64). Do not forget to change the architecture from i686 to x86_64 in the install
-wizard. Then it should be possible to compile QGRAF with statically linked libraries via `gfortran.exe -static qgraf-3.x.y.f08`. Finally rename the resulting binary to `qgraf.exe` and put it to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "QGRAF", "Binary"}]`.
+To extract the source code tarball of QGRAF you need a tool that can deal with tar.gz archives, e.g.
+[7-zip](https://www.7-zip.org/).
+
+To build QGRAF from source you need a FORTRAN compiler. You can use the [MinGW compiler](https://sourceforge.net/projects/mingw-w64/files/mingw-w64) via the _MinGW-W64 Online Installer_ (`MinGW-W64-install.exe`). When the `Settings` page appears in the installation wizard, change `Architecture` from `i686` to `x86_64`.
+
+Unfortunately, as of June 2022 the installer is broken and fails with the error message "file was downloaded incorrectly". A possible workaround is described [here](https://sourceforge.net/p/mingw-w64/support-requests/125/). When you reach the `Installation folder` page in the installation wizard, open 
+
+````
+C:\Users\YOUR_USER_NAME\AppData\Local\Temp\gentee
+````
+
+and drop there the file `x86_64-8.1.0-release-win32-seh-rt_v6-rev0.7z` that you can donwload from [SourceForge](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/seh/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z). This skips the broken process of downloading the file by the installer and should get you through the installation.
+
+Finally, open `MiniGW-W64 project` -> `Open Terminal` via the start menu. Go to the folder where you extracted the source code of QGRAF and compile it with `gfortran.exe -static qgraf-3.x.y.f08 -o qgraf.exe`, where `x` and `y` denote the current version numbers.
+
+Run `qgraf.exe` to make sure that it works properly.
+
+Put `qgraf.exe` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "QGRAF", "Binary"}]`.
 
 
 
