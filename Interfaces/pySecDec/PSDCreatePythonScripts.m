@@ -424,6 +424,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 
 		If[	!FCSubsetQ[Union[realParameters,complexParameters],vars],
 				Message[PSDCreatePythonScripts::failmsg, "The integral depends on variables that are not specified via the PSDRealParameterRules or PSDComplexParameterRules options."];
+				FCPrint[0,"PSDCreatePythonScripts: Unspecified variables: ", Complement[vars, Union[realParameters, complexParameters]], FCDoControl->psdpVerbose];
 				Abort[];
 		];
 
