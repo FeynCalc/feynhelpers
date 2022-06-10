@@ -110,11 +110,16 @@ Alternatively, you can download Package-X from the [developer's website](https:/
 
 ### QGRAF
 
-You can download the source code of QFRAF from the [developer's website](http://cfif.ist.utl.pt/~paulo/qgraf.html).
+You can download the source code of QGRAF from the [developer's website](http://cfif.ist.utl.pt/~paulo/qgraf.html).
 
 #### Linux and macOS
 
-The compilation instructions can be found in the section "Compiling" of the manual `qgraf-3.6.0.pdf` inside the tarball. Having compiled the program you need to rename the binary to `qgraf` and put it to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "QGRAF", "Binary"}]`.
+The compilation instructions can be found in the section "Compiling" of the manual `qgraf-3.x.y.pdf` inside the tarball. For example,
+on a Linux system equipped with a GNU Fortran compiler something like
+```
+gfortran qgraf-3.6.3.f08 -o qgraf
+```
+should do the job. Having compiled the program you need to move the binary file `qgraf` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "QGRAF", "Binary"}]`.
 
 #### Windows
 
@@ -135,7 +140,7 @@ Finally, open `MiniGW-W64 project` -> `Open Terminal` via the start menu. Go to 
 
 Run `qgraf.exe` to make sure that it works properly.
 
-Put `qgraf.exe` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "QGRAF", "Binary"}]`.
+Finally, move `qgraf.exe` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "QGRAF", "Binary"}]`.
 
 
 
