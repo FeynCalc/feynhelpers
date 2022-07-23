@@ -34,7 +34,7 @@ All the following commands should be run from Documentation/Scripts inside the *
 * To update the TeX documentation use
 
     ```
-    export DOCU_SOURCE_DIR="/media/Data/Projects/VS/FeynCalc/FeynCalc/AddOns/FeynHelpers/Documentation"; export DOCU_MANUAL_NAME="FeynHelpersManual"; ./generateTeX.sh /media/Data/Projects/VS/feynhelpers-manual/
+    export DOCU_SOURCE_DIR="/media/Data/Projects/VS/FeynCalc/FeynCalc/AddOns/FeynHelpers/Documentation"; export DOCU_MANUAL_NAME="FeynHelpersManual"; export DOCU_INDEX_FILE=$DOCU_SOURCE_DIR/Markdown/Extra/FeynHelpers.md; ./generateTeX.sh /media/Data/Projects/VS/feynhelpers-manual/
     ```        
     
 * To build the TeX documentation use
