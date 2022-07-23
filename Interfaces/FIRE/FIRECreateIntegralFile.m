@@ -68,7 +68,7 @@ FIRECreateIntegralFile[expr_, topos: {__FCTopology}, idRaw_List, dirs: {__String
 	MapThread[FIRECreateIntegralFile[expr, #1,#2,#3,opts]&,{topos,idRaw,dirs}];
 
 FIRECreateIntegralFile[expr_, topos: {__FCTopology}, dirs: {__String}, opts:OptionsPattern[]] :=
-	MapThread[FIRECreateIntegralFile[expr, #1,4242,#3,opts]&,{topos,dirs}];
+	MapThread[FIRECreateIntegralFile[expr, #1,4242,#2,opts]&,{topos,dirs}];
 
 FIRECreateIntegralFile[expr_, topos: {__FCTopology}, idRaw_List, dirs: {__String}, opts:OptionsPattern[]] :=
 	MapThread[FIRECreateIntegralFile[expr, #1,#2,#3,opts]&,{topos,idRaw,dirs}];

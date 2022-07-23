@@ -114,9 +114,9 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 			Abort[]
 		];
 
-		propagators = FCLoopBasisPropagatorsToTopology[topo,FCI->True,ExpandScalarProduct->True];
+		propagators = FCLoopPropagatorsToTopology[topo,FCI->True,ExpandScalarProduct->True];
 
-		FCPrint[3,"FIREPrepareStartFile: Output of FCLoopBasisPropagatorsToTopology: ", propagators, FCDoControl->fpsfVerbose];
+		FCPrint[3,"FIREPrepareStartFile: Output of FCLoopPropagatorsToTopology: ", propagators, FCDoControl->fpsfVerbose];
 
 		{propagators, replacements} =  {propagators, topo[[5]]} /. {
 			Pair[Momentum[a_,___],Momentum[b_,___]] -> a b,
@@ -178,7 +178,7 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 
 		file = OpenWrite[filePath];
 		If[	file===$Failed,
-			Message[FIREPrepareStartFile::failmsg, "Failed to open ", dir, " for writing."];
+			Message[FIREPrepareStartFile::failmsg, "Failed to open ", filePath, " for writing."];
 			Abort[]
 		];
 		If[	OptionValue[DateString],
