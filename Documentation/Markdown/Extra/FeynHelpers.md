@@ -4,6 +4,16 @@ FeynHelpers is a collection of interfaces that allow you to use other HEP-relate
 
  - [How to cite this package and the related tools](Cite.md)
  - [Installation instructions](Install.md)
+ - [Tensor reduction with Fermat](TensorReductionWithFermat.md)
+
+## Fermat interface
+
+- [FerMatrixToFermatArray](../FerMatrixToFermatArray.md) - converts matrices to Fermat arrays
+- [FerCommand](../FerCommand.md) - templates for selected Fermat instruction
+- [FerRunScript](../FerRunScript.md) - runs Fermat scripts
+- [FerRowReduce](../FerRowReduce.md) - Fermat version of `RowReduce`
+- [FerSolve](../FerSolve.md) - Fermat version of `Solve`
+- [FerInputFile](../FerInputFile.md), [FerOutputFile](../FerOutputFile.md), [FerPath](../FerPath.md), [FerScriptFile](../FerScriptFile.md) - options of functions related to the Fermat interface
 
 ## Package-X interface
 
