@@ -210,7 +210,7 @@ PSDLoopIntegralFromPropagators[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /
 		];
 
 
-		fcProps = FCLoopBasisIntegralToPropagators[scalarPart, lmoms, Tally -> True, Rest->True];
+		fcProps = FCLoopIntegralToPropagators[scalarPart, lmoms, Tally -> True, Rest->True];
 
 		pref = fcProps[[2]];
 		fcProps = fcProps[[1]]//Transpose;
@@ -219,7 +219,7 @@ PSDLoopIntegralFromPropagators[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /
 
 		FCPrint[3,"PSDLoopIntegralFromPropagators: pref: ", pref, FCDoControl->lifpVerbose];
 
-		psdProps = FCLoopBasisPropagatorsToTopology[fcProps[[1]], FCI->True,MomentumCombine->True];
+		psdProps = FCLoopPropagatorsToTopology[fcProps[[1]], FCI->True,MomentumCombine->True];
 
 		FCPrint[3,"PSDLoopIntegralFromPropagators: psdProps: ", psdProps, FCDoControl->lifpVerbose];
 
@@ -230,7 +230,9 @@ PSDLoopIntegralFromPropagators[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /
 
 		{psdProps, psdReplacements} =  {psdProps, optFinalSubstitutions} //. {
 			Pair[Momentum[a_,___],Momentum[b_,___]] -> a b,
-			CartesianPair[CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b
+			CartesianPair[CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b,
+			Hold[Pair][Momentum[a_,___],Momentum[b_,___]] -> a b,
+			Hold[CartesianPair][CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b
 		};
 
 		If[!FreeQ2[{psdProps,psdReplacements},{Pair,CartesianPair,Momentum,CartesianMomentum}],

@@ -392,6 +392,10 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 
 		FCPrint[1,"PSDCreatePythonScripts: vars: ", vars, FCDoControl->psdpVerbose];
 
+
+		FCPrint[2,"PSDCreatePythonScripts: Real parameter rules: ", optPSDRealParameterRules, FCDoControl->psdpVerbose];
+		FCPrint[2,"PSDCreatePythonScripts: Complex parameter rules: ", optPSDComplexParameterRules, FCDoControl->psdpVerbose];
+
 		If[	optPSDRealParameterRules=!={},
 			(*Removing irrelevant parameters*)
 			optPSDRealParameterRules = SelectNotFree[optPSDRealParameterRules,vars];
@@ -399,7 +403,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 			{realParameters, realParameterValues} = Transpose[List@@@optPSDRealParameterRules];
 			FCPrint[1,"PSDCreatePythonScripts: realParameterValues:  ", realParameterValues, FCDoControl->psdpVerbose];
 			If[	!MatchQ[realParameterValues,{__?NumberQ}],
-				Message[PSDCreatePythonScripts::failmsg, "Failed to generate the list of numerica values for the real parameters."];
+				Message[PSDCreatePythonScripts::failmsg, "Failed to generate the list of numerical values for the real parameters."];
 				Abort[];
 			],
 
@@ -413,12 +417,15 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 			{complexParameters, complexParameterValues} = Transpose[List@@@optPSDComplexParameterRules];
 			FCPrint[1,"PSDCreatePythonScripts: complexParameterValues:  ", complexParameterValues, FCDoControl->psdpVerbose];
 			If[	!MatchQ[complexParameterValues,{__?NumberQ}],
-				Message[PSDCreatePythonScripts::failmsg, "Failed to generate the list of numerica values for the complex parameters."];
+				Message[PSDCreatePythonScripts::failmsg, "Failed to generate the list of numerical values for the complex parameters."];
 				Abort[];
 			],
 
 			{complexParameters, complexParameterValues} = {{},{}}
 		];
+
+		FCPrint[2,"PSDCreatePythonScripts: Real parameters: ", realParameters, FCDoControl->psdpVerbose];
+		FCPrint[2,"PSDCreatePythonScripts: Complex parameters: ", complexParameters, FCDoControl->psdpVerbose];
 
 		(*TODO Could also set all variables to 1 if the user didn't bother to specify them...*)
 
@@ -443,7 +450,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		If[	optPSDExpansionByRegionsParameter===None,
 
 			(*Normal mode*)
-
+			FCPrint[1,"PSDCreatePythonScripts: Calling PSDLoopPackage", FCDoControl->psdpVerbose];
 			loopPackage = PSDLoopPackage[optPSDOutputDirectory, optPSDLoopIntegralName, optPSDRequestedOrder,
 				PSDAdditionalPrefactor		-> optPSDAdditionalPrefactor,
 				PSDComplexParameters		-> complexParameters,
@@ -457,10 +464,11 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 				PSDNormalizExecutable		-> OptionValue[PSDNormalizExecutable],
 				PSDRealParameters			-> realParameters,
 				PSDSplit					-> OptionValue[PSDSplit]
-			],
+			];
+			FCPrint[1,"PSDCreatePythonScripts: Done calling PSDLoopPackage.", FCDoControl->psdpVerbose],
 
 			(*Expansion by regions*)
-
+			FCPrint[1,"PSDCreatePythonScripts: Calling PSDLoopRegions", FCDoControl->psdpVerbose];
 			loopRegions = PSDLoopRegions[optPSDOutputDirectory, optPSDLoopIntegralName, optPSDExpansionByRegionsOrder, optPSDExpansionByRegionsParameter,
 				PSDAdditionalPrefactor			-> (*OptionValue[PSDAdditionalPrefactor]*) "("<>ToString[extraPref,InputForm]<>")*exp("<>ToString[nLoops]<>"*EulerGamma*eps)",
 				PSDAddMonomialRegulatorPower	-> OptionValue[PSDAddMonomialRegulatorPower],
@@ -472,7 +480,9 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 				PSDNormalizExecutable			-> OptionValue[PSDNormalizExecutable],
 				PSDSplit						-> OptionValue[PSDSplit]
 			];
+			FCPrint[1,"PSDCreatePythonScripts: Done calling PSDLoopRegions.", FCDoControl->psdpVerbose];
 
+			FCPrint[1,"PSDCreatePythonScripts: Calling PSDSumPackage.", FCDoControl->psdpVerbose];
 			sumPackage = PSDSumPackage[optPSDOutputDirectory,"regions_generator_args",optPSDRequestedOrder,
 				PSDCoefficients				-> OptionValue[PSDCoefficients],
 				PSDComplexParameters		-> complexParameters,
@@ -480,7 +490,8 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 				PSDPyLinkQMCTransforms 		-> OptionValue[PSDPyLinkQMCTransforms],
 				PSDRealParameters			-> realParameters,
 				PSDRegulators				-> OptionValue[PSDRegulators]
-			]
+			];
+			FCPrint[1,"PSDCreatePythonScripts: Done calling PSDSumPackage.", FCDoControl->psdpVerbose]
 		];
 
 		generateFileString = {
