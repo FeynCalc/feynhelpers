@@ -17,6 +17,10 @@ QGConvertToFC::usage=
 using the styling file feyncalc.sty into amplitudes suitable for further
 evaluation using FeynCalc.";
 
+QGConvertToFC::noins=
+"QGConvertToFC cannot find some of the required insertion rules `1`. Only the following rules are available `2`. Evaluation aborted."
+
+
 Begin["`Package`"]
 
 End[]
@@ -79,6 +83,12 @@ QGConvertToFC[amps_List, OptionsPattern[]] :=
 
 
 		repRuleInsertions = Flatten[Join[QGInsertionRule/@optQGInsertionRule]];
+
+		If[	!FreeQ[repRuleInsertions,QGInsertionRule],
+			Message[QGConvertToFC::noins,SelectNotFree[repRuleInsertions,QGInsertionRule],QGInsertionRule[]];
+			Abort[]
+		];
+
 		repRuleMomenta={};
 		repRuleLorentzIndices={};
 		repRuleSUNIndices={};
