@@ -36,7 +36,7 @@ End[]
 Begin["`FeynHelpers`Private`"];
 
 If[ !ValueQ[FeynCalc`$FeynHelpersLoadInterfaces],
-	FeynCalc`$FeynHelpersLoadInterfaces = {"PackageX", "FIRE", "Fermat", "QGRAF", "LoopTools", "pySecDec"}
+	FeynCalc`$FeynHelpersLoadInterfaces = {"PackageX", "FIRE", "Kira", "Fermat", "QGRAF", "LoopTools", "pySecDec"}
 ];
 
 $FeynHelpersVersion="2.0.0";
@@ -65,6 +65,12 @@ If[	!FreeQ[$FeynHelpersLoadInterfaces,"FIRE"],
 	Get/@load
 ];
 
+If[	!FreeQ[$FeynHelpersLoadInterfaces,"Kira"],
+	load = FileNames[{"*.m"},FileNameJoin[{$FeynHelpersDirectory,"Interfaces","Kira"}]];
+	FCDeclareHeader/@load;
+	Get/@load
+];
+
 If[	!FreeQ[$FeynHelpersLoadInterfaces,"Fermat"],
 	load = FileNameJoin[{$FeynHelpersDirectory,"Interfaces","Fermat","FerShared.m"}];
 	FCDeclareHeader[load];
@@ -73,7 +79,6 @@ If[	!FreeQ[$FeynHelpersLoadInterfaces,"Fermat"],
 	FCDeclareHeader/@load;
 	Get/@load
 ];
-
 
 If[	!FreeQ[$FeynHelpersLoadInterfaces,"LoopTools"],
 	load = FileNameJoin[{$FeynHelpersDirectory,"Interfaces","LoopTools","LoopToolsShared.m"}];
@@ -145,6 +150,9 @@ FeynCalc`FeynHelpersHowToCite[]:=
 
 	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIRE",ButtonData :> {URL["https://bitbucket.org/feynmanIntegrals/fire/"], None},BaseStyle -> "Hyperlink",
 		ButtonNote -> "https://bitbucket.org/feynmanIntegrals/fire/"],"Text"], Style[" by A. Smirnov, if you are using functions that begin with FIRE.","Text"]];
+
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Kira",ButtonData :> {URL["https://kira.hepforge.org/"], None},BaseStyle -> "Hyperlink",
+		ButtonNote -> "https://gitlab.com/kira-pyred/kira"],"Text"], Style[" by the Kira collaboration, if you are using functions that begin with Kira.","Text"]];
 
 	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Package-X",ButtonData :> {URL["https://packagex.hepforge.org"], None},BaseStyle -> "Hyperlink",
 		ButtonNote -> "https://packagex.hepforge.org"],"Text"], Style[" by H. Patel, if you are using functions that begin with PaX.","Text"]];
