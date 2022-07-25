@@ -35,7 +35,7 @@ StandardPropagatorDenominator[I*Momentum[p1,D],0,0,{1,-1}]],\
 FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3,D],0,\
 mb^2,{1,-1}]],FeynAmpDenominator[StandardPropagatorDenominator[I*\
 Momentum[p1-p3,D],0,mb^2,{1,-1}]]},{p1,p3},{},{Pair[Momentum[q,D],\
-Momentum[q,D]]->mb^2},{}]},102,$TemporaryDirectory,FCVerbose->-1];\
+Momentum[q,D]]->mb^2},{}]},{102},{$TemporaryDirectory},FCVerbose->-1];\
 \[IndentingNewLine]Import[outDir[[1]],\"Text\"]===\[IndentingNewLine]\
 Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",\"FIRE\",\"\
 Samples\",\"LoopIntegrals-v2.m\"}],\"Text\"]", "True"}
