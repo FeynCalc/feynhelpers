@@ -410,7 +410,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		(* Check if package X has already been loaded*)
 		If [ paxLoaded=!=True,
-
+			(*
 			FCPrint[1,"PaXEvaluate: Checking the version of Package-X.", FCDoControl->paxVerbose];
 			paxVer = Last[Get[FileNameJoin[{OptionValue[PaXPath], "PacletInfo.m"}]][[2]]];
 			paxVer = (ToExpression/@(Identity@@StringReplace[paxVer, n1__ ~~ "." ~~ n2__ ~~ "." ~~ n3__ :>
@@ -420,7 +420,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 				Message[PaXEvaluate::gen, "Package-X versions earlier than 2.1.0 are not supported."];
 				Abort[]
 			];
-
+			*)
 			FCPrint[1,"PaXEvaluate: Loading Package-X.", FCDoControl->paxVerbose];
 			Begin["Global`"];
 			(* 	The following code for loading the OneLoop part of Package-X was kindly
@@ -428,7 +428,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			Block[{$ContextPath},
 				BeginPackage["X`"];
 				(*Loads all definitions in Package-X OneLoop.m.	*)
-				Get[FileNameJoin[{OptionValue[PaXPath], "OneLoop.m"}]];
+				Get[FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "OneLoopFromPackageX", "OneLoop.m"}]];
 				EndPackage[];
 			];
 			End[];
