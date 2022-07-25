@@ -277,7 +277,8 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 			optOverwriteTarget, integrateFileString, numParamsReal, numParamsComplex, sumPackage,
 			optFinalSubstitutions, fp, vars, realParameters, optPSDExpansionByRegionsParameter,
 			complexParameters, optPSDRealParameterRules, extraPref, optPSDExpansionByRegionsOrder,
-			optPSDComplexParameterRules, realParameterValues, complexParameterValues, loopRegions, tmp},
+			optPSDComplexParameterRules, realParameterValues, complexParameterValues, loopRegions, tmp, momHold,
+			fPar, rulesDVReal, rulesDVComplex, rulesDV, momHoldList, spDownValuesLhs},
 
 		optPSDLoopIntegralName				= OptionValue[PSDLoopIntegralName];
 		optPSDOutputDirectory				= OptionValue[PSDOutputDirectory];
@@ -384,11 +385,59 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		FCPrint[2,"PSDCreatePythonScripts: Relevant loop momenta: ", lmoms, FCDoControl->psdpVerbose];
 
 		nLoops = Length[lmoms];
-		vars = SelectFree[Variables2[FCFeynmanPrepare[Abs[ex] /. Abs -> Identity, lmoms, Names -> fp, FCI->True,FinalSubstitutions->optFinalSubstitutions][[2]]], fp];
+		fPar = FCFeynmanPrepare[MomentumExpand[Abs[ex] /. Abs -> Identity]/. Momentum[x_, d___] /; ! MemberQ[lmoms, x] :>
+			Momentum[momHold[x], d], lmoms, Names -> fp, FCI->True,FinalSubstitutions->optFinalSubstitutions][[2]];
+
+		momHoldList = Union[Cases[fPar, (CartesianPair | Pair)[x__] /; ! FreeQ[{x}, momHold], Infinity]];
+
+		FCPrint[2,"PSDCreatePythonScripts: List of all scalar products: ", momHoldList, FCDoControl->psdpVerbose];
+
+		(*Extract scalar products that have been set via down values*)
+		spDownValuesLhs = Map[If[FreeQ2[# /. momHold -> Identity, {Pair, CartesianPair}], # /. {Pair -> Hold[Pair],
+			CartesianPair -> CartesianPair[Hold]} /. momHold -> Identity, Unevaluated[Sequence[]]] &, momHoldList];
+
+		(*Remove scalar products set via the FinalSubstitutions option*)
+		spDownValuesLhs = Map[If[FreeQ2[# /. Hold -> Identity, {Pair, CartesianPair}], #, Unevaluated[Sequence[]]] &, spDownValuesLhs];
+
+		FCPrint[2,"PSDCreatePythonScripts: Scalar products specified via down values: ", spDownValuesLhs, FCDoControl->psdpVerbose];
+
+		If[	!FCSubsetQ[$ScalarProducts, Union[spDownValuesLhs /. Hold[Pair | CartesianPair] ->  List /. (h : Momentum | CartesianMomentum)[xx_, ___] :> h[xx]]],
+			Message[PSDCreatePythonScripts::failmsg, "Missing some scalar products specified via down values."];
+			Abort[]
+		];
+
+		rulesDV = Thread[Rule[spDownValuesLhs, spDownValuesLhs /. Hold -> Identity/. optFinalSubstitutions]];
+
+		FCPrint[2,"PSDCreatePythonScripts: Rules from down values: ", rulesDV, FCDoControl->psdpVerbose];
+
+		vars = SelectFree[Variables2[fPar/.momHold->Identity/.optFinalSubstitutions], fp];
 
 		If[optFinalSubstitutions=!={},
 			vars = Variables2[{Last/@optFinalSubstitutions,vars}]
 		];
+		(*
+		If[	rulesDV=!={},
+			(*vars = Join[vars,Last/@rulesDV];*)
+			rulesDVReal = Select[rulesDV,FreeQ2[#[[2]],{Complex,I}]&];
+			rulesDVComplex = Complement[rulesDV,rulesDVReal];
+
+			FCPrint[2,"PSDCreatePythonScripts: Complex valued dv rules: ", rulesDVComplex, FCDoControl->psdpVerbose];
+			FCPrint[2,"PSDCreatePythonScripts: Real valued dv rules: ", rulesDVReal, FCDoControl->psdpVerbose];
+
+			(*If[	!(rulesDVReal==={} || MatchQ[rulesDVReal,{Rule[_,_?NumberQ]..}]),
+				Message[PSDCreatePythonScripts::failmsg, "Nonnumerical real-valued scalar product down values."];
+				Abort[];
+			];
+
+			If[	!(rulesDVComplex==={} || MatchQ[rulesDVComplex,{Rule[_,_?NumberQ]..}]),
+				Message[PSDCreatePythonScripts::failmsg, "Nonnumerical complex-valued scalar product down values.."];
+				Abort[];
+			];*)
+
+			optPSDRealParameterRules = Join[optPSDRealParameterRules,rulesDVReal];
+			optPSDComplexParameterRules = Join[optPSDComplexParameterRules,rulesDVComplex];
+
+		];*)
 
 		FCPrint[1,"PSDCreatePythonScripts: vars: ", vars, FCDoControl->psdpVerbose];
 
@@ -436,7 +485,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		];
 
 		(*generate psd.LoopIntegralFromPropagators() *)
-		{loopIntegralFromPropagators, extraPref} = PSDLoopIntegralFromPropagators[ex, lmoms, FinalSubstitutions->optFinalSubstitutions,
+		{loopIntegralFromPropagators, extraPref} = PSDLoopIntegralFromPropagators[ex, lmoms, FinalSubstitutions->Join[optFinalSubstitutions,rulesDV],
 			FCReplaceD->OptionValue[FCReplaceD]];
 
 		FCPrint[3,"PSDCreatePythonScripts: loopIntegralFromPropagators: ", loopIntegralFromPropagators, FCDoControl->psdpVerbose];
