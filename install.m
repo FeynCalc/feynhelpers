@@ -29,10 +29,10 @@ InstallFeynHelpers::usage =
 
 InstallFIRE::usage =
 "Installs FIRE.";
-
+(*
 InstallPackageX::usage =
 "Installs Package-X.";
-
+*)
 InstallFeynHelpers::nofc =
 "Looks like you don't have FeynCalc installed. FeynHelpers cannot work without FeynCalc, so please \
 install it first.";
@@ -46,11 +46,11 @@ InstallFeynHelpers::failed =
 AutoOverwriteFeynHelpersDirectory::usage="AutoOverwriteFeynHelpersDirectory is an option of InstallFeynHelpers. If \
 set to True, the existing FeynHelpers directory will be deleted without any further notice. The default
 value None means that the user will be asked by a dialog. False means that the directory will be overwritten.";
-
+(*
 AutoOverwritePackageXDirectory::usage="AutoOverwritePackageXDirectory is an option of InstallPackageX. If \
 set to True, the existing Package-X directory will be deleted without any further notice. The default
 value None means that the user will be asked by a dialog. False means that the directory will be overwritten.";
-
+*)
 AutoOverwriteFIREDirectory::usage="AutoOverwriteFIREDirectory is an option of InstallFIRE. If \
 set to True, the existing FIRE directory will be deleted without any further notice. The default
 value None means that the user will be asked by a dialog. False means that the directory will be overwritten.";
@@ -64,25 +64,25 @@ to the latest stable release of FeynHelpers.";
 InstallFeynHelpersDevelopmentVersion::usage="InstallFeynHelpersDevelopmentVersion is an option of InstallFeynHelpers. If \
 set to True, the installer will download the latest development version of FeynHelpers from the git repository. \
 Otherwise it will install the latest stable version.";
-
+(*
 PackageXLink::usage="PackageX is an option of InstallPackageX. It specifies the url \
 to the latest supported stable release of FIRE.";
-
+*)
 FIRELink::usage="FIRELink is an option of InstallFIRE. It specifies the url \
 to the latest supported stable release of FIRE.";
 
 InstallFeynHelpersTo::usage="InstallFeynHelpersTo is an option of InstallFeynHelpers. It specifies, the full path \
 to the directory where FeynHelpers will be installed.";
-
+(*
 InstallPackageXTo::usage="InstallPackageXTo is an option of InstallPackageX. It specifies, the full path \
 to the directory where PackageX will be installed.";
-
+*)
 InstallFIRETo::usage="InstallFIRETo is an option of InstallFIRE. It specifies, the full path \
 to the directory where FIRE will be installed.";
-
+(*
 AutoInstallPackageX::usage="AutoInstallPackageX is an option of InstallFeynHelpers. If \
 set to True, Package-X will be installed automatically.";
-
+*)
 AutoInstallFIRE::usage="AutoInstallFIRE is an option of InsInstallFeynHelpers. If \
 set to True, Package-X will be installed automatically.";
 
@@ -92,7 +92,7 @@ testConnection::usage="";
 packageDir::usage="";
 packageName::usage="";
 strOverwriteFC::usage="";
-strPackageX::usage="";
+(*strPackageX::usage="";*)
 strFIRE::usage="";
 
 If[	$VersionNumber < 8,
@@ -168,7 +168,7 @@ strOverwriteFC :=
 		"How should we proceed?"
 		}
 	];
-
+(*
 strPackageX :=
 		Column[{
 			"Do you want to install Package-X from "<> OptionValue[InstallPackageX,PackageXLink] <> "?",
@@ -182,7 +182,7 @@ strPackageX :=
 			"Before you proceed, please have a look at the license of the package and make sure that you understand it and agree with it."
 			}
 		];
-
+*)
 strFIRE :=
 		Column[{
 			"Do you want to install FIRE from "<> OptionValue[InstallFIRE,FIRELink] <> "?",
@@ -208,8 +208,8 @@ Print[" \[Bullet] If you are already using the development version of FeynCalc y
 
 
 Options[InstallFeynHelpers] = {
-	AutoInstallPackageX						->	None,
-	AutoInstallFIRE							->	None,
+	(*AutoInstallPackageX						->	None,
+	AutoInstallFIRE							->	None,*)
 	AutoOverwriteFeynHelpersDirectory		->	None,
 	FeynHelpersDevelopmentVersionLink		->	"https://github.com/FeynCalc/feynhelpers/archive/master.zip",
 	FeynHelpersStableVersionLink			->	"https://github.com/FeynCalc/feynhelpers/archive/stable.zip",
@@ -217,11 +217,13 @@ Options[InstallFeynHelpers] = {
 	InstallFeynHelpersTo					->	FileNameJoin[{$FeynCalcDirectory, "AddOns","FeynHelpers"}]
 };
 
+(*
 Options[InstallPackageX] = {
 	AutoOverwritePackageXDirectory 			-> None,
 	PackageXLink							-> "https://packagex.hepforge.org/downloads/X-2.1.1.zip",
 	InstallPackageXTo						-> FileNameJoin[{$UserBaseDirectory, "Applications","X"}]
 };
+*)
 
 Options[InstallFIRE]={
 	AutoOverwriteFIREDirectory 				-> None,
@@ -229,6 +231,7 @@ Options[InstallFIRE]={
 	InstallFIRETo							->	FileNameJoin[{$UserBaseDirectory, "Applications","FIRE6"}]
 };
 
+(*
 InstallPackageX[OptionsPattern[]]:=
 	Module[{tmpzip, zip, unzipDir, fullPath},
 
@@ -287,7 +290,7 @@ InstallPackageX[OptionsPattern[]]:=
 		Quiet@DeleteDirectory[unzipDir, DeleteContents -> True];
 
 	];
-
+*)
 
 InstallFIRE[OptionsPattern[]]:=
 	Module[{tmpzip, zip, unzipDir, fullPath},
@@ -432,7 +435,7 @@ InstallFeynHelpers[OptionsPattern[]]:=
 		(* Delete the extracted archive *)
 		Quiet@DeleteDirectory[unzipDir, DeleteContents -> True];
 
-
+		(*
 		If[ OptionValue[AutoInstallPackageX],
 			xInstalled=True;
 			InstallPackageX[],
@@ -444,7 +447,7 @@ InstallFeynHelpers[OptionsPattern[]]:=
 		];
 
 
-		(*
+
 		If[ OptionValue[AutoInstallFIRE],
 			fireInstalled=True;
 			InstallFIRE[],
