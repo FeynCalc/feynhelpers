@@ -1,0 +1,33 @@
+(* :Title: FerCommand.test													*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2020-2022 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for FeynHelpers				*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`Fermat`FerCommand =
+({
+{"fcstFerCommand-ID1", "FerCommand[\"Quit\"]", "\"&q;\""},
+{"fcstFerCommand-ID2",
+"FerCommand[\"StopReadingFromTheInputFile\"]", "\"&x;\""},
+{"fcstFerCommand-ID3", "FerCommand[\"EnableUglyDisplay\"]",
+"\"&(U=1);\""},
+{"fcstFerCommand-ID4",
+"FerCommand[\"ReadFromAnInputFile\", \"myFile.txt\"]",
+"\"&(R='myFile.txt');\""},
+{"fcstFerCommand-ID5",
+"FerCommand[\"SaveToAnOutputFile\", \"myFile.txt\"]",
+"\"&(S='myFile.txt');\""},
+{"fcstFerCommand-ID6",
+"FerCommand[\"SaveSpecifiedVariablesToAnOutputFile\", {x,y,z}]",
+"\"!(&o, x, y, z);\""},
+{"fcstFerCommand-ID7",
+"FerCommand[\"ReducedRowEchelonForm\", \"mat\"]",
+"\"Redrowech(mat);\""},
+{"fcstFerCommand-ID8",
+"FerCommand[\"AdjoinPolynomialVariable\", x]", "\"&(J=x);\""}
+})

@@ -1,0 +1,16 @@
+(* :Title: FerMatrixToFermatArray.test										*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2020-2022 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for FeynHelpers				*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`Fermat`FerMatrixToFermatArray =
+{{"fcstFerMatrixToFermatArray-ID1",
+"FerMatrixToFermatArray[{{a,b},{c,d}},\"mat\"]",
+"{\"Array mat[2,2];\\n[mat]:=[[fv1, fv3, fv2, fv4]];\", {fv1, fv2, \
+fv3, fv4}, {fv1 -> a, fv2 -> b, fv3 -> c, fv4 -> d}}"}}
