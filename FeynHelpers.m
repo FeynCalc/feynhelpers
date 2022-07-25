@@ -59,9 +59,12 @@ If[	!FreeQ[$FeynHelpersLoadInterfaces,"FIRE"],
 ];
 
 If[	!FreeQ[$FeynHelpersLoadInterfaces,"Fermat"],
-	load = FileNameJoin[{$FeynHelpersDirectory,"Interfaces","Fermat.m"}];
+	load = FileNameJoin[{$FeynHelpersDirectory,"Interfaces","Fermat","FerShared.m"}];
 	FCDeclareHeader[load];
-	Get[load]
+	Get[load];
+	load = FileNames[{"*.m"},ToFileName[{$FeynHelpersDirectory,"Interfaces","Fermat"}]];
+	FCDeclareHeader/@load;
+	Get/@load
 ];
 
 

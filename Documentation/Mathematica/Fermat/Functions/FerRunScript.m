@@ -8,7 +8,7 @@
 
 
 (* ::Text:: *)
-(*`FerRunScript[scriptFile]` is an auxiliary function that runs the script `scriptFile` containing Fermat instructions. The script file is expected to be a valid Fermat code. *)
+(*`FerRunScript[scriptFile]` is an auxiliary function that runs the script `scriptFile` containing Fermat instructions. The script file is expected to be a valid Fermat code.*)
 
 
 (* ::Text:: *)
