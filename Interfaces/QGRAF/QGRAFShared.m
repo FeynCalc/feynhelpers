@@ -37,9 +37,10 @@ $QGLogOutputDiagrams::usage=
 after generating the diagrams.";
 
 QGPolarization::usage=
-"QGPolarization[psi[index, momentum], mass] is a placeholder for the external \
-state of the field psi (e.g. a polarization vector or a spinor). It is
-introduced in the QGARF style file \"feyncalc.sty\"";
+"QGPolarization[psi[index, momentum], mass] is a placeholder for the external
+state of the field psi (e.g. a polarization vector,  a spinor or simply unity
+for a spinless particle). It is introduced in the QGARF style file
+\"feyncalc.sty\"";
 
 QGTruncatedPolarization::usage=
 "QGTruncatedPolarization[psi[index, momentum], mass] is a placeholder for the

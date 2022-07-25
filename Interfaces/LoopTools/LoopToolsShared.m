@@ -12,7 +12,7 @@
 (* ------------------------------------------------------------------------ *)
 
 $LTools::usage =
-"$LTools denotes the LinkObject of the LoopTools MathLink executable."
+"$LTools denotes the LinkObject of the LoopTools MathLink executable.";
 
 LToolsLoadLibrary::usage=
 "LToolsLoadLibrary[] loads the LoopTools library so that it can be used with

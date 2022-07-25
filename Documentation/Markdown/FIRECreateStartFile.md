@@ -30,10 +30,10 @@ $$\text{/home/vs/.Mathematica/Applications/FeynCalc/Database/prop3lX1/CreateStar
 FIRECreateStartFile[fileName, FCVerbose -> 3]
 ```
 
-$$\text{FIRECreateStartFile: Full path to the Math Kernel binary: }\text{/media/Data/Software/Mathematica/13.0/Executables/math}$$
+$$\text{FIRECreateStartFile: Full path to the Math Kernel binary: }\;\text{/media/Data/Software/Mathematica/13.0/Executables/math}$$
 
-$$\text{FIRECreateStartFile: Working directory: }\text{/home/vs/.Mathematica/Applications/FeynCalc/Database/prop3lX1/}$$
+$$\text{FIRECreateStartFile: Working directory: }\;\text{/home/vs/.Mathematica/Applications/FeynCalc/Database/prop3lX1/}$$
 
-$$\text{FIRECreateStartFile: Script file: }\text{CreateStartFile.m}$$
+$$\text{FIRECreateStartFile: Script file: }\;\text{CreateStartFile.m}$$
 
 $$\text{True}$$

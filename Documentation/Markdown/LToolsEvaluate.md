@@ -88,7 +88,7 @@ FCCompareNumbers[res, chk]
 
 $$\text{FCCompareNumbers: Minimal number of significant digits to agree in: }6$$
 
-$$\text{FCCompareNumbers: Chop is set to }\text{1.$\grave{ }$*${}^{\wedge}$-10}$$
+$$\text{FCCompareNumbers: Chop is set to }\;\text{1.$\grave{ }$*${}^{\wedge}$-10}$$
 
 $$\text{FCCompareNumbers: No number is set to 0. by Chop at this stage. }$$
 

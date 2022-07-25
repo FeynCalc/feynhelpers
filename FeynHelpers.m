@@ -14,11 +14,18 @@
 (* ------------------------------------------------------------------------ *)
 
 $FeynHelpersVersion::usage=
-"$FeynHelpersVersion is the string that represents the version of FeynHelpers";
+"$FeynHelpersVersion is a string that represents the version of FeynHelpers.";
 
 $FeynHelpersDirectory::usage=
-"$FeynHelpersDirectory is the string that represents the full path to the FeynHelpers \
-directory";
+"$FeynHelpersDirectory specifies the location of FeynHelpers.";
+
+FeynHelpersHowToCite::usage=
+"FeynHelpersHowToCite[] lists publications that should be cited when mentioning
+FeynHelpers in scientific works.";
+
+$FeynHelpersLoadInterfaces::usage=
+"$FeynHelpersLoadIntefaces is a debugging switch that can be used to disable
+the loading of particular interfaces contained in FeynHelpers.";
 
 Begin["`Package`"]
 

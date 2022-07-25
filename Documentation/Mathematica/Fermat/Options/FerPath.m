@@ -8,7 +8,7 @@
 
 
 (* ::Text:: *)
-(*FerPath is an option for FerRunScript and other functions of the Fermat interface and multiple other Fer* functions. It specifies the full path to the Fermat binary.*)
+(*`FerPath` is an option for `FerRunScript` and other functions of the Fermat interface and multiple other Fer* functions. It specifies the full path to the Fermat binary.*)
 
 
 (* ::Text:: *)
