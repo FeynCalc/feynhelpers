@@ -40,10 +40,14 @@ optComplex::usage="";
 
 
 Options[FIREImportResults] = {
-	FCI			-> False,
-	FCVerbose	-> False,
-	Head		-> Identity
+	FCI				-> False,
+	FCVerbose		-> False,
+	Head			-> Identity,
+	ToExpression	-> True
 };
+
+FIREImportResults[topos:{__String}, filePathRaw_String, opts:OptionsPattern[]] :=
+	FIREImportResults[#,filePathRaw,opts]&/@topos;
 
 FIREImportResults[topos:{__FCTopology}, filePathRaw_String, opts:OptionsPattern[]] :=
 	FIREImportResults[#[[1]],filePathRaw,opts]&/@topos;
@@ -68,11 +72,11 @@ FIREImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, O
 			FileExistsQ[pathRaw] && DirectoryQ[pathRaw],
 				path = FileNameJoin[{pathRaw,ToString[topoName],ToString[topoName]<>".tables"}];
 				If[	!FileExistsQ[path],
-					Message[FIREImportResults::failmsg, "File not found: ", path];
+					Message[FIREImportResults::failmsg, "File not found: " <> path];
 					Abort[]
 				],
 			True,
-			Message[FIREImportResults::failmsg, "File not found: ", pathRaw];
+			Message[FIREImportResults::failmsg, "File not found: " <> pathRaw];
 			Abort[]
 		];
 
@@ -112,11 +116,19 @@ FIREImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, O
 		FCPrint[1,"FIREImportResults: LeafCount: ", LeafCount[tmp], FCDoControl->firVerbose];
 		FCPrint[1,"FIREImportResults: ByteCount: ", ByteCount[tmp], FCDoControl->firVerbose];
 
-		FCPrint[1,"FIREImportResults: Applying ToExpression.", FCDoControl->firVerbose];
-		time=AbsoluteTime[];
+		If[	OptionValue[ToExpression],
+			FCPrint[1,"FIREImportResults: Applying ToExpression.", FCDoControl->firVerbose];
+			time=AbsoluteTime[];
 
-		res = Map[Function[x,Rule[x[[1]],Total@Map[optHead[ToExpression[#[[2]]]] #[[1]] &, x[[2]]]]],tmp];
-		FCPrint[1,"FIREImportResults: Done applying ToExpression, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->firVerbose];
+			res = Map[Function[x,Rule[x[[1]],Total@Map[optHead[ToExpression[#[[2]]]] #[[1]] &, x[[2]]]]],tmp];
+			FCPrint[1,"FIREImportResults: Done applying ToExpression, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->firVerbose],
+
+			FCPrint[1,"FIREImportResults: Generating results with string coefficients.", FCDoControl->firVerbose];
+			time=AbsoluteTime[];
+
+			res = Map[Function[x,Rule[x[[1]],Total@Map[optHead[#[[2]]] #[[1]] &, x[[2]]]]],tmp];
+			FCPrint[1,"FIREImportResults: Done generating results, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->firVerbose];
+		];
 
 		res
 
