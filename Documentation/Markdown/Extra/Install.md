@@ -103,10 +103,13 @@ It could be possible to set up pySecDec on WSL, but currently it is unclear whet
 
 ### Package-X
 
-Currently the installation of Package-X is handled by the automatic installer. Since Package-X is a Mathematica package that only needs
-to be copied to the correct location, the installation is easy to automatize.
+Package-X is not being developed or even maintained anymore. However, the
+author of the tool, Hiren H. Patel, kindly gave us permission  to ship `OneLoop.m` (part of Package-X containing library of analytic results for Passarino-Veltman functions) together with FeynHelpers.
 
-Alternatively, you can download Package-X from the [developer's website](https://packagex.hepforge.org/) and copy the folder `X` to `FileNameJoin[{$UserBaseDirectory, "Applications"}]`. If you can load Package-X by evaluating ``X` `` in a notebook, then the installation was successful.
+Therefore, no separate installation of Package-X is needed. 
+
+Please notice that you are using this library on your own risk. The lack of maintenance
+means that newly discovered bugs are not going to be fixed and there is no guarantee that it will continue to work with newer Mathematica versions.
 
 ### QGRAF
 
