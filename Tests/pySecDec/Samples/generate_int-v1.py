@@ -3,7 +3,7 @@ from pySecDec import sum_package, loop_package, loop_regions, LoopIntegralFromPr
 import pySecDec as psd
 
 li = LoopIntegralFromPropagators(
-['p3**2', 'p1**2', '-mb**2 + (p3 + q)**2', '-mb**2 + (p1 + q)**2', 'p3**2 - p1*(-p1 + 2*p3)'],
+['p3**2', 'p1**2', '-mb**2 + (-p3 - q)**2', '-mb**2 + (-p1 - q)**2', 'p3**2 - p1*(-p1 + 2*p3)'],
 loop_momenta = ['p1', 'p3'],
 powerlist = [1, 1, 1, 1, 1],
 dimensionality = '4 - 2*eps',
