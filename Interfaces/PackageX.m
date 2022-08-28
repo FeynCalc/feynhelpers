@@ -142,10 +142,6 @@ PaXAnalytic::usage =
 "PaXAnalytic is an option for PaXEvaluate. If set to True, LoopRefine and
 LoopRefineSeries will be called with Analytic->True.";
 
-PaXPath::usage=
-"PaXPath is an option for PaXEvaluate. It specifies the directory in which
-Package-X is installed.";
-
 PaXEvaluate::convFail=
 "Warning! Not all scalar loop integrals in the expression could be \
 prepared to be processed with Package X. Following integrals will not \
@@ -197,7 +193,6 @@ Options[PaXEvaluate] = {
 	PaXKallenExpand 		-> True,
 	PaXKibbleExpand 		-> True,
 	PaXLoopRefineOptions 	-> {},
-	PaXPath 				-> FileNameJoin[{$UserBaseDirectory, "Applications", "X"}],
 	PaXSeries				-> False,
 	PaXSimplifyEpsilon		-> {Automatic, 5000},
 	PaXSubstituteEpsilon	-> True,
@@ -433,17 +428,7 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		(* Check if package X has already been loaded*)
 		If [ paxLoaded=!=True,
-			(*
-			FCPrint[1,"PaXEvaluate: Checking the version of Package-X.", FCDoControl->paxVerbose];
-			paxVer = Last[Get[FileNameJoin[{OptionValue[PaXPath], "PacletInfo.m"}]][[2]]];
-			paxVer = (ToExpression/@(Identity@@StringReplace[paxVer, n1__ ~~ "." ~~ n2__ ~~ "." ~~ n3__ :>
-				{n1, n2, n3}]));
 
-			If[	!(paxVer[[1]] >= 2. && paxVer[[2]] >= 1.),
-				Message[PaXEvaluate::gen, "Package-X versions earlier than 2.1.0 are not supported."];
-				Abort[]
-			];
-			*)
 			FCPrint[1,"PaXEvaluate: Loading Package-X.", FCDoControl->paxVerbose];
 			Begin["Global`"];
 			(* 	The following code for loading the OneLoop part of Package-X was kindly
@@ -542,12 +527,6 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 			Message[PaXEvaluate::gen, "PaXEvaluate may not pass spinors or polarization vectors to Package-X."];
 			Abort[]
 		];
-
-		FCPrint[1,"PaXEvaluate: Checking the version of Package-X.", FCDoControl->paxVerbose];
-
-		paxVer = Last[Get[FileNameJoin[{OptionValue[PaXPath], "PacletInfo.m"}]][[2]]];
-		paxVer = (ToExpression/@(Identity@@StringReplace[paxVer, n1__ ~~ "." ~~ n2__ ~~ "." ~~ n3__ :>
-			{n1, n2, n3}]));
 
 		FCPrint[1,"PaXEvaluate: Converting to the Package-X notation.", FCDoControl->paxVerbose];
 		xList = Map[toPackageX[(#/.loopIntegral->Identity),q]&, fclcOutput[[4]]];

@@ -8,24 +8,24 @@ FeynHelpers is a collection of interfaces that allow you to use other HEP-relate
 
 ## Generic functions
 
-- [FeynHelpersHowToCite](../FeynHelpersHowToCite.md) - references to be cited when using FeynHelpers
+ - [FeynHelpersHowToCite](../FeynHelpersHowToCite.md) - references to be cited when using FeynHelpers
  - [\$FeynHelpersDirectory](../\$FeynHelpersDirectory.md), [\$FeynHelpersLoadInterfaces](../\$FeynHelpersLoadInterfaces.md), [\$FeynHelpersVersion](../\$FeynHelpersVersion.md) - global variables needed for the proper functioning of FeynHelpers
 
 ## Fermat interface
 
-- [FerImportArrayAsSparseMatrix](../FerImportArrayAsSparseMatrix.md) - converts Fermat arrays into Mathematica sparse arrays
-- [FerMatrixToFermatArray](../FerMatrixToFermatArray.md) - converts matrices to Fermat arrays
-- [FerCommand](../FerCommand.md) - templates for selected Fermat instruction
-- [FerRunScript](../FerRunScript.md) - runs Fermat scripts
-- [FerRowReduce](../FerRowReduce.md) - Fermat version of `RowReduce`
-- [FerSolve](../FerSolve.md) - Fermat version of `Solve`
-- [FerInputFile](../FerInputFile.md), [FerOutputFile](../FerOutputFile.md), [FerPath](../FerPath.md), [FerScriptFile](../FerScriptFile.md) - options of functions related to the Fermat interface
+ - [FerImportArrayAsSparseMatrix](../FerImportArrayAsSparseMatrix.md) - converts Fermat arrays into Mathematica sparse arrays
+ - [FerMatrixToFermatArray](../FerMatrixToFermatArray.md) - converts matrices to Fermat arrays
+ - [FerCommand](../FerCommand.md) - templates for selected Fermat instruction
+ - [FerRunScript](../FerRunScript.md) - runs Fermat scripts
+ - [FerRowReduce](../FerRowReduce.md) - Fermat version of `RowReduce`
+ - [FerSolve](../FerSolve.md) - Fermat version of `Solve`
+ - [FerInputFile](../FerInputFile.md), [FerOutputFile](../FerOutputFile.md), [FerPath](../FerPath.md), [FerScriptFile](../FerScriptFile.md) - options of functions related to the Fermat interface
 
 ## Package-X interface
 
  - [PaXEvaluate](../PaXEvaluate.md), [PaXEvaluateUV](../PaXEvaluateUV.md), [PaXEvaluateIR](../PaXEvaluateIR.md), [PaXEvaluateUVIRSplit](../PaXEvaluateUVIRSplit.md) - evaluates the given scalar 1-loop integral or Passarino-Veltman function analytically using Package-X
  - [PaXContinuedDiLog](../PaXContinuedDiLog.md), [PaXDiLog](../PaXDiLog.md), [PaXDiscB](../PaXDiscB.md), [PaXEpsilonBar](../PaXEpsilonBar.md), [PaXKallenLambda](../PaXKallenLambda.md), [PaXKibblePhi](../PaXKibblePhi.md), [PaXKibblePhi](../PaXKibblePhi.md), [PaXLn](../PaXLn.md), [PaXpvA](../PaXpvA.md), [PaXpvB](../PaXpvB.md), [PaXpvC](../PaXpvC.md), [PaXpvD](../PaXpvD.md) - placeholders for certain Package-X symbols
-- [PaXAnalytic](../PaXAnalytic.md), [PaXC0Expand](../PaXC0Expand.md), [PaXD0Expand](../PaXD0Expand.md), [PaXDiscExpand](../PaXDiscExpand.md), [PaXExpandInEpsilon](../PaXExpandInEpsilon.md), [PaXImplicitPrefactor](../PaXImplicitPrefactor.md), [PaXKallenExpand](../PaXKallenExpand.md), [PaXKibbleExpand](../PaXKibbleExpand.md), [PaXLoopRefineOptions](../PaXLoopRefineOptions.md), [PaXPath](../PaXPath.md), [PaXSeries](../PaXSeries.md), [PaXSimplifyEpsilon](../PaXSimplifyEpsilon.md), [PaXSubstituteEpsilon](../PaXSubstituteEpsilon.md) - options of functions related to the Package-X interface
+ - [PaXAnalytic](../PaXAnalytic.md), [PaXC0Expand](../PaXC0Expand.md), [PaXD0Expand](../PaXD0Expand.md), [PaXDiscExpand](../PaXDiscExpand.md), [PaXExpandInEpsilon](../PaXExpandInEpsilon.md), [PaXImplicitPrefactor](../PaXImplicitPrefactor.md), [PaXKallenExpand](../PaXKallenExpand.md), [PaXKibbleExpand](../PaXKibbleExpand.md), [PaXLoopRefineOptions](../PaXLoopRefineOptions.md), [PaXSeries](../PaXSeries.md), [PaXSimplifyEpsilon](../PaXSimplifyEpsilon.md), [PaXSubstituteEpsilon](../PaXSubstituteEpsilon.md) - options of functions related to the Package-X interface
 
 ## C++ FIRE interface
 
