@@ -44,7 +44,7 @@ optComplex::usage="";
 
 
 Options[FIREPrepareStartFile] = {
-	DateString			-> True,
+	DateString			-> False,
 	FCI					-> False,
 	FCVerbose			-> False,
 	FIREPath 			-> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE6", "FIRE6.m"}],
