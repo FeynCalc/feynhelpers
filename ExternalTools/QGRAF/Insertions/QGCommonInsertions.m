@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2022 Vladyslav Shtabovenko
+	Copyright (C) 2015-2023 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Common insertions for polarization vectors, propagators
@@ -281,6 +281,11 @@ QGVertex[Ghbar[i_, p_], Gl[j_, _], Gh[k_, _]] :>
 (* QED lepton-photon vertex *)
 QGVertex[qbar_[i_, _], q_[j_, _], Ga[k_, _]]/; MemberQ[{{El, Ael}, {Mu, Amu}, {Tau, Atau}}, {q, qbar}] :>
 	I $QGCommonInsertionsElectricChargeSign *
+	SMP["e"] DCHN[GAD[FCMakeIndex["QGILor",k]],FCMakeIndex["QGIDir",i], FCMakeIndex["QGIDir",j]],
+
+(* QED quark-photon vertex *)
+QGVertex[qbar_[i_, _], q_[j_, _], Ga[k_, _]]/; MemberQ[{{Qi, Qibar}}, {q, qbar}] :>
+	I QuarkQ *
 	SMP["e"] DCHN[GAD[FCMakeIndex["QGILor",k]],FCMakeIndex["QGIDir",i], FCMakeIndex["QGIDir",j]]
 
 }
