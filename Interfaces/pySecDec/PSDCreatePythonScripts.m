@@ -250,7 +250,7 @@ PSDCreatePythonScripts[gli_GLI, topo_FCTopology, path_String, opts:OptionsPatter
 		If[	OptionValue[FCI],
 			optFinalSubstitutions = Join[topo[[5]], OptionValue[FinalSubstitutions]],
 			{optFinalSubstitutions, optPSDRealParameterRules, optPSDComplexParameterRules} =
-				FCI[{Join[topo[[5]], OptionValue[FinalSubstitutions]], optPSDRealParameterRules, optPSDComplexParameterRules}]
+				FRH[FCI[{Join[SelectFree[topo[[5]],{Polarization,TemporalMomentum}], OptionValue[FinalSubstitutions]], optPSDRealParameterRules, optPSDComplexParameterRules}]]
 		];
 
 		PSDCreatePythonScripts[int, topo[[3]], FileNameJoin[{path,ToString[FCLoopGLIToSymbol[gli]]}], Join[{FCI->True,FinalSubstitutions->optFinalSubstitutions,
