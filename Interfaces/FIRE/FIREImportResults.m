@@ -41,6 +41,7 @@ optComplex::usage="";
 
 Options[FIREImportResults] = {
 	FCI				-> False,
+	FCReplaceD		-> {ToExpression["Global`d"]->D},
 	FCVerbose		-> False,
 	Head			-> Identity,
 	ToExpression	-> True
@@ -53,7 +54,8 @@ FIREImportResults[topos:{__FCTopology}, filePathRaw_String, opts:OptionsPattern[
 	FIREImportResults[#[[1]],filePathRaw,opts]&/@topos;
 
 FIREImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, OptionsPattern[]] :=
-	Block[{	topo, res, tmp, id, optHead, tableData,holdGLI, repRule, pn, path, time},
+	Block[{	topo, res, tmp, id, optHead, tableData,
+			holdGLI, repRule, pn, path, time, optFCReplaceD},
 
 		If[	OptionValue[FCVerbose]===False,
 			firVerbose=$VeryVerbose,
@@ -63,6 +65,7 @@ FIREImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, O
 		];
 
 		optHead = OptionValue[Head];
+		optFCReplaceD = OptionValue[FCReplaceD];
 
 		FCPrint[1,"FIREImportResults: Entering.", FCDoControl->firVerbose];
 
@@ -128,6 +131,13 @@ FIREImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, O
 
 			res = Map[Function[x,Rule[x[[1]],Total@Map[optHead[#[[2]]] #[[1]] &, x[[2]]]]],tmp];
 			FCPrint[1,"FIREImportResults: Done generating results, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->firVerbose];
+		];
+
+		If[	optFCReplaceD=!={},
+			FCPrint[1,"FIREImportResults: Applying FCReplaceD.", FCDoControl->firVerbose];
+			time=AbsoluteTime[];
+			res = FCReplaceD[res,optFCReplaceD];
+			FCPrint[1,"FIREImportResults: FCReplaceD done, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->firVerbose];
 		];
 
 		res
