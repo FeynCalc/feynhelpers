@@ -394,7 +394,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 
 		(*Extract scalar products that have been set via down values*)
 		spDownValuesLhs = Map[If[FreeQ2[# /. momHold -> Identity, {Pair, CartesianPair}], # /. {Pair -> Hold[Pair],
-			CartesianPair -> CartesianPair[Hold]} /. momHold -> Identity, Unevaluated[Sequence[]]] &, momHoldList];
+			CartesianPair -> Hold[CartesianPair]} /. momHold -> Identity, Unevaluated[Sequence[]]] &, momHoldList];
 
 		(*Remove scalar products set via the FinalSubstitutions option*)
 		spDownValuesLhs = Map[If[FreeQ2[# /. Hold -> Identity, {Pair, CartesianPair}], #, Unevaluated[Sequence[]]] &, spDownValuesLhs];
