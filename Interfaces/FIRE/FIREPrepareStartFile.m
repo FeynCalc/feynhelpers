@@ -60,7 +60,8 @@ FIREPrepareStartFile[topos: {__FCTopology}, dirs: {__String}, opts:OptionsPatter
 
 FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 	Block[{	topo, optNames, newNames, res, dims, internal, external, propagators, dir,
-			replacements, file, filePath, optOverwriteTarget, status, optFIREPath, topoName},
+			replacements, file, filePath, optOverwriteTarget, status, optFIREPath, topoName,
+			check},
 
 		If[	OptionValue[FCVerbose]===False,
 			fpsfVerbose=$VeryVerbose,
@@ -120,8 +121,20 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 
 		{propagators, replacements} =  {propagators, topo[[5]]} /. {
 			Pair[Momentum[a_,___],Momentum[b_,___]] -> a b,
-			CartesianPair[CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b
+			CartesianPair[CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b,
+			Hold[Pair][Momentum[a_,___],Momentum[b_,___]] -> a b,
+			Hold[CartesianPair][CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b
 		};
+
+		replacements = SelectFree[replacements,{TemporalMomentum,Polarization}];
+
+		check = ToString /@ (Variables2[Last /@ replacements]);
+
+		If[!MatchQ[LowerCaseQ /@ check, {True...}],
+			Message[FIREPrepareStartFile::failmsg, "Replacement rules contain variables that are not entirely lowercase:" <> ToString[check,InputForm]];
+			Abort[]
+
+		];
 
 		(* Important to avoid issues like in
 		FCTopology[testTopo, {FeynAmpDenominator[
