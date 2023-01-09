@@ -1,0 +1,28 @@
+<prologue>
+
+<diagram>
+//===//
+graph "<diagram_index>" {
+  graph [[overlap=false,fontsize=3,penwidth=0.5]];
+  node [[shape=point]];
+  label="diagram <diagram_index>
+<back> (factor = <sign><symmetry_factor>)";
+<back><in_loop>
+  in<in_index>--<vertex_index>
+<back> [[label="I <field>(<momentum>)"[pattr]]];
+<back><end>
+<back><out_loop>
+  <vertex_index>--out<out_index>
+<back> [[label="O <field>(<momentum>)"[pattr]]];
+<back><end>
+<back><propagator_loop>
+  <vertex_index>--<dual-vertex_index>
+<back> [[label="[pid](<momentum>)"[pattr]]];
+<back><end>
+}
+
+<epilogue>
+
+
+
+<exit>
