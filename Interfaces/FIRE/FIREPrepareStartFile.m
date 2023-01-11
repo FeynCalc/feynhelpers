@@ -130,7 +130,7 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 
 		check = ToString /@ (Variables2[Last /@ replacements]);
 
-		If[!MatchQ[LowerCaseQ /@ check, {True...}],
+		If[!MatchQ[LowerCaseQ /@ StringReplace[check,"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"0"->""], {True...}],
 			Message[FIREPrepareStartFile::failmsg, "Replacement rules contain variables that are not entirely lowercase:" <> ToString[check,InputForm]];
 			Abort[]
 
