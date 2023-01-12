@@ -63,9 +63,18 @@ Currently there is no native Windows version of FERMAT. The Linux version appear
 
 You can download the source code of FIRE from the [developer's website](https://bitbucket.org/feynmanIntegrals/fire). The content should be extracted to `FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE"}]`.
 
+We recommend to enable support for zstd, lthreads, tcmalloc, snappy and zlib via
+
+```
+./configure --enable_zlib --enable_snappy --enable_lthreads --enable_tcmalloc --enable_zstd
+```
+
+If you compile FIRE without the zstd support, you should change the option `FIRECompressor`
+of `FIRECreateConfigFile` to `"lz4"`. However, for performance reasons it is better to use the zstd compression algorithm.
+
 #### Linux
 
-The instructions for compiling FIRE from source on Linux are provided [here](https://bitbucket.org/feynmanIntegrals/fire/src/master/README.md).
+The instructions for compiling FIRE from source on Linux are provided [here](https://bitbucket.org/feynmanIntegrals/fire/src/master/).
 
 #### macOS
 
