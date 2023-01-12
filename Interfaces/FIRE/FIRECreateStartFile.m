@@ -35,6 +35,11 @@ functions of the FIRE interface.
 It specifies the full path to the Mathematica Kernel that will be used to run
 FIRE. The default value is Automatic.";
 
+FIREShowOutput::usage=
+"QGShowOutput is an option for FIRECreateStartFile and other FIRE-related functions.
+When set to True, the output of the current process run will be shown via Print.
+When set to False the output is suppressed.";
+
 FIRECreateStartFile::failmsg =
 "Error! FIRECreateStartFile has encountered a fatal problem and must abort the computation. \
 The problem reads: `1`"
@@ -49,6 +54,7 @@ fcsfVerbose::usage="";
 Options[FIRECreateStartFile] = {
 	FCVerbose					-> False,
 	FIREMathematicaKernelPath	-> Automatic,
+	FIREShowOutput				-> False,
 	OverwriteTarget				-> True
 };
 
@@ -62,7 +68,8 @@ FIRECreateStartFile[pathRaw_String, topo_FCTopology, opts:OptionsPattern[]] :=
 	FIRECreateStartFile[FileNameJoin[{pathRaw,ToString[topo[[1]]]}], opts];
 
 FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
-	Block[{ path, optFIREMathematicaKernelPath, scriptFile, out, dir, exitCode, res},
+	Block[{ path, optFIREMathematicaKernelPath, scriptFile, out, dir,
+			exitCode, res, optFIREShowOutput, output},
 
 		If[	OptionValue[FCVerbose]===False,
 			fcsfVerbose=$VeryVerbose,
@@ -72,6 +79,7 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 		];
 
 		optFIREMathematicaKernelPath = OptionValue[FIREMathematicaKernelPath];
+		optFIREShowOutput			 = OptionValue[FIREShowOutput];
 
 		If[	optFIREMathematicaKernelPath===Automatic,
 			Switch[$OperatingSystem,
@@ -122,15 +130,23 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 
 		If[	$VersionNumber >= 10.,
 			out = RunProcess[{optFIREMathematicaKernelPath, "-noprompt", "-script", scriptFile}, ProcessDirectory -> dir];
+			FCPrint[3,"FIRECreateStartFile: Running: ", StringRiffle[{optFIREMathematicaKernelPath, "-noprompt", "-script", scriptFile}, " "],
+				FCDoControl->fcsfVerbose];
 			If[	out===$Failed,
 				Message[FIRECreateStartFile::failmsg,"Failed to generate the start file."];
 				Abort[]
 			];
 
+			output = out["StandardOutput"];
 			exitCode = out["ExitCode"],
 
 			Message[FIRECreateStartFile::failmsg, "Mathematica versions older than 10. are not supported."];
 			Abort[]
+		];
+
+		If[	optFIREShowOutput=!=False,
+			Print["Mathematica output:"];
+			Print[StringTrim[output]]
 		];
 
 		If[	TrueQ[exitCode===0],

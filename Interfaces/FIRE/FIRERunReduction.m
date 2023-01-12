@@ -46,7 +46,8 @@ fcsfVerbose::usage="";
 
 Options[FIRERunReduction] = {
 	FCVerbose			-> False,
-	FIREBinaryPath 		-> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE6", "bin", "FIRE6"}]
+	FIREBinaryPath 		-> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE6", "bin", "FIRE6"}],
+	FIREShowOutput		-> False
 };
 
 FIRERunReduction[input_List, opts:OptionsPattern[]]:=
@@ -55,13 +56,9 @@ FIRERunReduction[input_List, opts:OptionsPattern[]]:=
 FIRERunReduction[pathRaw_String, topos:{__FCTopology}, opts:OptionsPattern[]] :=
 	FIRERunReduction[FileNameJoin[{pathRaw,ToString[#[[1]]]}], opts]&/@topos;
 
-
-
-
-
-
 FIRERunReduction[pathRaw_String, OptionsPattern[]] :=
-	Block[{	path, dir, optFIREBinaryPath, out, configFile, exitCode, res},
+	Block[{	path, dir, optFIREBinaryPath, out, configFile, exitCode,
+			res, output, optFIREShowOutput},
 
 		If[	OptionValue[FCVerbose]===False,
 			fcsfVerbose=$VeryVerbose,
@@ -71,6 +68,7 @@ FIRERunReduction[pathRaw_String, OptionsPattern[]] :=
 		];
 
 		optFIREBinaryPath = OptionValue[FIREBinaryPath];
+		optFIREShowOutput = OptionValue[FIREShowOutput];
 
 		Which[
 			FileExistsQ[pathRaw] && !DirectoryQ[pathRaw],
@@ -106,10 +104,16 @@ FIRERunReduction[pathRaw_String, OptionsPattern[]] :=
 				Abort[]
 			];
 
+			output = out["StandardOutput"];
 			exitCode = out["ExitCode"],
 
 			Message[FIRERunReduction::failmsg, "Mathematica versions older than 10. are not supported."];
 			Abort[]
+		];
+
+		If[	optFIREShowOutput=!=False,
+			Print["C++ FIRE output:"];
+			Print[StringTrim[output]]
 		];
 
 		If[	TrueQ[exitCode===0],
