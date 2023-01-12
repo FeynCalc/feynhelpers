@@ -89,7 +89,7 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 		];
 
 		If[	!FileExistsQ[optFIREMathematicaKernelPath],
-			Message[FIRECreateStartFile::failmsg, "Mathematica kernel not found. Please check the path  ", optFIREMathematicaKernelPath];
+			Message[FIRECreateStartFile::failmsg, "Mathematica kernel not found. Please check the path ", optFIREMathematicaKernelPath];
 			Abort[]
 		];
 
@@ -135,6 +135,10 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 
 		If[	TrueQ[exitCode===0],
 			res = True,
+
+			Message[FIRECreateStartFile::failmsg, "Mathematica process returned exit code: " <> ToString[exitCode] <>
+			" .Please run the script manually to better understand the issue."
+			];
 			res = False
 		];
 
