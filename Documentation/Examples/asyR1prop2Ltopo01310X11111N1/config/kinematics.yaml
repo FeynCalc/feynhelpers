@@ -1,0 +1,9 @@
+kinematics:
+  incoming_momenta: [q]
+  outgoing_momenta: [q]
+  momentum_conservation: []
+  kinematic_invariants:
+    - [mb, 1]
+    - [mg, 1]
+  scalarproduct_rules:
+    - [ [ q, q],mb^2]

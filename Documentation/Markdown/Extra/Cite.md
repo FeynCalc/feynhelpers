@@ -12,10 +12,12 @@ The tools that should be cited are
 
 - [FIRE](https://bitbucket.org/feynmanIntegrals/fire/) if you are using `FIRE*` functions
 
+- [Kira](https://gitlab.com/kira-pyred/kira/) if you are using `Kira*` functions
+
+- [LoopTools](http://www.feynarts.de/looptools/) if you are using `LTools*` functions
+
 - [Package-X](https://packagex.hepforge.org/) if you are using `PaX*` functions
 
 - [pySecDec](https://secdec.readthedocs.io/en/stable/) if you are using `PSD*` functions
-
-- [LoopTools](http://www.feynarts.de/looptools/) if you are using `LTools*` functions
 
 - [QGRAF](http://cfif.ist.utl.pt/~paulo/qgraf.html) if you are using `QG*` functions

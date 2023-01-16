@@ -1,0 +1,28 @@
+(* :Title: KiraCreateIntegralFile.test										*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2022-2023 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for KiraCreateIntegralFile	*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`Kira`KiraCreateIntegralFile =
+({
+{"KiraCreateIntegralFile-ID1",
+"outDir=KiraCreateIntegralFile[GLI[asyR1prop2Ltopo13311X01011N1,{1,\
+1,1}]-la^2*mg^2*GLI[asyR1prop2Ltopo13311X01011N1,{2,1,1}]+la^4*mg^4*\
+GLI[asyR1prop2Ltopo13311X01011N1,{3,1,1}]-la^6*mg^6*GLI[\
+asyR1prop2Ltopo13311X01011N1,{4,1,1}],{FCTopology[\
+asyR1prop2Ltopo13311X01011N1,{FeynAmpDenominator[\
+StandardPropagatorDenominator[I*Momentum[p1,D],0,0,{1,-1}]],\
+FeynAmpDenominator[StandardPropagatorDenominator[I*Momentum[p3,D],0,\
+mb^2,{1,-1}]],FeynAmpDenominator[StandardPropagatorDenominator[I*\
+Momentum[p1-p3,D],0,mb^2,{1,-1}]]},{p1,p3},{},{Pair[Momentum[q,D],\
+Momentum[q,D]]->mb^2},{}]},$TemporaryDirectory,FCVerbose->-1];\
+\[IndentingNewLine]Import[outDir[[1]],\"Text\"]===\[IndentingNewLine]\
+Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",\"Kira\",\"\
+Samples\",\"KiraLoopIntegrals-v1.txt\"}],\"Text\"]", "True"}
+});

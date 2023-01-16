@@ -1,0 +1,30 @@
+(* :Title: KiraCreateConfigFiles.test										*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2022-2023 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for KiraCreateConfigFiles	*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`Kira`KiraCreateConfigFiles =
+({
+{"KiraCreateConfigFiles-ID1",
+"outDir =
+KiraCreateConfigFiles[
+FCTopology[
+asyR1prop2Ltopo01310X11111N1, {SFAD[{p1, 0}], SFAD[{p3, mg^2}],
+SFAD[{{0, 2*p3 . q}}], SFAD[{(p1 + q), mb^2}],
+SFAD[{{0, p1 . p3}}]}, {p1,p3}, {q}, {Hold[SPD][q, q] -> mb^2}, {}],
+{{1, 1, 1, 1, 1}}, $TemporaryDirectory,
+KiraMassDimensions -> {mb -> 1, mg -> 1}]; ;\
+(Import[outDir[[1]],\"Text\"]===\[IndentingNewLine]\
+Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",\"Kira\",\"\
+Samples\",\"asyR1prop2Ltopo01310X11111N1\",\"config\",\"integralfamilies.yaml\"}],\"Text\"] &&
+Import[outDir[[2]],\"Text\"]===\[IndentingNewLine]\
+Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",\"Kira\",\"\
+Samples\",\"asyR1prop2Ltopo01310X11111N1\",\"config\",\"kinematics.yaml\"}],\"Text\"])
+", "True"}
+});

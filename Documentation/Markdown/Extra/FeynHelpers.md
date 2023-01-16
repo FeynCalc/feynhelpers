@@ -36,12 +36,23 @@ FeynHelpers is a collection of interfaces that allow you to use other HEP-relate
  - [FIREPrepareStartFile](../FIREPrepareStartFile.md) - prepares a Mathematica script that generates the relevant FIRE .start file
  - [FIRERunReduction](../FIRERunReduction.md) - starts reduction using C++ FIRE from the current notebook
  - [FIREToFCTopology](../FIREToFCTopology.md) - converts the given FIRE topology to `FCTopology`
- - [FIREBinaryPath](../FIREBinaryPath.md), [FIREBucket](../FIREBucket.md), [FIRECompressor](../FIRECompressor.md), [FIREFthreads](../FIREFthreads.md), [FIREIntegrals](../FIREIntegrals.md), [FIRELthreads](../FIRELthreads.md), [FIREMathematicaKernelPath](../FIREMathematicaKernelPath.md), [FIREPosPref](../FIREPosPref.md), [FIRESthreads](../FIRESthreads.md), [FIREThreads](../FIREThreads.md) - options of functions related to the C++ FIRE interface
+ - [FIREBinaryPath](../FIREBinaryPath.md), [FIREBucket](../FIREBucket.md), [FIRECompressor](../FIRECompressor.md), [FIREFthreads](../FIREFthreads.md), [FIREIntegrals](../FIREIntegrals.md), [FIRELthreads](../FIRELthreads.md), [FIREMathematicaKernelPath](../FIREMathematicaKernelPath.md), [FIREPosPref](../FIREPosPref.md), [FIREShowOutput](../FIREShowOutput.md), [FIRESthreads](../FIRESthreads.md), [FIREThreads](../FIREThreads.md) - options of functions related to the C++ FIRE interface
 
 ## Mathematica FIRE interface
 
  - [FIREBurn](../FIREBurn.md) - reduced the given integral using Mathematica version of FIRE
  - [FIREAddPropagators](../FIREAddPropagators.md), [FIREConfigFiles](../FIREConfigFiles.md), [FIREPath](../FIREPath.md), [FIRERun](../FIRERun.md), [FIRESilentMode](../FIRESilentMode.md), [FIREStartFile](../FIREStartFile.md), [FIREUsingFermat](../FIREUsingFermat.md) - options of functions related to the Mathematica FIRE interface
+
+## Kira interface
+
+ - [KiraCreateConfigFiles](../KiraCreateConfigFiles.md) - creates configuration files for the reduction
+ - [KiraCreateIntegralFile](../KiraCreateIntegralFile.md) - creates list of integrals that need to be reduced
+ - [KiraCreateJobFile](../KiraCreateJobFile.md) - creates the job file to rund the redution
+ - [KiraGetRS](../KiraGetRS.md) - extracts the $r$ and $s$ parameters in the Kira/Reduze syntax
+ - [KiraImportResults](../KiraImportResults.md) - converts reduction results to `GLI`s
+ - [KiraLabelSector](../KiraLabelSector.md) - labels sectors using the Reduze notation
+ - [KiraRunReduction](../KiraRunReduction.md) - starts reduction using Kira from the current notebook
+ - [KiraBinaryPath](../KiraBinaryPath.md), [KiraFermatPath](../KiraFermatPath.md), [KiraImplicitIncomingMomenta](../KiraImplicitIncomingMomenta.md), [KiraIntegrals](../KiraIntegrals.md), [KiraJobFileName](../KiraJobFileName.md), [KiraMassDimensions](../KiraMassDimensions.md), [KiraShowOutput](../KiraShowOutput.md) - options of functions related to the KIRA interface
 
 ## LoopTools interface
 

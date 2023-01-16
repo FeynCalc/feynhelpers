@@ -1,0 +1,37 @@
+(* :Title: KiraCreateJobFile.test											*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2022-2023 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for KiraCreateJobFile		*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`Kira`KiraCreateJobFile =
+({
+{"KiraCreateJobFile-ID1",
+"outDir = KiraCreateJobFile[FCTopology[
+prop3lX1, {SFAD[{p1, m^2}], SFAD[p2], SFAD[{p3, m^2}],
+	SFAD[Q - p1 - p2 - p3],
+	SFAD[Q - p1 - p2], SFAD[Q - p1], SFAD[Q - p2], SFAD[p1 + p3],
+	SFAD[p2 + p3]}, {p1, p2, p3}, {Q}, {}, {}], {
+GLI[prop3lX1, {1, 1, 1, 1, 1, 1, 1, 0, 0}],
+GLI[prop3lX1, {1, 1, 1, 1, 1, 1, 1, 0, 1}]},
+$TemporaryDirectory, KiraJobFileName -> \"job2.yaml\"]; \n
+Import[outDir,\"Text\"]===Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",\"Kira\",\"Samples\",\"job2.yaml\"}],\"Text\"]", "True"},
+
+{"KiraCreateJobFile-ID2",
+"outDir =
+KiraCreateJobFile[
+FCTopology[
+prop3lX1, {SFAD[{p1, m^2}], SFAD[p2], SFAD[{p3, m^2}],
+	SFAD[Q - p1 - p2 - p3],
+	SFAD[Q - p1 - p2], SFAD[Q - p1], SFAD[Q - p2], SFAD[p1 + p3],
+	SFAD[p2 + p3]}, {p1, p2, p3}, {Q}, {}, {}], {{1, 1, 1, 1, 1, 1, 1,
+	1, 1}}, {4, 4}, $TemporaryDirectory];
+Import[outDir,\"Text\"]===\[IndentingNewLine]\
+Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",\"Kira\",\"\
+Samples\",\"job.yaml\"}],\"Text\"]", "True"}
+});

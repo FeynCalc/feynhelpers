@@ -85,6 +85,44 @@ The instructions for compiling FIRE from source on macOS can be found [here](htt
 There is no native Windows port of FIRE. It should be possible to compile FIRE on WSL with an Ubuntu installation, but currently there is no support for that in FeynHelpers.
 
 
+### Kira
+
+You can download the source code of Kira from the [developer's website](https://gitlab.com/kira-pyred/kira).
+FeynHelpers does not require Kira to _generate_ the corresponding yaml files. However, in order to actually do the reduction one has to run those scripts, which is possible only when Kira is installed.
+
+#### Linux and macOS
+
+The instructions for compiling Kira from source on Linux or macOS are provided [here](https://gitlab.com/kira-pyred/kira).
+
+#### Windows
+
+It should be possible to compile Kira on WSL with an Ubuntu installation, but currently there is no support for that in FeynHelpers.
+
+### Package-X
+
+Package-X is not being developed or even maintained anymore. However, the
+author of the tool, Hiren H. Patel, kindly gave us permission  to ship `OneLoop.m` (part of Package-X containing library of analytic results for Passarino-Veltman functions) together with FeynHelpers.
+
+Therefore, no separate installation of Package-X is needed. 
+
+Please notice that you are using this library on your own risk. The lack of maintenance
+means that newly discovered bugs are not going to be fixed and there is no guarantee that it will continue to work with newer Mathematica versions.
+
+### pySecDec
+
+The installation instructions for pySecDec can be found [here](https://secdec.readthedocs.io/en/stable/installation.html#download-the-program-and-install). FeynHelpers
+does not require pySecDec to _generate_ the corresponding Python scripts. However, in order to actually compute the given loop integrals one has to run those scripts, which is possible only when pySecDec is installed.
+
+Notice that the default sector decomposition method configured in the pySecDec method is `geometric`, which requires an external program called [normaliz](https://www.normaliz.uni-osnabrueck.de). Please refer to the [corresponding section](https://secdec.readthedocs.io/en/stable/installation.html?highlight=normaliz#the-geomethod-and-normaliz) in the pySecDec manual for further details on setting `normaliz` up.
+
+#### Linux or macOS
+
+It should be possible to install pySecDec via pip automatically.
+
+#### Windows
+
+It could be possible to set up pySecDec on WSL, but currently it is unclear whether this can work.
+
 ### LoopTools
 
 On the [developer's website](http://www.feynarts.de/looptools/) you can download not only the source code but also precompiled binaries
@@ -96,29 +134,6 @@ Copy the self-compiled or precompiled MathLink executable `LoopTools`  to `FileN
 #### Windows
 
 Rename the self-compiled or precompiled MathLink executable `LoopTools.exe` to `LoopTools` and copy it to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "LoopTools"}]`.
-
-### pySecDec
-
-The installation instructions for pySecDec can be found [here](https://secdec.readthedocs.io/en/stable/installation.html#download-the-program-and-install). FeynHelpers
-does not require pySecDec to _generate_ the corresponding Python scripts. However, in order to actually compute the given loop integrals one has to run those scripts, which is possible only when pySecDec is installed.
-
-#### Linux or macOS
-
-It should be possible to install pySecDec via pip automatically.
-
-#### Windows
-
-It could be possible to set up pySecDec on WSL, but currently it is unclear whether this can work.
-
-### Package-X
-
-Package-X is not being developed or even maintained anymore. However, the
-author of the tool, Hiren H. Patel, kindly gave us permission  to ship `OneLoop.m` (part of Package-X containing library of analytic results for Passarino-Veltman functions) together with FeynHelpers.
-
-Therefore, no separate installation of Package-X is needed. 
-
-Please notice that you are using this library on your own risk. The lack of maintenance
-means that newly discovered bugs are not going to be fixed and there is no guarantee that it will continue to work with newer Mathematica versions.
 
 ### QGRAF
 

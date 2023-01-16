@@ -1,0 +1,32 @@
+(* :Title: KiraGetRS.test													*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2022-2023 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for KiraGetRS				*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`Kira`KiraGetRS =
+({
+{"KiraGetRS-ID1",
+"KiraGetRS[{GLI[topo1,{1,1,1,1}],GLI[topo1,{2,1,2,1}],
+GLI[topo2,{1,0,1,1}],GLI[topo3,{1,0,1,-1}]}]", "{6, 1}"},
+{"KiraGetRS-ID2",
+"KiraGetRS[{GLI[topo1,{1,1,1,1}],GLI[topo1,{2,1,2,1}],
+GLI[topo2,{1,0,1,1}],GLI[topo3,{1,0,1,-1}]},Max\[Rule]False]",
+"{{2, 1}, {3, 0}, {4, 0}, {6, 0}}"},
+{"KiraGetRS-ID3",
+"KiraGetRS[{{{{1,0,1,0},{GLI[topo3,{1,0,1,-1}]}},{{1,0,1,1},{GLI[\
+topo2,{1,0,1,1}]}},{{1,1,1,1},{GLI[topo1,{1,1,1,1}],GLI[topo1,{2,1,2,\
+1}]}}},{{1,0,1,0},{1,0,1,1},{1,1,1,1}}}]",
+"{{{1, 0, 1, 0}, {2, 1}}, {{1, 0, 1, 1}, {3, 0}}, {{1, 1, 1, 1}, \
+{6, 0}}}"},
+{"KiraGetRS-ID4",
+"KiraGetRS[{{{{1,0,1,0},{GLI[topo3,{1,0,1,-1}]}},{{1,0,1,1},{GLI[\
+topo2,{1,0,1,1}]}},{{1,1,1,1},{GLI[topo1,{1,1,1,1}],GLI[topo1,{2,1,2,\
+1}]}}},{{1,0,1,0},{1,0,1,1},{1,1,1,1}}},Top->True]",
+"{{{1, 1, 1, 1}}, {6, 1}}"}
+});
