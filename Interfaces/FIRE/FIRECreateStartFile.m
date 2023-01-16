@@ -130,6 +130,11 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 		FCPrint[2,"FIRECreateStartFile: Working directory: ", dir, FCDoControl->fcsfVerbose];
 		FCPrint[2,"FIRECreateStartFile: Script file: ", scriptFile, FCDoControl->fcsfVerbose];
 
+		If[	!FileExistsQ[scriptFile],
+			Message[FIRERunReduction::failmsg, "The script file " <> scriptFile <> " does not exist."];
+			Abort[]
+		];
+
 		If[	$VersionNumber >= 10.,
 			out = RunProcess[{optFIREMathematicaKernelPath, "-noprompt", "-script", scriptFile}, ProcessDirectory -> dir];
 			FCPrint[3,"FIRECreateStartFile: Running: ", StringRiffle[{optFIREMathematicaKernelPath, "-noprompt", "-script", scriptFile}, " "],
