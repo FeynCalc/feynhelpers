@@ -36,9 +36,11 @@ It specifies the full path to the Mathematica Kernel that will be used to run
 FIRE. The default value is Automatic.";
 
 FIREShowOutput::usage=
-"QGShowOutput is an option for FIRECreateStartFile and other FIRE-related functions.
-When set to True, the output of the current process run will be shown via Print.
-When set to False the output is suppressed.";
+"FIREShowOutput is an option for FIRECreateStartFile and other FIRE-related
+functions.
+
+When set to True, the output of the current process run will be shown via
+Print. When set to False the output is suppressed.";
 
 FIRECreateStartFile::failmsg =
 "Error! FIRECreateStartFile has encountered a fatal problem and must abort the computation. \
