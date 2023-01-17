@@ -117,8 +117,8 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 			Abort[]
 		];
 
-		dir = DirectoryName[path];
-		scriptFile = FileNameTake[path];
+		dir 		= DirectoryName[path];
+		scriptFile	= FileNameTake[path];
 
 		If[	FileExistsQ[FileNameJoin[{dir,Last[FileNameSplit[dir]]<>".start"}]] && !OptionValue[OverwriteTarget],
 			FCPrint[0,"FIRECreateStartFile: Start file already exists and the option OverwriteTarget is set to False, so skipping.", FCDoControl->fcsfVerbose];
@@ -127,11 +127,17 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 
 
 		FCPrint[2,"FIRECreateStartFile: Full path to the Math Kernel binary: ", optFIREMathematicaKernelPath, FCDoControl->fcsfVerbose];
+		FCPrint[2,"FIRECreateStartFile: Full path to the script file: ", path, FCDoControl->fcsfVerbose];
 		FCPrint[2,"FIRECreateStartFile: Working directory: ", dir, FCDoControl->fcsfVerbose];
 		FCPrint[2,"FIRECreateStartFile: Script file: ", scriptFile, FCDoControl->fcsfVerbose];
 
-		If[	!FileExistsQ[scriptFile],
-			Message[FIRERunReduction::failmsg, "The script file " <> scriptFile <> " does not exist."];
+		If[	FileNameJoin[{dir,scriptFile}]=!=path,
+			Message[FIRECreateStartFile::failmsg, "Something went wrong when splitting the full path."];
+			Abort[]
+		];
+
+		If[	!FileExistsQ[path],
+			Message[FIRECreateStartFile::failmsg, "The script file " <> path <> " does not exist."];
 			Abort[]
 		];
 
