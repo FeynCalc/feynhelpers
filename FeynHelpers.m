@@ -126,9 +126,34 @@ If[ (fcVersion[[1]]<9),
 
 FeynCalc`Package`FeynHelpersLoaded = True;
 
+
+If[	TrueQ[FileExistsQ[FileNameJoin[{$FeynHelpersDirectory, ".version"}]]],
+	FeynCalc`$FeynHelpersLastCommitDateHash = Import[FileNameJoin[{$FeynHelpersDirectory, ".version"}],"Text"];
+	If[	TrueQ[StringFreeQ[FeynCalc`$FeynHelpersLastCommitDateHash,"$"]],
+		FeynCalc`$FeynHelpersLastCommitDateHash = StringRiffle[ToExpression[FeynCalc`$FeynHelpersLastCommitDateHash], ", "],
+		FeynCalc`$FeynHelpersLastCommitDateHash = ""
+	],
+	FeynCalc`$FeynHelpersLastCommitDateHash = ""
+];
+
+FeynCalc`file = FileNameJoin[{AbsoluteFileName[$FeynHelpersDirectory], ".git", "HEAD"}];
+
+
+If[	TrueQ[FileExistsQ[FeynCalc`file] && FeynCalc`$FeynHelpersLastCommitDateHash === ""],
+
+	FeynCalc`file = FileNameJoin[{AbsoluteFileName[$FeynHelpersDirectory], ".git", Last[StringSplit[Import[FeynCalc`file, "Text"], ": "]]}];
+
+	If[	TrueQ[FileExistsQ[FeynCalc`file]],
+		FeynCalc`$FeynHelpersLastCommitDateHash = StringJoin[{DateString[FileDate[FeynCalc`file], {"Year", "-", "Month", "-", "Day", " ", "Time",
+		" ", "ISOTimeZone"}], ", ", StringTake[Import[FeynCalc`file, "Text"], 8]}],
+		FeynCalc`$FeynHelpersLastCommitDateHash = ""
+	],
+	FeynCalc`$FeynHelpersLastCommitDateHash = ""
+];
+
 (* Print the startup message *)
 If[ $FeynCalcStartupMessages =!= False,
-	Print[Style["FeynHelpers ", "Text", Bold], Style[$FeynHelpersVersion <> ", for more information see the accompanying ", "Text"],
+	Print[Style["FeynHelpers ", "Text", Bold], Style[$FeynHelpersVersion <> " (" <> FeynCalc`$FeynHelpersLastCommitDateHash <>")" <> ", for more information see the accompanying ", "Text"],
 			Style[DisplayForm@ButtonBox["publication.", BaseStyle -> "Hyperlink",	ButtonFunction :>
 				SystemOpen[FileNameJoin[{$FeynHelpersDirectory,"Documentation","1611.06793.pdf"}]],
 				Evaluator -> Automatic, Method -> "Preemptive"], "Text"]];
