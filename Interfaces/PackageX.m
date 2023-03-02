@@ -455,10 +455,10 @@ PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		(*	First of all, let us convert all the scalar integrals to PaVe functions:	*)
 		FCPrint[1,"PaXEvaluate: Applying ToPaVe/ToPaVe2.", FCDoControl->paxVerbose];
-		If[OptionValue[ToPaVe],
+		If[OptionValue[ToPaVe] && !FreeQ[expr,q],
 			ex = expr//ToPaVe[#,q,PaVeAutoReduce->False,
 						PaVeAutoOrder -> OptionValue[PaVeAutoOrder]]&//ToPaVe2,
-			ex = expr//ToPaVe2
+			ex = ToPaVe2[expr,PaVeAutoOrder -> OptionValue[PaVeAutoOrder]]
 		];
 
 
