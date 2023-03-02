@@ -127,7 +127,10 @@ FIRECreateIntegralFile[expr_, topoRaw_FCTopology, idRaw_, dirRaw_String, Options
 
 		gliList = Cases[ex+null1+null2,x:GLI[topo[[1]],_]:>x,Infinity]//Union;
 
-		FCPrint[0,"FIRECreateIntegralFile: Number of loop integrals: ", Length[gliList], FCDoControl->fpsfVerbose];
+		If[	TrueQ[Length[gliList]>0],
+			FCPrint[0,"FIRECreateIntegralFile: Number of loop integrals: ", Length[gliList], FCDoControl->fpsfVerbose],
+			FCPrint[0, Style["FIRECreateIntegralFile: You list of integrals is empty, so no reduction is needed.", {Darker[Red,0.55], Bold}], FCDoControl->fpsfVerbose];
+		];
 
 		FCPrint[3,"FIRECreateIntegralFile: List of GLIs: ", gliList, FCDoControl->fpsfVerbose];
 
