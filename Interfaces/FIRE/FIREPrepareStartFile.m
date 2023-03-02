@@ -198,13 +198,21 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 			WriteString[file, "(* Generated on "<> DateString[] <>" *)\n\n"];
 		];
 		WriteString[file, "Get["<> ToString[optFIREPath,InputForm]  <>"];\n"];
+		WriteString[file, "\n\n"];
+		WriteString[file, "If[$FrontEnd===Null,\n"];
+		WriteString[file, "  projectDirectory=DirectoryName[$InputFileName],\n"];
+		WriteString[file, "  projectDirectory=NotebookDirectory[]\n"];
+		WriteString[file, "];\n"];
+		WriteString[file, "SetDirectory[projectDirectory];\n"];
+		WriteString[file, "Print[\"Working directory: \", projectDirectory];\n"];
+		WriteString[file, "\n\n"];
 		WriteString[file, "Internal=" <> ToString[internal,InputForm] <> ";\n"];
 		WriteString[file, "External=" <> ToString[external,InputForm] <> ";\n"];
 		WriteString[file, "Propagators=" <> ToString[propagators,InputForm] <> ";\n"];
 		WriteString[file, "Replacements=" <> ToString[replacements,InputForm] <> ";\n"];
 		WriteString[file, "PrepareIBP[];\n"];
 		WriteString[file, "Prepare[AutoDetectRestrictions -> True];\n"];
-		WriteString[file, "SaveStart["<> ToString[FileNameJoin[{dir,topoName}],InputForm]  <>"];\n"];
+		WriteString[file, "SaveStart["<> ToString[topoName,InputForm]  <>"];\n"];
 		Close[file];
 
 		filePath

@@ -58,7 +58,7 @@ FIRERunReduction[pathRaw_String, topos:{__FCTopology}, opts:OptionsPattern[]] :=
 
 FIRERunReduction[pathRaw_String, OptionsPattern[]] :=
 	Block[{	path, dir, optFIREBinaryPath, out, configFile, exitCode,
-			res, output, optFIREShowOutput},
+			res, output, optFIREShowOutput,fireShellScriptPath},
 
 		If[	OptionValue[FCVerbose]===False,
 			fcsfVerbose=$VeryVerbose,
@@ -69,6 +69,8 @@ FIRERunReduction[pathRaw_String, OptionsPattern[]] :=
 
 		optFIREBinaryPath = OptionValue[FIREBinaryPath];
 		optFIREShowOutput = OptionValue[FIREShowOutput];
+
+		fireShellScriptPath = FileNameJoin[{$FeynHelpersDirectory, "Interfaces", "FIRE", "fireRunReduction.sh"}];
 
 		Which[
 			FileExistsQ[pathRaw] && !DirectoryQ[pathRaw],
@@ -89,6 +91,11 @@ FIRERunReduction[pathRaw_String, OptionsPattern[]] :=
 			Abort[]
 		];
 
+		If[	!FileExistsQ[fireShellScriptPath],
+			Message[FIRERunReduction::failmsg, "Shell script for running C++ FIRE  " <> fireShellScriptPath <> " does not exist."];
+			Abort[]
+		];
+
 		dir = DirectoryName[path];
 		configFile = FileBaseName[path];
 
@@ -97,19 +104,21 @@ FIRERunReduction[pathRaw_String, OptionsPattern[]] :=
 		FCPrint[2,"FIRERunReduction: Working directory: ", dir, FCDoControl->fcsfVerbose];
 		FCPrint[2,"FIRERunReduction: Config file: ", configFile, FCDoControl->fcsfVerbose];
 
-		If[	$VersionNumber >= 10.,
-			out = RunProcess[{optFIREBinaryPath,"-c", configFile}, ProcessDirectory -> dir];
-			If[	out===$Failed,
-				Message[FIRERunReduction::failmsg,"Failed to execute the C++ FIRE binary."];
-				Abort[]
-			];
-
-			output = out["StandardOutput"];
-			exitCode = out["ExitCode"],
-
+		If[	$VersionNumber < 10.,
 			Message[FIRERunReduction::failmsg, "Mathematica versions older than 10. are not supported."];
 			Abort[]
 		];
+
+
+		out = RunProcess[{fireShellScriptPath,optFIREBinaryPath,dir,configFile}];
+		If[	out===$Failed,
+			Message[FIRERunReduction::failmsg,"Failed to execute the C++ FIRE binary."];
+			Abort[]
+		];
+
+		output = out["StandardOutput"];
+		exitCode = out["ExitCode"];
+
 
 		If[	optFIREShowOutput=!=False,
 			Print["C++ FIRE output:"];

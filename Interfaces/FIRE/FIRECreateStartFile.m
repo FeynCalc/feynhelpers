@@ -70,8 +70,8 @@ FIRECreateStartFile[pathRaw_String, topo_FCTopology, opts:OptionsPattern[]] :=
 	FIRECreateStartFile[FileNameJoin[{pathRaw,ToString[topo[[1]]]}], opts];
 
 FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
-	Block[{ path, optFIREMathematicaKernelPath, scriptFile, out, dir,
-			exitCode, res, optFIREShowOutput, output},
+	Block[{ path, optFIREMathematicaKernelPath, out, dir, fireShellScriptPath,
+			scriptFile, exitCode, res, optFIREShowOutput, output},
 
 		If[	OptionValue[FCVerbose]===False,
 			fcsfVerbose=$VeryVerbose,
@@ -82,6 +82,8 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 
 		optFIREMathematicaKernelPath = OptionValue[FIREMathematicaKernelPath];
 		optFIREShowOutput			 = OptionValue[FIREShowOutput];
+
+		fireShellScriptPath = FileNameJoin[{$FeynHelpersDirectory, "Interfaces", "FIRE", "fireCreateStartFile.sh"}];
 
 		If[	optFIREMathematicaKernelPath===Automatic,
 			Switch[$OperatingSystem,
@@ -117,12 +119,17 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 			Abort[]
 		];
 
-		dir 		= DirectoryName[path];
+		dir = DirectoryName[path];
 		scriptFile	= FileNameTake[path];
 
 		If[	FileExistsQ[FileNameJoin[{dir,Last[FileNameSplit[dir]]<>".start"}]] && !OptionValue[OverwriteTarget],
 			FCPrint[0,"FIRECreateStartFile: Start file already exists and the option OverwriteTarget is set to False, so skipping.", FCDoControl->fcsfVerbose];
 			Return[True]
+		];
+
+		If[	!FileExistsQ[fireShellScriptPath],
+			Message[FIRERunReduction::failmsg, "Shell script for creating start files does not exist."];
+			Abort[]
 		];
 
 
@@ -131,28 +138,23 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 		FCPrint[2,"FIRECreateStartFile: Working directory: ", dir, FCDoControl->fcsfVerbose];
 		FCPrint[2,"FIRECreateStartFile: Script file: ", scriptFile, FCDoControl->fcsfVerbose];
 
-		If[	FileNameJoin[{dir,scriptFile}]=!=path,
-			Message[FIRECreateStartFile::failmsg, "Something went wrong when splitting the full path."];
-			Abort[]
-		];
-
 		If[	!FileExistsQ[path],
 			Message[FIRECreateStartFile::failmsg, "The script file " <> path <> " does not exist."];
 			Abort[]
 		];
 
-		If[	$VersionNumber >= 10.,
-			out = RunProcess[{optFIREMathematicaKernelPath, "-noprompt", "-script", scriptFile}, ProcessDirectory -> dir];
-			FCPrint[3,"FIRECreateStartFile: Running: ", StringRiffle[{optFIREMathematicaKernelPath, "-noprompt", "-script", scriptFile}, " "],
-				FCDoControl->fcsfVerbose];
-			If[	out===$Failed,
-				Message[FIRECreateStartFile::failmsg,"Failed to generate the start file."];
-				Abort[]
-			];
 
-			output = out["StandardOutput"];
-			exitCode = out["ExitCode"],
+		out = RunProcess[{fireShellScriptPath,optFIREMathematicaKernelPath, dir, scriptFile}];
 
+		If[	out===$Failed,
+			Message[FIRECreateStartFile::failmsg,"Failed to generate the start file."];
+			Abort[]
+		];
+
+		output = out["StandardOutput"];
+		exitCode = out["ExitCode"];
+
+		If[	$VersionNumber < 10.,
 			Message[FIRECreateStartFile::failmsg, "Mathematica versions older than 10. are not supported."];
 			Abort[]
 		];
