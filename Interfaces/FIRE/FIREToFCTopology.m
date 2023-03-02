@@ -175,17 +175,17 @@ propToSFAD[{-(c_. mom_ + re_ : 0)^2, mass_}, lmoms_List, emoms_List] :=
 (* c*(p1+...).x +/- m^2*)
 propToSFAD[{c_. (a_+ a1_:0) (b_+b1_:0) , mass_}, lmoms_List, emoms_List] :=
 FeynAmpDenominator[StandardPropagatorDenominator[0,	c Pair[Momentum[a+a1, optDimension], Momentum[b+b1, optDimension]], mass, {1, optEtaSign}]] /;
-	FCSubsetQ[Join[lmoms, emoms], {a,b}] && !MemberQ[Join[lmoms, emoms], c];
+	SubsetQ[Join[lmoms, emoms], {a,b}] && !MemberQ[Join[lmoms, emoms], c];
 
 (* (p1+...)^2 + c*(p1+...).x +/- m^2*)
 propToSFAD[{(mom_ + re_ : 0)^2 + c_. (a_+ a1_:0) (b_+b1_:0), mass_}, lmoms_List, emoms_List] :=
 	FeynAmpDenominator[StandardPropagatorDenominator[Momentum[mom + re, optDimension], c Pair[Momentum[a+a1, optDimension], Momentum[b+b1, optDimension]], mass, {1, optEtaSign}]] /;
-	FCSubsetQ[Join[lmoms, emoms], {a,b,mom}] && !MemberQ[Join[lmoms, emoms], c];
+	SubsetQ[Join[lmoms, emoms], {a,b,mom}] && !MemberQ[Join[lmoms, emoms], c];
 
 (* -(p1+...)^2 + c*(p1+...).x +/- m^2*)
 propToSFAD[{-(mom_ + re_ : 0)^2 + c_. (a_+ a1_:0) (b_+b1_:0), mass_}, lmoms_List, emoms_List] :=
 	FeynAmpDenominator[StandardPropagatorDenominator[I Momentum[mom + re, optDimension], c Pair[Momentum[a+a1, optDimension], Momentum[b+b1, optDimension]], mass, {1, optEtaSign}]] /;
-	FCSubsetQ[Join[lmoms, emoms], {a,b,mom}] && !MemberQ[Join[lmoms, emoms], c];
+	SubsetQ[Join[lmoms, emoms], {a,b,mom}] && !MemberQ[Join[lmoms, emoms], c];
 
 
 

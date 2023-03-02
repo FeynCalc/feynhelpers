@@ -401,7 +401,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 
 		FCPrint[2,"PSDCreatePythonScripts: Scalar products specified via down values: ", spDownValuesLhs, FCDoControl->psdpVerbose];
 
-		If[	!FCSubsetQ[$ScalarProducts, Union[spDownValuesLhs /. Hold[Pair | CartesianPair] ->  List /. (h : Momentum | CartesianMomentum)[xx_, ___] :> h[xx]]],
+		If[	!SubsetQ[$ScalarProducts, Union[spDownValuesLhs /. Hold[Pair | CartesianPair] ->  List /. (h : Momentum | CartesianMomentum)[xx_, ___] :> h[xx]]],
 			Message[PSDCreatePythonScripts::failmsg, "Missing some scalar products specified via down values."];
 			Abort[]
 		];
@@ -478,7 +478,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 
 		(*TODO Could also set all variables to 1 if the user didn't bother to specify them...*)
 
-		If[	!FCSubsetQ[Union[realParameters,complexParameters],vars],
+		If[	!SubsetQ[Union[realParameters,complexParameters],vars],
 				Message[PSDCreatePythonScripts::failmsg, "The integral depends on variables that are not specified via the PSDRealParameterRules or PSDComplexParameterRules options."];
 				FCPrint[0,"PSDCreatePythonScripts: Unspecified variables: ", Complement[vars, Union[realParameters, complexParameters]], FCDoControl->psdpVerbose];
 				Abort[];
