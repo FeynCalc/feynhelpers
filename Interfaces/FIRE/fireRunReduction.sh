@@ -16,4 +16,9 @@ then
 fi
 
 cd "$topoDir";
+
+echo "fireRunReduction.sh: Working directory $(pwd)"
+echo "fireRunReduction.sh: Start file $configFile"
+echo "fireRunReduction.sh: FIRE binary $fireBinary"
+
 "$fireBinary" -c "$configFile"

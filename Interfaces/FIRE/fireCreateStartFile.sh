@@ -16,4 +16,9 @@ then
 fi
 
 cd "$topoDir";
+
+echo "fireCreateStartFile.sh: Working directory $(pwd)"
+echo "fireCreateStartFile.sh: Start file $startFile"
+echo "fireCreateStartFile.sh: Mathematica binary $mathBinary"
+
 "$mathBinary" -noprompt -script "$startFile"
