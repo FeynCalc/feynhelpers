@@ -15,10 +15,16 @@ then
     exit 1
 fi
 
+if [ ! -f "$topoDir"/"$configFile".config ] 
+then
+    echo "Config file $topoDir/$configFile.config does not exist." 
+    exit 1
+fi
+
 cd "$topoDir";
 
-echo "fireRunReduction.sh: Working directory $(pwd)"
-echo "fireRunReduction.sh: Start file $configFile"
-echo "fireRunReduction.sh: FIRE binary $fireBinary"
+echo "fireRunReduction.sh: Working directory: $(pwd)"
+echo "fireRunReduction.sh: Config file: $configFile"
+echo "fireRunReduction.sh: FIRE binary: $fireBinary"
 
 "$fireBinary" -c "$configFile"

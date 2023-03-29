@@ -15,10 +15,16 @@ then
     exit 1
 fi
 
+if [ ! -f "$topoDir"/"$startFile" ] 
+then
+    echo "Start file $topoDir/$startFile does not exist." 
+    exit 1
+fi
+
 cd "$topoDir";
 
-echo "fireCreateStartFile.sh: Working directory $(pwd)"
-echo "fireCreateStartFile.sh: Start file $startFile"
-echo "fireCreateStartFile.sh: Mathematica binary $mathBinary"
+echo "fireCreateStartFile.sh: Working directory: $(pwd)"
+echo "fireCreateStartFile.sh: Start file: $startFile"
+echo "fireCreateStartFile.sh: Mathematica binary: $mathBinary"
 
-"$mathBinary" -noprompt -script "$startFile"
+"$mathBinary" -noprompt -script "$topoDir"/"$startFile"
