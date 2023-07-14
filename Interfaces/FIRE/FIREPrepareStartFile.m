@@ -77,8 +77,8 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 		FCPrint[3,"FIREPrepareStartFile: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
 
 		If[	OptionValue[FCI],
-			topo = topoRaw,
-			topo = FCI[topoRaw]
+			topo = FRH[topoRaw],
+			topo = FCI[FRH[topoRaw]]
 		];
 
 		If[	!FCLoopValidTopologyQ[topo],
