@@ -27,6 +27,11 @@ $FeynHelpersLoadInterfaces::usage=
 "$FeynHelpersLoadIntefaces is a debugging switch that can be used to disable
 the loading of particular interfaces contained in FeynHelpers.";
 
+$FeynHelpersLastCommitDateHash::usage=
+"The setting of $FeynHelpersLastCommitDateHash provides the date and the hash
+of the last commit in the branch from which the current FeynHelpers version
+originates.";
+
 Begin["`Package`"]
 
 
@@ -176,7 +181,7 @@ FeynCalc`FeynHelpersHowToCite[]:=
 	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIRE",ButtonData :> {URL["https://bitbucket.org/feynmanIntegrals/fire/"], None},BaseStyle -> "Hyperlink",
 		ButtonNote -> "https://bitbucket.org/feynmanIntegrals/fire/"],"Text"], Style[" by A. Smirnov, if you are using functions that begin with FIRE.","Text"]];
 
-	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Kira",ButtonData :> {URL["https://kira.hepforge.org/"], None},BaseStyle -> "Hyperlink",
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Kira",ButtonData :> {URL["https://gitlab.com/kira-pyred/kira"], None},BaseStyle -> "Hyperlink",
 		ButtonNote -> "https://gitlab.com/kira-pyred/kira"],"Text"], Style[" by the Kira collaboration, if you are using functions that begin with Kira.","Text"]];
 
 	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Package-X",ButtonData :> {URL["https://packagex.hepforge.org"], None},BaseStyle -> "Hyperlink",
@@ -204,6 +209,9 @@ If[ !ValueQ[FeynHelpers`Package`paxLoaded],
 If[ !ValueQ[FeynHelpers`Package`paxLoaded],
 	FeynHelpers`Package`paxLoaded = False
 ];
+
+FeynCalc`Private`AddToTheWhiteListedContextAdditions={"AlphaRepExpand", "AsySigns","Executable","GenericPowers","PreResolve","QHull"};
+
 
 End[]
 
