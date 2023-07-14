@@ -176,6 +176,7 @@ Options[PSDCreatePythonScripts] = {
 	FCReplaceD								-> {D->4-2 Epsilon},
 	FCVerbose								-> False,
 	FinalSubstitutions						-> {},
+	N										-> MachinePrecision,
 	Names 									-> "x",
 	OverwriteTarget							-> False,
 	PSDAdditionalPrefactor					-> Default,
@@ -250,7 +251,7 @@ PSDCreatePythonScripts[gli_GLI, topo_FCTopology, path_String, opts:OptionsPatter
 		If[	OptionValue[FCI],
 			optFinalSubstitutions = Join[topo[[5]], OptionValue[FinalSubstitutions]],
 			{optFinalSubstitutions, optPSDRealParameterRules, optPSDComplexParameterRules} =
-				FRH[FCI[{Join[SelectFree[topo[[5]],{Polarization,TemporalMomentum}], OptionValue[FinalSubstitutions]], optPSDRealParameterRules, optPSDComplexParameterRules}]]
+				FCI[FRH[{Join[SelectFree[topo[[5]],{Polarization,TemporalMomentum}], OptionValue[FinalSubstitutions]], optPSDRealParameterRules, optPSDComplexParameterRules}]]
 		];
 
 		PSDCreatePythonScripts[int, topo[[3]], FileNameJoin[{path,ToString[FCLoopGLIToSymbol[gli]]}], Join[{FCI->True,FinalSubstitutions->optFinalSubstitutions,
@@ -310,7 +311,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 			Abort[];
 		];
 
-		If[	!(MatchQ[optPSDRequestedOrder, _Integer?Positive | 0]),
+		If[	!(MatchQ[optPSDRequestedOrder, _Integer]),
 			Message[PSDCreatePythonScripts::failmsg, "Incorrect value of the PSDRequestedOrder option."];
 			Abort[];
 		];
@@ -353,6 +354,8 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 			];
 		];
 
+
+		optFinalSubstitutions = FRH[optFinalSubstitutions];
 
 		If[	!OptionValue[FCI],
 			{ex, optFinalSubstitutions, optPSDRealParameterRules, optPSDComplexParameterRules} =
@@ -448,8 +451,8 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		If[	optPSDRealParameterRules=!={},
 			(*Removing irrelevant parameters*)
 			optPSDRealParameterRules = SelectNotFree[optPSDRealParameterRules,vars];
-
-			{realParameters, realParameterValues} = Transpose[List@@@optPSDRealParameterRules];
+			(*TODO*)
+			{realParameters, realParameterValues} = N[Transpose[List@@@optPSDRealParameterRules],OptionValue[N]];
 			FCPrint[1,"PSDCreatePythonScripts: realParameterValues:  ", realParameterValues, FCDoControl->psdpVerbose];
 			If[	!MatchQ[realParameterValues,{__?NumberQ}],
 				Message[PSDCreatePythonScripts::failmsg, "Failed to generate the list of numerical values for the real parameters."];
@@ -463,7 +466,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 			(*Removing irrelevant parameters*)
 			optPSDComplexParameterRules = SelectNotFree[optPSDComplexParameterRules,vars];
 
-			{complexParameters, complexParameterValues} = Transpose[List@@@optPSDComplexParameterRules];
+			{complexParameters, complexParameterValues} = N[Transpose[List@@@optPSDComplexParameterRules],OptionValue[N]];
 			FCPrint[1,"PSDCreatePythonScripts: complexParameterValues:  ", complexParameterValues, FCDoControl->psdpVerbose];
 			If[	!MatchQ[complexParameterValues,{__?NumberQ}],
 				Message[PSDCreatePythonScripts::failmsg, "Failed to generate the list of numerical values for the complex parameters."];
