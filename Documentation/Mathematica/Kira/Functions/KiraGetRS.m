@@ -31,6 +31,10 @@
 (*[Overview](Extra/FeynHelpers.md), [KiraLabelSector](KiraLabelSector.md), [KiraCreateJobFile](KiraCreateJobFile.md).*)
 
 
+(* ::Subsection:: *)
+(*Examples*)
+
+
 KiraGetRS[{GLI[topo1,{1,1,1,1}],GLI[topo1,{2,1,2,1}],
 GLI[topo2,{1,0,1,1}],GLI[topo3,{1,0,1,-1}]}]
 

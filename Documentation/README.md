@@ -40,6 +40,18 @@ All the following commands should be run from Documentation/Scripts inside the *
 * To build the TeX documentation use
 
     ```
-    cd /media/Data/Projects/VS/feynhelpers-manual/
-    latexmk -pdf FeynHelpersManual.tex
+    latexmk -cd /media/Data/Projects/VS/feynhelpers-manual/FeynHelpersManual.tex -pdf
+    ```
+
+    Notice that when there are new figures (svg files), one would need to run
+
+    ```
+    export DOCU_SOURCE_DIR="/media/Data/Projects/VS/FeynCalc/FeynCalc/AddOns/FeynHelpers/Documentation"; ./svgToPdf.sh /media/Data/Projects/VS/fenyhelpers-manual/img/
+    cp -n $DOCU_SOURCE_DIR/Markdown/img/*.pdf /media/Data/Projects/VS/feynhelpers-manual/img/
+    ```
+
+* To check Markdown files using mdl (`gem install mdl`, cf. [GitHub repo](https://github.com/markdownlint/markdownlint))
+
+    ```
+    mdl -r ~MD009,~MD013,~MD002,~MD010,~MD047,~MD024 /media/Data/Projects/VS/FeynCalc/FeynCalc/AddOns/FeynHelpers/Documentation/Markdown
     ```

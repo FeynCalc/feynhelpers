@@ -8,7 +8,7 @@
 
 
 (* ::Text:: *)
-(*`PaXpvD` corresponds to the `PVD ` function in Package-X.*)
+(*`PaXpvD` corresponds to the `PVD` function in Package-X.*)
 
 
 (* ::Subsection:: *)

@@ -1,3 +1,5 @@
+![0eugcbgadj6yz](img/0eugcbgadj6yz.svg)
+
 ```mathematica
  
 ```
@@ -15,6 +17,8 @@ If the option `Top` is set to `True`, and the input is a list of the form `{{sec
 ### See also
 
 [Overview](Extra/FeynHelpers.md), [KiraLabelSector](KiraLabelSector.md), [KiraCreateJobFile](KiraCreateJobFile.md).
+
+### Examples
 
 ```mathematica
 KiraGetRS[{GLI[topo1, {1, 1, 1, 1}], GLI[topo1, {2, 1, 2, 1}], 

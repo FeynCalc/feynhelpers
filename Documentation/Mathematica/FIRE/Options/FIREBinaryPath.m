@@ -9,7 +9,6 @@
 
 (* ::Text:: *)
 (*`FIREBinaryPath` is an option for `FIRERunReduction`. It specifies the full path to the C++ FIRE binary.*)
-(**)
 
 
 (* ::Text:: *)

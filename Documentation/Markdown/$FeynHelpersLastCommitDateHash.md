@@ -1,0 +1,15 @@
+![0fr2yhbgg9nsx](img/0fr2yhbgg9nsx.svg)
+
+```mathematica
+ 
+```
+
+## $FeynHelpersLastCommitDateHash
+
+The setting of `$FeynHelpersLastCommitDateHash` provides the date and the hash of the last commit in the branch from which the current FeynHelpers version originates.
+
+### See also
+
+[Overview](Extra/FeynHelpers.md)
+
+### Examples

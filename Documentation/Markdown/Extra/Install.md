@@ -19,7 +19,6 @@ a particular tools please contact the corresponding developer team.*
 
 Run the following instruction in a Kernel or Notebook session of Mathematica to install the stable version
 
-
 ```
 Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
 InstallFeynHelpers[]
@@ -31,7 +30,6 @@ If you like the bleeding edge and you are already using the development version 
 Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
 InstallFeynHelpers[InstallFeynHelpersDevelopmentVersion->True]
 ```
-
 
 #### Manual installation
 
@@ -83,7 +81,6 @@ The instructions for compiling FIRE from source on macOS can be found [here](htt
 #### Windows
 
 There is no native Windows port of FIRE. It should be possible to compile FIRE on WSL with an Ubuntu installation, but currently there is no support for that in FeynHelpers.
-
 
 ### Kira
 
@@ -143,9 +140,11 @@ You can download the source code of QGRAF from the [developer's website](http://
 
 The compilation instructions can be found in the section "Compiling" of the manual `qgraf-3.x.y.pdf` inside the tarball. For example,
 on a Linux system equipped with a GNU Fortran compiler something like
+
 ```
 gfortran qgraf-3.6.3.f08 -o qgraf
 ```
+
 should do the job. Having compiled the program you need to move the binary file `qgraf` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "QGRAF", "Binary"}]`.
 
 #### Windows
@@ -168,7 +167,3 @@ Finally, open `MiniGW-W64 project` -> `Open Terminal` via the start menu. Go to 
 Run `qgraf.exe` to make sure that it works properly.
 
 Finally, move `qgraf.exe` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "QGRAF", "Binary"}]`.
-
-
-
-

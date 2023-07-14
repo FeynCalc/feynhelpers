@@ -24,7 +24,7 @@
 
 
 (* ::Text:: *)
-(*Notice that the variables passed to pySecDec must be atomic i.e. you can use `qq`, `m`, `m2`, `M` etc. but not  something like `Pair[Momentum[q],Momentum[q]]`, `mass[2]`, or` sp["p.q"]`. This means that you need to replace scalar products of external momenta that appear in your integrals with some simple symbols. If this has not been done on the level of replacement rules attached to your `FCTopology` objects (5th argument), you can still use the option `FinalSubstitutions`.*)
+(*Notice that the variables passed to pySecDec must be atomic i.e. you can use `qq`, `m`, `m2`, `M` etc. but not  something like `Pair[Momentum[q],Momentum[q]]`, `mass[2]`, or `sp["p.q"]`. This means that you need to replace scalar products of external momenta that appear in your integrals with some simple symbols. If this has not been done on the level of replacement rules attached to your `FCTopology` objects (5th argument), you can still use the option `FinalSubstitutions`.*)
 
 
 (* ::Text:: *)

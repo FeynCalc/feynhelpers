@@ -1,3 +1,9 @@
+![0uw74idqq2ilw](img/0uw74idqq2ilw.svg)
+
+```mathematica
+ 
+```
+
 ## PSDCreatePythonScripts
 
 `PSDCreatePythonScripts[int, topo, path]` creates a set of Python scripts needed for the evaluation of the integral `int` (in the `GLI` representation) belonging to the topology `topo`. The files are saved to the directory `path/topoNameXindices`. The function returns a list of two strings that point to the generation and integration scripts for pySecDec.
@@ -8,7 +14,7 @@ Another way to invoke the function would be `PSDCreatePythonScripts[{int1, int2,
 
 Unless you are computing a single scale integral with the scale variable set to unity, you must specify all external parameters (e.g. masses and scalar products of external momenta) and their numerical values via the corresponding options. For real-valued parameters use the option `PSDRealParameterRules` as `PSDRealParameterRules->{param1->val1, param2->val2, ...}`. For complex-valued parameters use `PSDComplexParameterRules`with the same syntax. The precise numerical values do not matter at the generation stage, one only has to distinguish between real- and complex-valued parameters. As far as the integration stage is concerned, you can easily change the numerical values when running the corresponding Python script. The values supplied via `PSDRealParameterRules` and `PSDComplexParameterRules` will be the default, though.
 
-Notice that the variables passed to pySecDec must be atomic i.e. you can use `qq`, `m`, `m2`, `M` etc. but not  something like `Pair[Momentum[q],Momentum[q]]`, `mass[2]`, or` sp["p.q"]`. This means that you need to replace scalar products of external momenta that appear in your integrals with some simple symbols. If this has not been done on the level of replacement rules attached to your `FCTopology` objects (5th argument), you can still use the option `FinalSubstitutions`.
+Notice that the variables passed to pySecDec must be atomic i.e. you can use `qq`, `m`, `m2`, `M` etc. but not  something like `Pair[Momentum[q],Momentum[q]]`, `mass[2]`, or `sp["p.q"]`. This means that you need to replace scalar products of external momenta that appear in your integrals with some simple symbols. If this has not been done on the level of replacement rules attached to your `FCTopology` objects (5th argument), you can still use the option `FinalSubstitutions`.
 
 Another important option that you most likely would like to specify is `PSDRequestedOrder` which specifies the order in $\varepsilon$ up to which the integral should be evaluated.
 

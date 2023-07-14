@@ -7,8 +7,7 @@ symbolic systems of equations.
 A typical situation where one needs to solve such equations is the derivation
 of tensor decomposition formulas. To this aim FeynCalc's `Tdec` can directly
 use `FerSolve`, once FeynHelpers is loaded. One just needs to set
-the option `Solve` to `FerSolve`. 
-
+the option `Solve` to `FerSolve`.
 
 The following example calculates tensor reduction formula for a rank 6 integral
 with 2 loop momenta and two external momenta. The Fermat part requires only 40
