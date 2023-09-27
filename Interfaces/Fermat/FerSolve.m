@@ -38,14 +38,16 @@ fsVerbose::usage="";
 
 
 Options[FerSolve] = {
-	Check			-> True,
-	DeleteFile		-> True,
-	FCVerbose 		-> False,
-	FerInputFile	-> Automatic,
-	FerOutputFile	-> Automatic,
-	FerPath			-> Automatic,
-	FerScriptFile	-> Automatic,
-	Timing			-> True
+	Check				-> True,
+	DeleteFile			-> True,
+	FCVerbose 			-> False,
+	FerInputFile		-> Automatic,
+	FerOutputFile		-> Automatic,
+	FerPath				-> Automatic,
+	FerScriptFile		-> Automatic,
+	"SetPivotStrategy"	-> 0,
+	SparseArray			-> False,
+	Timing				-> True
 };
 
 FerSolve[eqs_List, vars_List, OptionsPattern[]]:=
@@ -82,20 +84,18 @@ FerSolve[eqs_List, vars_List, OptionsPattern[]]:=
 			Abort[]
 		];
 
-
-
 		FCPrint[1,"FerSolve: Entering.", FCDoControl->fsVerbose];
 		FCPrint[1,"FerSolve: Fermat input file: ", inFile, FCDoControl->fsVerbose];
 		FCPrint[1,"FerSolve: Fermat output file: ", outFile, FCDoControl->fsVerbose];
 		FCPrint[1,"FerSolve: Fermat scriptFile file: ", scriptFile, FCDoControl->fsVerbose];
 		FCPrint[3,"FerSolve: Entering with: ", {eqs,vars}, FCDoControl->fsVerbose];
-
 		FCPrint[1,"FerSolve: Constructing the augmented matrix.", FCDoControl->fsVerbose];
+
 		time=AbsoluteTime[];
 		{aPiece, bPiece} = CoefficientArrays[eqs, vars];
 		augMatrix = Transpose[Join[Transpose[bPiece], {aPiece}]];
-		FCPrint[1, "FerSolve: Done constructing the augmented matrix, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->fsVerbose];
 
+		FCPrint[1,"FerSolve: Done constructing the augmented matrix, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->fsVerbose];
 		FCPrint[3,"FerSolve: Augmented matrix: ", augMatrix, FCDoControl->fsVerbose];
 
 		If[!MatrixQ[augMatrix],
@@ -107,7 +107,7 @@ FerSolve[eqs_List, vars_List, OptionsPattern[]]:=
 		time=AbsoluteTime[];
 
 		res = FerRowReduce[augMatrix, FerInputFile->inFile, FerOutputFile->outFile, FerScriptFile->scriptFile, FCVerbose-> fsVerbose,
-			DeleteFile -> OptionValue[DeleteFile]];
+			DeleteFile -> OptionValue[DeleteFile], SparseArray -> OptionValue[SparseArray], "SetPivotStrategy"	-> OptionValue["SetPivotStrategy"]];
 
 		FCPrint[1, "FerSolve: RowReduce done, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->fsVerbose];
 

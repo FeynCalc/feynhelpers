@@ -28,7 +28,8 @@ Begin["`FerMatrixToFermatArray`Private`"]
 
 
 Options[FerMatrixToFermatArray] = {
-	Names-> Function[i, ToExpression["fv" <> ToString[i]]]
+	Names		->	Function[i, ToExpression["fv" <> ToString[i]]],
+	SparseArray	->	False
 };
 
 
@@ -68,7 +69,11 @@ FerMatrixToFermatArray[matRaw_?MatrixQ, varName_String, OptionsPattern[]] :=
 		str = ToString[Flatten[Transpose[mat]],InputForm];
 		strLen = Length[str];
 		str = "[" <> varName <> "]:=[[" <> StringTake[str, {2, strLen - 2}] <> "]];";
-		str = "Array " <> varName <> "[" <> sizeX <> "," <> sizeY <> "];\n" <> str;
+
+		If[	TrueQ[OptionValue[SparseArray]],
+			str = "Array " <> varName <> "[" <> sizeX <> "," <> sizeY <> "] Sparse;\n" <> str,
+			str = "Array " <> varName <> "[" <> sizeX <> "," <> sizeY <> "];\n" <> str
+		];
 
 		{str,newVars,repRule}
 	];

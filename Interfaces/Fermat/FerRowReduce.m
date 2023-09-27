@@ -37,13 +37,15 @@ Begin["`FerRowReduce`Private`"]
 frrVerbose::usage="";
 
 Options[FerRowReduce] = {
-	DeleteFile		-> True,
-	FCVerbose 		-> False,
-	FerInputFile	-> Automatic,
-	FerOutputFile	-> Automatic,
-	FerPath			-> Automatic,
-	FerScriptFile	-> Automatic,
-	Timing			-> True
+	DeleteFile			-> True,
+	FCVerbose 			-> False,
+	FerInputFile		-> Automatic,
+	FerOutputFile		-> Automatic,
+	FerPath				-> Automatic,
+	FerScriptFile		-> Automatic,
+	"SetPivotStrategy"	-> 0,
+	SparseArray			-> False,
+	Timing				-> True
 };
 
 
@@ -74,12 +76,14 @@ FerRowReduce[matRaw_?MatrixQ, OptionsPattern[]]:=
 			optFerScriptFile = CreateTemporary[];
 		];
 
-		{mat,vars,rule} = FerMatrixToFermatArray[matRaw,"fMat"];
+		{mat, vars, rule} = FerMatrixToFermatArray[matRaw,"fMat", SparseArray -> OptionValue[SparseArray]];
 
 		cmds = {
 			Sequence@@(
 			FerCommand["AdjoinPolynomialVariable", #]&/@vars),
 			FerCommand["ReadFromAnInputFile", optFerInputFile],
+			FerCommand["DisableProbabilisticPolynomailDivisionTest"],
+			FerCommand["SetPivotStrategy", OptionValue["SetPivotStrategy"]];
 			FerCommand["ReducedRowEchelonForm", "[fMat]"],
 			FerCommand["EnableUglyDisplay"],
 			FerCommand["SaveToAnOutputFile", optFerOutputFile],
@@ -117,7 +121,7 @@ FerRowReduce[matRaw_?MatrixQ, OptionsPattern[]]:=
 				DeleteFile[optFerScriptFile]
 			];
 
-			FCPrint[1, "FerRowReduce: Done removing temporary files timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->frrVerbose]
+			FCPrint[1, "FerRowReduce: Done removing temporary files.", FCDoControl->frrVerbose]
 		];
 
 		res

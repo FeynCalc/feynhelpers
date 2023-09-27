@@ -32,6 +32,12 @@ FerCommand["StopReadingFromTheInputFile"]:=
 FerCommand["EnableUglyDisplay"]:=
 	"&(U=1);";
 
+FerCommand["SetPivotStrategy", i_Integer?Positive]:=
+	"&(u="<>ToString[i]<>");";
+
+FerCommand["DisableProbabilisticPolynomailDivisionTest"]:=
+	"&_t;";
+
 FerCommand["ReadFromAnInputFile", inputFile_String]:=
 	"&(R='" <> inputFile <> "');";
 
