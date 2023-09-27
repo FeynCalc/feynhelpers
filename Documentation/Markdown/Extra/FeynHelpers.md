@@ -5,6 +5,9 @@ FeynHelpers is a collection of interfaces that allow you to use other HEP-relate
 - [How to cite this package and the related tools](Cite.md)
 - [Installation instructions](Install.md)
 - [Tensor reduction with Fermat](TensorReductionWithFermat.md)
+
+## Tutorials
+
 - [pySecDec usage examples](PSDUsageExamples.md) - a small tutorial on using the pySecDec interface
 
 ## Generic functions and symbols
