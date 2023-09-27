@@ -44,12 +44,14 @@ optComplex::usage="";
 
 
 Options[FIREPrepareStartFile] = {
+	Check				-> True,
 	DateString			-> False,
 	FCI					-> False,
 	FCVerbose			-> False,
 	FIREPath 			-> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE6", "FIRE6.m"}],
 	OverwriteTarget		-> True,
-	SetDimensions		-> {3, 4, D, D-1}
+	SetDimensions		-> {3, 4, D, D-1},
+	StringReplace		-> {}
 };
 
 FIREPrepareStartFile[topos: {__FCTopology}, dir_String, opts:OptionsPattern[]] :=
@@ -61,7 +63,7 @@ FIREPrepareStartFile[topos: {__FCTopology}, dirs: {__String}, opts:OptionsPatter
 FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 	Block[{	topo, optNames, newNames, res, dims, internal, external, propagators, dir,
 			replacements, file, filePath, optOverwriteTarget, status, optFIREPath, topoName,
-			check},
+			check, time, optStringReplace, startFileString},
 
 		If[	OptionValue[FCVerbose]===False,
 			fpsfVerbose=$VeryVerbose,
@@ -70,8 +72,9 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 			];
 		];
 
-		optOverwriteTarget = OptionValue[OverwriteTarget];
-		optFIREPath	= OptionValue[FIREPath];
+		optOverwriteTarget	= OptionValue[OverwriteTarget];
+		optFIREPath			= OptionValue[FIREPath];
+		optStringReplace	= OptionValue[StringReplace];
 
 		FCPrint[1,"FIREPrepareStartFile: Entering.", FCDoControl->fpsfVerbose];
 		FCPrint[3,"FIREPrepareStartFile: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
@@ -81,24 +84,31 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 			topo = FCI[FRH[topoRaw]]
 		];
 
-		If[	!FCLoopValidTopologyQ[topo],
-			Message[FIREPrepareStartFile::failmsg, "The given topology is incorrect."];
-			Abort[]
-		];
+		If[ OptionValue[Check],
+			FCPrint[1, "FIREPrepareStartFile: Checking the correctness of topologies.", FCDoControl->fpsfVerbose];
+			time=AbsoluteTime[];
 
-		If[	FCLoopBasisIncompleteQ[topo, FCI->True],
-			Message[FIREPrepareStartFile::failmsg, "Incomplete propagator basis."];
-			Abort[]
-		];
+			If[	!FCLoopValidTopologyQ[topo],
+				Message[FIREPrepareStartFile::failmsg, "The given topology is incorrect."];
+				Abort[]
+			];
 
-		If[	FCLoopBasisOverdeterminedQ[topo, FCI->True],
-			Message[FIREPrepareStartFile::failmsg, "Overdetermined propagator basis."];
-			Abort[]
-		];
+			If[	FCLoopBasisIncompleteQ[topo, FCI->True],
+				Message[FIREPrepareStartFile::failmsg, "Incomplete propagator basis."];
+				Abort[]
+			];
 
-		If[	FCLoopScalelessQ[topo, FCI->True],
-			Message[FIREPrepareStartFile::failmsg, "The given topology is scaleless so that all integrals from this family vanish."];
-			Abort[]
+			If[	FCLoopBasisOverdeterminedQ[topo, FCI->True],
+				Message[FIREPrepareStartFile::failmsg, "Overdetermined propagator basis."];
+				Abort[]
+			];
+
+			If[	FCLoopScalelessQ[topo, FCI->True],
+				Message[FIREPrepareStartFile::failmsg, "The given topology is scaleless so that all integrals from this family vanish."];
+				Abort[]
+			];
+
+			FCPrint[1, "FIREPrepareStartFile: Checks done, timing:", N[AbsoluteTime[] - time, 4],  FCDoControl->fpsfVerbose];
 		];
 
 		If[ TrueQ[FeynCalc`FCLoopBasis`Private`cartesianIntegralQ[topo[[2]]]],
@@ -115,7 +125,12 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 			Abort[]
 		];
 
+		FCPrint[1, "FIREPrepareStartFile: Applying FCLoopPropagatorsToTopology.", FCDoControl->fpsfVerbose];
+		time=AbsoluteTime[];
+
 		propagators = FCLoopPropagatorsToTopology[topo,FCI->True,ExpandScalarProduct->True];
+
+		FCPrint[1, "FIREPrepareStartFile: FCLoopPropagatorsToTopology done, timing:", N[AbsoluteTime[] - time, 4],  FCDoControl->fpsfVerbose];
 
 		FCPrint[3,"FIREPrepareStartFile: Output of FCLoopPropagatorsToTopology: ", propagators, FCDoControl->fpsfVerbose];
 
@@ -194,25 +209,38 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 			Message[FIREPrepareStartFile::failmsg, "Failed to open ", filePath, " for writing."];
 			Abort[]
 		];
-		If[	OptionValue[DateString],
-			WriteString[file, "(* Generated on "<> DateString[] <>" *)\n\n"];
+
+		startFileString = {
+			If[	OptionValue[DateString],
+				WriteString[file, "(* Generated on "<> DateString[] <>" *)\n\n"],
+				""
+			],
+			"Get["<> ToString[optFIREPath,InputForm]  <>"];\n",
+			"\n\n",
+			"If[$FrontEnd===Null,\n",
+			"  projectDirectory=DirectoryName[$InputFileName],\n",
+			"  projectDirectory=NotebookDirectory[]\n",
+			"];\n",
+			"SetDirectory[projectDirectory];\n",
+			"Print[\"Working directory: \", projectDirectory];\n",
+			"\n\n",
+			"Internal=" <> ToString[internal,InputForm] <> ";\n",
+			"External=" <> ToString[external,InputForm] <> ";\n",
+			"Propagators=" <> ToString[propagators,InputForm] <> ";\n",
+			"Replacements=" <> ToString[replacements,InputForm] <> ";\n",
+			"PrepareIBP[];\n",
+			"Prepare[AutoDetectRestrictions -> True];\n",
+			"SaveStart["<> ToString[topoName,InputForm]  <>"];\n"
+		};
+
+		If[	optStringReplace=!={},
+			startFileString = StringReplace[startFileString,optStringReplace]
 		];
-		WriteString[file, "Get["<> ToString[optFIREPath,InputForm]  <>"];\n"];
-		WriteString[file, "\n\n"];
-		WriteString[file, "If[$FrontEnd===Null,\n"];
-		WriteString[file, "  projectDirectory=DirectoryName[$InputFileName],\n"];
-		WriteString[file, "  projectDirectory=NotebookDirectory[]\n"];
-		WriteString[file, "];\n"];
-		WriteString[file, "SetDirectory[projectDirectory];\n"];
-		WriteString[file, "Print[\"Working directory: \", projectDirectory];\n"];
-		WriteString[file, "\n\n"];
-		WriteString[file, "Internal=" <> ToString[internal,InputForm] <> ";\n"];
-		WriteString[file, "External=" <> ToString[external,InputForm] <> ";\n"];
-		WriteString[file, "Propagators=" <> ToString[propagators,InputForm] <> ";\n"];
-		WriteString[file, "Replacements=" <> ToString[replacements,InputForm] <> ";\n"];
-		WriteString[file, "PrepareIBP[];\n"];
-		WriteString[file, "Prepare[AutoDetectRestrictions -> True];\n"];
-		WriteString[file, "SaveStart["<> ToString[topoName,InputForm]  <>"];\n"];
+
+		startFileString = StringJoin[startFileString];
+
+		WriteString[file, startFileString];
+
 		Close[file];
 
 		filePath

@@ -52,6 +52,7 @@ Begin["`FIRECreateIntegralFile`Private`"]
 fpsfVerbose::usage="";
 
 Options[FIRECreateIntegralFile] = {
+	Check				-> True,
 	FCI					-> False,
 	FCVerbose			-> False,
 	FIREIntegrals		-> "LoopIntegrals.m",
@@ -97,9 +98,11 @@ FIRECreateIntegralFile[expr_, topoRaw_FCTopology, idRaw_, dirRaw_String, Options
 			{ex, topo} = FCI[{expr, topoRaw}]
 		];
 
-		If[	!FCLoopValidTopologyQ[topo],
-			Message[FIRECreateIntegralFile::failmsg, "The supplied topology is incorrect."];
-			Abort[]
+		If[	OptionValue[Check],
+			If[	!FCLoopValidTopologyQ[topo],
+				Message[FIRECreateIntegralFile::failmsg, "The supplied topology is incorrect."];
+				Abort[]
+			];
 		];
 
 		Which[
@@ -145,8 +148,6 @@ FIRECreateIntegralFile[expr_, topoRaw_FCTopology, idRaw_, dirRaw_String, Options
 		gliList = Map[{id,#[[2]]}&,gliList];
 
 		FCPrint[3,"FIRECreateIntegralFile: Converted GLIs: ", gliList, FCDoControl->fpsfVerbose];
-
-
 
 		filePath = FileNameJoin[{dir, OptionValue[FIREIntegrals]}];
 

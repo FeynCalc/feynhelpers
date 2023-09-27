@@ -134,7 +134,8 @@ Options[FIRECreateConfigFile] = {
 	FIREPosPref			-> Default,
 	FIRESthreads		:> $ProcessorCount,
 	FIREThreads			:> $ProcessorCount,
-	OverwriteTarget		-> True
+	OverwriteTarget		-> True,
+	Variables			-> Automatic
 };
 
 
@@ -161,7 +162,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 			file, filePath, optOverwriteTarget, status, x, optFIREBucket,
 			optFIRECompressor, optFIREFthreads, optFIRELthreads,
 			optFIREPosPref, optFIRESthreads, optFIREThreads,
-			configString, optFIREIntegrals },
+			configString, optFIREIntegrals, optVariables},
 
 		If[	OptionValue[FCVerbose]===False,
 			fpsfVerbose=$VeryVerbose,
@@ -171,6 +172,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 		];
 
 		optOverwriteTarget 	= OptionValue[OverwriteTarget];
+		optVariables		= OptionValue[Variables];
 
 		optFIREBucket		= OptionValue[FIREBucket];
 		optFIRECompressor	= OptionValue[FIRECompressor];
@@ -245,7 +247,10 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 			Abort[]
 		];
 
-		vars = Join[{"d"},SelectFree[Variables2[FCFeynmanPrepare[topo, Names -> x, FCI->True][[2]]], x]];
+		If[	optVariables===Automatic,
+			vars = Join[{"d"},SelectFree[Variables2[FCFeynmanPrepare[topo, Names -> x, FCI->True, Check->False][[2]]], x]],
+			vars = Join[{"d"}, optVariables];
+		];
 
 		FCPrint[2,"FIRECreateConfigFile: Variables: ", vars, FCDoControl->fpsfVerbose];
 
@@ -338,6 +343,8 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 
 		WriteString[file, configString];
 		Close[file];
+
+		FCPrint[0,"FIRECreateConfigFile: Created .config file for ", topoName, FCDoControl->fpsfVerbose];
 
 
 		filePath
