@@ -491,10 +491,10 @@ PSDIntegrate[OptionsPattern[]] :=
 		FCPrint[1,"PSDIntegrate: Done parsing the options.", FCDoControl->psiVerbose];
 
 		optPSDRealParameterValues =
-			StringReplace[ToString[Map[ToString[#]&, optPSDRealParameterValues]], {"{" -> "[", "}" -> "]"}];
+			StringReplace[ToString[Map[ToString[#, InputForm]&, optPSDRealParameterValues]], {"{" -> "[", "}" -> "]"}];
 
 		optPSDComplexParameterValues =
-			StringReplace[ToString[Map[ToString[#]&, optPSDComplexParameterValues]], {"{" -> "[", "}" -> "]"}];
+			StringReplace[ToString[Map[ToString[#, InputForm]&, optPSDComplexParameterValues]], {"{" -> "[", "}" -> "]"}];
 
 		FCPrint[2,"PSDIntegrate: real_parameters: ", optPSDRealParameterValues, FCDoControl->psiVerbose];
 		FCPrint[2,"PSDIntegrate: complex_parameters: ", optPSDComplexParameterValues, FCDoControl->psiVerbose];
