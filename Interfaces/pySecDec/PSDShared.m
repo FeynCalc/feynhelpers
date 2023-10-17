@@ -18,8 +18,7 @@ End[]
 Begin["`PSDShared`Private`"]
 
 FeynCalc`Package`psdToString[x_]:=
-	StringReplace[ToString[x,InputForm], {"\"" -> "'"}];
-
+	StringReplace[ToString[x,InputForm], {"\"" -> "'", "*^" -> "*10^"}];
 
 End[]
 
