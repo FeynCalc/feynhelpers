@@ -249,12 +249,12 @@ PSDLoopPackage[name_String, loopIntegral_String, order_Integer, OptionsPattern[]
 			],
 
 			If[	optPSDFormWorkSpace=!=Default,
-					"form_work_space = " <> FeynCalc`Package`psdToString[optPSDFormWorkSpace],
+					"form_work_space = " <> ToString[FeynCalc`Package`psdToString[Rationalize[optPSDFormWorkSpace]],InputForm],
 					""
 			],
 
 			If[	optPSDFormMemoryUse=!=Default,
-					"form_memory_use = " <> FeynCalc`Package`psdToString[optPSDFormMemoryUse],
+					"form_memory_use = " <> FeynCalc`Package`psdToString[Rationalize[optPSDFormMemoryUse]],
 					""
 			],
 
