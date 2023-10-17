@@ -80,9 +80,12 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 		FCPrint[3,"FIREPrepareStartFile: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
 
 		If[	OptionValue[FCI],
-			topo = FRH[topoRaw],
-			topo = FCI[FRH[topoRaw]]
+			topo = topoRaw,
+			topo = FCI[topoRaw]
 		];
+
+		(* This is necessary to account for scalar products defined via downvalues *)
+		topo[[5]] = Map[Head[#][#[[1]],FRH[#[[2]]]]&, topo[[5]] ];
 
 		If[ OptionValue[Check],
 			FCPrint[1, "FIREPrepareStartFile: Checking the correctness of topologies.", FCDoControl->fpsfVerbose];
