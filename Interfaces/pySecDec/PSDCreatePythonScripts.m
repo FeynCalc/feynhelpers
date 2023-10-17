@@ -548,29 +548,30 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 
 		generateFileString = {
 			"#!/usr/bin/env python3",
-			"from pySecDec import sum_package, loop_package, loop_regions, LoopIntegralFromPropagators",
-			"import pySecDec as psd",
+			"if __name__ == \"__main__\":",
+			"    from pySecDec import sum_package, loop_package, loop_regions, LoopIntegralFromPropagators",
+			"    import pySecDec as psd",
 			"",
-			optPSDLoopIntegralName <>" = " <> loopIntegralFromPropagators,
+			"    " <> optPSDLoopIntegralName <>" = " <> Map[("    " <> #) &, StringJoin[StringRiffle[Map["    " <> # &, StringSplit[loopIntegralFromPropagators, "\n"]], "\n"]]],
 			"",
-			"import os,shutil",
-			"if os.path.isdir('"<>ToString[optPSDOutputDirectory] <> "'):",
+			"    import os,shutil",
+			"    if os.path.isdir('"<>ToString[optPSDOutputDirectory] <> "'):",
 			If[optPSDOverwritePackageDirectory,
-				"    shutil.rmtree('"<>ToString[optPSDOutputDirectory]<>"')" <> "\n",
-				"    if input('The directory loopint already exists, do you want to overwrite it (y/n)? ') in ['y','Y','j']:"
+				"        shutil.rmtree('"<>ToString[optPSDOutputDirectory]<>"')" <> "\n",
+				"        if input('The directory loopint already exists, do you want to overwrite it (y/n)? ') in ['y','Y','j']:"
 				<> "\n" <>
-				"        shutil.rmtree('"<>ToString[optPSDOutputDirectory]<>"')" <> "\n" <>
-				"    else:" <> "\n" <> "        exit(1)"
+				"            shutil.rmtree('"<>ToString[optPSDOutputDirectory]<>"')" <> "\n" <>
+				"        else:" <> "\n" <> "            exit(1)"
 			],
 			"",
 			If[	optPSDExpansionByRegionsParameter===None,
 				(*Normal mode*)
-				loopPackage,
+				StringJoin[StringRiffle[Map["    " <> # &, StringSplit[loopPackage, "\n"]], "\n"]],
 				(*Expansion by regions*)
 				Sequence@@{
-					"regions_generator_args = " <> loopRegions <> "\n",
+					"    regions_generator_args = " <> loopRegions <> "\n",
 					"",
-					sumPackage,
+					StringJoin[StringRiffle[Map["    " <> # &, StringSplit[sumPackage, "\n"]], "\n"]],
 					""
 				}
 			],
