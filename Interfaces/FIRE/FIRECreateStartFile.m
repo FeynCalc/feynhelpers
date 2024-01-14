@@ -154,11 +154,6 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 		output = out["StandardOutput"];
 		exitCode = out["ExitCode"];
 
-		If[	$VersionNumber < 10.,
-			Message[FIRECreateStartFile::failmsg, "Mathematica versions older than 10. are not supported."];
-			Abort[]
-		];
-
 		If[	optFIREShowOutput=!=False,
 			Print["Mathematica output:"];
 			Print[StringTrim[output]]
