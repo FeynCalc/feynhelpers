@@ -48,6 +48,14 @@ To customize the content of the .config file one can use following  options:
 - FIRESThreads (corresponds to #sthreads, default value $N_{CPU}$)
 - FIREThreads (corresponds to #threads, default value $N_{CPU}$)";
 
+
+FIREDatabase::usage=
+"FIREDatabase is an option for FIRECreateConfigFile and other functions of
+the FIRE interface.
+
+It specifies the #database parameter to be set in a FIRE .config-file. The
+default value is \"./\"";
+
 FIRECompressor::usage=
 "FIRECompressor is an option for FIRECreateConfigFile and other functions of
 the FIRE interface.
@@ -128,6 +136,7 @@ Options[FIRECreateConfigFile] = {
 	FCVerbose			-> False,
 	FIREBucket			-> 29,
 	FIRECompressor		-> "zstd",
+	FIREDatabase		-> Default,
 	FIREFthreads		:> 2*$ProcessorCount,
 	FIRELthreads		-> 4,
 	FIREIntegrals		-> "LoopIntegrals.m",
@@ -176,6 +185,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 
 		optFIREBucket		= OptionValue[FIREBucket];
 		optFIRECompressor	= OptionValue[FIRECompressor];
+		optFIREDatabase		= OptionValue[FIREDatabase];
 		optFIREFthreads		= OptionValue[FIREFthreads];
 		optFIRELthreads		= OptionValue[FIRELthreads];
 		optFIREPosPref		= OptionValue[FIREPosPref];
@@ -218,6 +228,11 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 
 		If[ !MatchQ[optFIRESthreads,_Integer?Positive] || optFIRESthreads==Default,
 			Message[FIRECreateConfigFile::failmsg, "Incorrect value of the FIRESthreads option."];
+			Abort[];
+		];
+
+		If[ !(StringQ[optFIREDatabase] || optFIREDatabase===Default),
+			Message[FIRECreateConfigFile::failmsg, "Incorrect value of the optFIREDatabase option."];
 			Abort[];
 		];
 
@@ -291,6 +306,10 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 		configString = {
 			If[	optFIRECompressor=!=Default,
 				"#compressor " <> optFIRECompressor,
+				""
+			],
+			If[	optFIREDatabase=!=Default,
+				"#database " <> optFIREDatabase,
 				""
 			],
 			If[	optFIREThreads=!=Default,
