@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2018-2023 Vladyslav Shtabovenko
+	Copyright (C) 2018-2024 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Runs QGRAF and generates the diagrams						*)

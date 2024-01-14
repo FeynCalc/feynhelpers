@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2022-2023 Vladyslav Shtabovenko
+	Copyright (C) 2022-2024 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Introduces KIRA labelling of sectors						*)

@@ -2,7 +2,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2023 Vladyslav Shtabovenko
+	Copyright (C) 2015-2024 Vladyslav Shtabovenko
 																			*)
 
 (* :Summary:    Test Suite for FeynHelpers via MUnit. Doesn't require
