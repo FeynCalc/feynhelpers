@@ -158,7 +158,7 @@ FIRECreateConfigFile[topos: {__FCTopology}, idRaw_List, dirs: {__String}, opts:O
 	MapThread[FIRECreateConfigFile[#1,#2,#3,opts]&,{topos,idRaw,dirs}];
 
 FIRECreateConfigFile[topos: {__FCTopology}, dirs: {__String}, opts:OptionsPattern[]] :=
-	MapThread[FIRECreateConfigFile[#1,4242,#3,opts]&,{topos,dirs}];
+	MapThread[FIRECreateConfigFile[#1,4242,#2,opts]&,{topos,dirs}];
 
 FIRECreateConfigFile[topos: {__FCTopology}, idRaw_List, dirs: {__String}, opts:OptionsPattern[]] :=
 	MapThread[FIRECreateConfigFile[#1,#2,#3,opts]&,{topos,idRaw,dirs}];
@@ -206,27 +206,27 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 			Abort[];
 		];
 
-		If[ !MatchQ[optFIREBucket,_Integer?Positive] || optFIREBucket==Default,
+		If[ !(MatchQ[optFIREBucket,_Integer?Positive] || optFIREBucket===Default),
 			Message[FIRECreateConfigFile::failmsg, "Incorrect value of the FIREBucket option."];
 			Abort[];
 		];
 
-		If[ !MatchQ[optFIREThreads,_Integer?Positive] || optFIREThreads==Default,
+		If[ !(MatchQ[optFIREThreads,_Integer?Positive] || optFIREThreads===Default),
 			Message[FIRECreateConfigFile::failmsg, "Incorrect value of the FIREThreads option."];
 			Abort[];
 		];
 
-		If[ !MatchQ[optFIREFthreads,_Integer?Positive] || optFIREFthreads==Default,
+		If[ !(MatchQ[optFIREFthreads,_Integer?Positive] || optFIREFthreads===Default),
 			Message[FIRECreateConfigFile::failmsg, "Incorrect value of the FIREFthreads option."];
 			Abort[];
 		];
 
-		If[ !MatchQ[optFIRELthreads,_Integer?Positive] || optFIRELthreads==Default,
+		If[ !(MatchQ[optFIRELthreads,_Integer?Positive] || optFIRELthreads===Default),
 			Message[FIRECreateConfigFile::failmsg, "Incorrect value of the FIRELthreads option."];
 			Abort[];
 		];
 
-		If[ !MatchQ[optFIRESthreads,_Integer?Positive] || optFIRESthreads==Default,
+		If[ !(MatchQ[optFIRESthreads,_Integer?Positive] || optFIRESthreads===Default),
 			Message[FIRECreateConfigFile::failmsg, "Incorrect value of the FIRESthreads option."];
 			Abort[];
 		];

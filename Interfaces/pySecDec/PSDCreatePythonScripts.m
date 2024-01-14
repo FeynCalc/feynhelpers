@@ -369,12 +369,12 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		FCPrint[1,"PSDCreatePythonScripts: Output directory: ", dir, FCDoControl->psdpVerbose];
 
 		If[	!(optPSDRealParameterRules==={} || MatchQ[optPSDRealParameterRules,{Rule[_,_?NumberQ]..}]),
-			Message[PSDCreatePythonScripts::failmsg, "Incorrect value of the optPSDRealParameterValues option."];
+			Message[PSDCreatePythonScripts::failmsg, "Incorrect value of the PSDRealParameterRules option."];
 			Abort[];
 		];
 
 		If[	!(optPSDComplexParameterRules==={} || MatchQ[optPSDComplexParameterRules,{Rule[_,_?NumberQ]..}]),
-			Message[PSDCreatePythonScripts::failmsg, "Incorrect value of the optPSDComplexParameterValues option."];
+			Message[PSDCreatePythonScripts::failmsg, "Incorrect value of the PSDComplexParameterRules option."];
 			Abort[];
 		];
 
