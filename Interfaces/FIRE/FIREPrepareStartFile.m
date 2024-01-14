@@ -184,14 +184,19 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 
 		FCPrint[1, "FIREPrepareStartFile: FCLoopPropagatorsToTopology done, timing:", N[AbsoluteTime[] - time, 4],  FCDoControl->fpsfVerbose];
 
-		FCPrint[3,"FIREPrepareStartFile: Output of FCLoopPropagatorsToTopology: ", propagators, FCDoControl->fpsfVerbose];
+		FCPrint[3, "FIREPrepareStartFile: Output of FCLoopPropagatorsToTopology: ", propagators, FCDoControl->fpsfVerbose];
 
+		(*	Warning, do not apply FRH to the kinematics, otherwise it will get messed up by the downvalues.	*)
 		{propagators, replacements} =  {propagators, topo[[5]]} /. {
-			Pair[Momentum[a_,___],Momentum[b_,___]] -> a b,
+			Hold[SPD][a_, b_] -> a b,
+			Hold[CSPD][a_, b_] -> a b,
+			Pair[Momentum[a_,d_:4],Momentum[b_,d_:4]] -> a b,
 			CartesianPair[CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b,
-			Hold[Pair][Momentum[a_,___],Momentum[b_,___]] -> a b,
+			Hold[Pair][Momentum[a_,d_:4],Momentum[b_,d_:4]] -> a b,
 			Hold[CartesianPair][CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b
 		};
+
+		replacements = Join[replacements,OptionValue[FinalSubstitutions]];
 
 		replacements = SelectFree[replacements,{TemporalMomentum,Polarization}];
 
