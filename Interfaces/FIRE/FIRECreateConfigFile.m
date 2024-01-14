@@ -141,6 +141,7 @@ Options[FIRECreateConfigFile] = {
 	FIRELthreads		-> 4,
 	FIREIntegrals		-> "LoopIntegrals.m",
 	FIREPosPref			-> Default,
+	FIREUseLiteRed		-> True,
 	FIRESthreads		:> $ProcessorCount,
 	FIREThreads			:> $ProcessorCount,
 	OverwriteTarget		-> True,
@@ -169,9 +170,9 @@ FIRECreateConfigFile[topoRaw_FCTopology, dirRaw_String, opts:OptionsPattern[]] :
 FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]] :=
 	Block[{	topo, optNames, newNames, res, vars, id, topoName, dir,
 			file, filePath, optOverwriteTarget, status, x, optFIREBucket,
-			optFIRECompressor, optFIREFthreads, optFIRELthreads,
-			optFIREPosPref, optFIRESthreads, optFIREThreads,
-			configString, optFIREIntegrals, optVariables},
+			optFIRECompressor, optFIREFthreads, optFIRELthreads, optFIREUseLiteRed,
+			optFIREPosPref, optFIRESthreads, optFIREThreads, optFIREProblemId,
+			configString, optFIREIntegrals, optVariables, optFIREDatabase},
 
 		If[	OptionValue[FCVerbose]===False,
 			fpsfVerbose=$VeryVerbose,
@@ -192,6 +193,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 		optFIRESthreads		= OptionValue[FIRESthreads];
 		optFIREThreads		= OptionValue[FIREThreads];
 		optFIREIntegrals	= OptionValue[FIREIntegrals];
+		optFIREUseLiteRed	= OptionValue[FIREUseLiteRed];
 
 		FCPrint[1,"FIRECreateConfigFile: Entering.", FCDoControl->fpsfVerbose];
 		FCPrint[3,"FIRECreateConfigFile: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
@@ -269,9 +271,29 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 
 		FCPrint[2,"FIRECreateConfigFile: Variables: ", vars, FCDoControl->fpsfVerbose];
 
+
+
+
 		topoName = ToString[topo[[1]]];
 		(*TODO: More freedom here*)
-		dir = FileNameJoin[{dirRaw,topoName}];
+
+		If[	!StringMatchQ[dirRaw, "*.config"],
+
+				dir = FileNameJoin[{dirRaw,topoName}];
+
+				If[	!DirectoryQ[dir],
+					status = CreateDirectory[dir];
+					If[	status===$Failed,
+						Message[FIRECreateConfigFile::failmsg, "Failed to create directory ", dir];
+						Abort[]
+					];
+				];
+
+				filePath = FileNameJoin[{dir,topoName<>".config"}],
+
+				filePath = dirRaw;
+
+		];
 
 		Which[
 			MatchQ[idRaw,_Integer?Positive],
@@ -290,15 +312,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 			Abort[]
 		];
 
-		If[	!DirectoryQ[dir],
-			status = CreateDirectory[dir];
-			If[	status===$Failed,
-				Message[FIRECreateConfigFile::failmsg, "Failed to create directory ", dir];
-				Abort[]
-			];
-		];
 
-		filePath = FileNameJoin[{dir,topoName<>".config"}];
 
 		FCPrint[3,"FIRECreateConfigFile: Config path: ", filePath, FCDoControl->fpsfVerbose];
 
@@ -335,7 +349,15 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 			],
 			"#start",
 			"#folder ./",
-			"#problem " <> ToString[id] <> " " <> ToString[topoName] <> ".start",
+
+			If[	optFIREUseLiteRed=!=False,
+				Unevaluated[Sequence[
+					"#problem " <> ToString[id] <> " " <> ToString[topoName] <> ".sbases",
+					"#lbases " <> ToString[topoName] <> ".lbases"
+					]],
+				"#problem " <> ToString[id] <> " " <> ToString[topoName] <> ".start"
+			],
+
 			If[	optFIREPosPref=!=Default,
 				"#pos_pref " <> ToString[optFIREPosPref],
 				""

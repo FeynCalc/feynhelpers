@@ -28,6 +28,41 @@ The default path to the FIRE package is FileNameJoin[{$UserBaseDirectory,
 \"Applications\", \"FIRE6\", \"FIRE6.m\"}]. It can be adjusted using the
 option FIREPath.";
 
+FIREAutoDetectRestrictions::usage =
+"FIREAutoDetectRestrictions is an option for FIREPrepareStartFile and other functions of
+the FIRE interface.
+
+It specifies the value of the FIREAutoDetectRestrictions option when running FIRE's Prepare command. The
+default value is True.";
+
+FIREParallel::usage =
+"FIREParallel is an option for FIREPrepareStartFile and other functions of
+the FIRE interface.
+
+It specifies whether the preparation of start or sbases files should be
+parallelized. The default value is 2 meaning that 2 parallel kernels will
+be used for this task.";
+
+FIRELI::usage =
+"FIRELI is an option for FIREPrepareStartFile and other functions of
+the FIRE interface.
+
+It specifies the value of the LI option when running FIRE's Prepare command. The
+default value is True.";
+
+FIREUseLiteRed::usage =
+"FIREUseLiteRed is an option for FIREPrepareStartFile and other functions of
+the FIRE interface.
+
+It specifies whether the reduction should be prepared using LiteRed. The
+default value is True";
+
+FIREProblemId::usage =
+"FIREProblemId is an option for FIREPrepareStartFile and other functions of
+the FIRE interface.
+
+It specifies the problem ID for the reduction. The default value is 4242.";
+
 FIREPrepareStartFile::failmsg =
 "Error! FIREPrepareStartFile has encountered a fatal problem and must abort the computation. \
 The problem reads: `1`"
@@ -44,14 +79,20 @@ optComplex::usage="";
 
 
 Options[FIREPrepareStartFile] = {
-	Check				-> True,
-	DateString			-> False,
-	FCI					-> False,
-	FCVerbose			-> False,
-	FIREPath 			-> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE6", "FIRE6.m"}],
-	OverwriteTarget		-> True,
-	SetDimensions		-> {3, 4, D, D-1},
-	StringReplace		-> {}
+	Check						-> True,
+	DateString					-> False,
+	FCI							-> False,
+	FCVerbose					-> False,
+	FinalSubstitutions			-> {},
+	FIREAutoDetectRestrictions	-> True,
+	FIRELI 						-> True,
+	FIREProblemId				-> 4242,
+	FIREParallel				-> 2,
+	FIREPath 					-> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE6", "FIRE6.m"}],
+	FIREUseLiteRed				-> True,
+	OverwriteTarget				-> True,
+	SetDimensions				-> {3, 4, D, D-1},
+	StringReplace				-> {}
 };
 
 FIREPrepareStartFile[topos: {__FCTopology}, dir_String, opts:OptionsPattern[]] :=
@@ -63,7 +104,10 @@ FIREPrepareStartFile[topos: {__FCTopology}, dirs: {__String}, opts:OptionsPatter
 FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 	Block[{	topo, optNames, newNames, res, dims, internal, external, propagators, dir,
 			replacements, file, filePath, optOverwriteTarget, status, optFIREPath, topoName,
-			check, time, optStringReplace, startFileString},
+			check, time, optStringReplace, startFileString, optFIREAutoDetectRestrictions,
+			optFIREParallel, optFIRELI, prepareOptionsString, optFIREUseLiteRed, filePathLR,
+			lrFileString, fileLR, optFIREProblemId, fileNameJoin, directoryName
+			},
 
 		If[	OptionValue[FCVerbose]===False,
 			fpsfVerbose=$VeryVerbose,
@@ -72,9 +116,14 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 			];
 		];
 
-		optOverwriteTarget	= OptionValue[OverwriteTarget];
-		optFIREPath			= OptionValue[FIREPath];
-		optStringReplace	= OptionValue[StringReplace];
+		optOverwriteTarget				= OptionValue[OverwriteTarget];
+		optFIREPath						= OptionValue[FIREPath];
+		optStringReplace				= OptionValue[StringReplace];
+		optFIREAutoDetectRestrictions	= OptionValue[FIREAutoDetectRestrictions];
+		optFIREParallel					= OptionValue[FIREParallel];
+		optFIRELI						= OptionValue[FIRELI];
+		optFIREUseLiteRed				= OptionValue[FIREUseLiteRed];
+		optFIREProblemId				= OptionValue[FIREProblemId];
 
 		FCPrint[1,"FIREPrepareStartFile: Entering.", FCDoControl->fpsfVerbose];
 		FCPrint[3,"FIREPrepareStartFile: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
@@ -200,6 +249,7 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 
 		filePath = FileNameJoin[{dir,"CreateStartFile.m"}];
 
+
 		FCPrint[3,"FIREPrepareStartFile: Script path: ", filePath, FCDoControl->fpsfVerbose];
 
 		If[	FileExistsQ[filePath] && !optOverwriteTarget,
@@ -212,6 +262,27 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 			Message[FIREPrepareStartFile::failmsg, "Failed to open ", filePath, " for writing."];
 			Abort[]
 		];
+
+
+		prepareOptionsString = {
+			If[	optFIREAutoDetectRestrictions=!=Default,
+					"AutoDetectRestrictions -> " <> ToString[optFIREAutoDetectRestrictions],
+					Unevaluated[Sequence[]]
+			],
+
+			If[	optFIREParallel=!=False,
+					"Parallel -> True",
+					Unevaluated[Sequence[]]
+			],
+
+			If[	optFIRELI=!=Default,
+					"LI -> " <> ToString[optFIRELI],
+					Unevaluated[Sequence[]]
+			]
+
+		};
+
+		prepareOptionsString = StringRiffle[prepareOptionsString,","];
 
 		startFileString = {
 			If[	OptionValue[DateString],
@@ -226,14 +297,29 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 			"];\n",
 			"SetDirectory[projectDirectory];\n",
 			"Print[\"Working directory: \", projectDirectory];\n",
-			"\n\n",
+			If[	optFIREParallel=!=False,
+					"LaunchKernels[" <> ToString[optFIREParallel] <> "];",
+					Unevaluated[Sequence[]]
+			],
+			"\n\n\n",
 			"Internal=" <> ToString[internal,InputForm] <> ";\n",
 			"External=" <> ToString[external,InputForm] <> ";\n",
 			"Propagators=" <> ToString[propagators,InputForm] <> ";\n",
 			"Replacements=" <> ToString[replacements,InputForm] <> ";\n",
 			"PrepareIBP[];\n",
-			"Prepare[AutoDetectRestrictions -> True];\n",
-			"SaveStart["<> ToString[topoName,InputForm]  <>"];\n"
+
+			"Quiet[Prepare["<> StringJoin[prepareOptionsString]  <>"], LaunchKernels::nodef];\n",
+
+			If[optFIREUseLiteRed,
+				Unevaluated[Sequence[
+					"TransformRules[FileNameJoin[{Directory[],\"LR\"}],\""<>ToString[topoName]<>".lbases\","<>ToString[optFIREProblemId]<>"];\n",
+					"SaveSBases[\""<>ToString[topoName]<>"\"];\n"
+				]],
+
+				"SaveStart["<> ToString[topoName,InputForm]  <>"];\n"
+			]
+
+
 		};
 
 		If[	optStringReplace=!={},
