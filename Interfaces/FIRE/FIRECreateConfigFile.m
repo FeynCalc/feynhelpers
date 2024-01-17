@@ -50,11 +50,11 @@ To customize the content of the .config file one can use following  options:
 
 
 FIREDatabase::usage=
-"FIREDatabase is an option for FIRECreateConfigFile and other functions of
-the FIRE interface.
+"FIREDatabase is an option for FIRECreateConfigFile and other functions of the
+FIRE interface.
 
 It specifies the #database parameter to be set in a FIRE .config-file. The
-default value is \"./\"";
+default value is ./.";
 
 FIRECompressor::usage=
 "FIRECompressor is an option for FIRECreateConfigFile and other functions of

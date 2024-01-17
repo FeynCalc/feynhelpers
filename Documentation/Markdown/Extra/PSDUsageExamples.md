@@ -6,9 +6,9 @@ The main high-level function of this interface is called `PSDCreatePythonScripts
 
 - the 1st argument is some `GLI`
 - the 2nd argument is the `FCTopology` to which this `GLI` belongs
-- the 3rd argument is where to put the directory with pySecDec. For quick tests one can simply use `NotebookDirectory[]`
+- the 3rd argument is where to put the directory with pySecDec scripts. For quick tests one can simply use `NotebookDirectory[]`
 - the option `PSDRequestedOrder` specifies the order in $\varepsilon$ to which the integral should be evaluated (default is `0`)
-- the option `PSDRealParameterRules` is a list of rules for replacing kinematica invariants with numerical values which are real numbers. For complex numbers you need to use `PSDComplexParameterRules`
+- the option `PSDRealParameterRules` is a list of rules for replacing kinematic invariants with numerical values which are real numbers. For complex numbers you need to use `PSDComplexParameterRules`
 - if the script directory already exists, the function will by default refuse to overwrite it. Setting the option `OverwriteTarget` to `True` you can tell the code that you do not care about that
 
 Here is a simple 1-loop example that incorporates all of the above
@@ -20,7 +20,7 @@ files = PSDCreatePythonScripts[int, topo, NotebookDirectory[],
   PSDRealParameterRules -> {qq -> 1., m1 -> 2., m2 -> 3.}, OverwriteTarget -> True]
 ```
 
-The output is a list containing two element which are full paths to the two pySecDec script files `generate_int.py` and `integrate_int.py`. You can now switch to the terminal, enter the corresponding directory and perform the integral evaluation by first running
+The output is a list containing two elements which are full paths to the two pySecDec script files `generate_int.py` and `integrate_int.py`. You can now switch to the terminal, enter the corresponding directory and perform the integral evaluation by first running
 
 ```
 python generate_int.py

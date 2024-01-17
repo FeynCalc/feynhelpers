@@ -12,18 +12,22 @@
 (* ------------------------------------------------------------------------ *)
 
 FIRECreateLiteRedFiles::usage=
-"FIRECreateLiteRedFiles[path] creates a FIRE .lbases file using the script
-CreateLiteRedFilse.m in path. To that aim a Mathematica kernel is started in the
-background via RunProcess. The function returns True if the evaluation
-succeeds and False otherwise.
+"FIRECreateLiteRedFiles[path] creates lbases  files (generated with LiteRed)
+using the script CreateLiteRedFiles.m in path. To that aim a Mathematica
+kernel is started in the background via RunProcess. The function returns True
+if the evaluation succeeds and False otherwise.
+
+Notice that lbases files must be created before generating sbases using
+FIRECreateStartFiles (or running the
+respective scripts directly) .
 
 Alternatively, one can use FIRECreateLiteRedFiles[path, topo] where topo is an
 FCTopology symbol and the full path is implied to be
-path/topoName/CreateLiteRedFiles.m.
+path/topoName/CreateStartFile.m.
 
 If you need to process a list of topologies, following syntaxes are possible
-FIRECreateLiteRedFiles[{path1,path2, ...}], FIRECreateLiteRedFiles[path, {topo1,
-topo2, ...}]
+FIRECreateLiteRedFiles[{path1,path2, ...}], FIRECreateLiteRedFiles[path,
+{topo1, topo2, ...}]
 
 The path to the Mathematica Kernel can be specified via
 FIREMathematicaKernelPath. The default value is Automatic.";

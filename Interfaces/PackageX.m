@@ -75,7 +75,7 @@ PaXpvC::usage=
 "PaXpvC corresponds to the PVC function in Package-X";
 
 PaXpvD::usage=
-"PaXpvD corresponds to the PVD  function in Package-X.";
+"PaXpvD corresponds to the PVD function in Package-X.";
 
 PaXEpsilonBar::usage =
 "PaXEpsilonBar corresponds to DimRegEpsilon in Package-X, i.e. 1/PaXEpsilonBar

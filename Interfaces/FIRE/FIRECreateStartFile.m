@@ -128,7 +128,7 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 		];
 
 		If[	!FileExistsQ[fireShellScriptPath],
-			Message[FIRERunReduction::failmsg, "Shell script for creating start files does not exist."];
+			Message[FIRECreateStartFile::failmsg, "Shell script for creating start files does not exist."];
 			Abort[]
 		];
 

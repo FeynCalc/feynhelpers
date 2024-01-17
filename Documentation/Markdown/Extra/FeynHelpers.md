@@ -43,12 +43,13 @@ FeynHelpers is a collection of interfaces that allow you to use other HEP-relate
 
 - [FIRECreateConfigFile](../FIRECreateConfigFile.md) - creates the FIRE .config file
 - [FIRECreateIntegralFile](../FIRECreateIntegralFile.md) - creates list of integrals that need to be reduced
+- [FIRECreateLiteRedFiles](../FIRECreateLiteRedFiles.md) - runs Mathematica scripts that creates the relevant lbases file
 - [FIRECreateStartFile](../FIRECreateStartFile.md) - runs Mathematica scripts that creates the relevant FIRE .start file
 - [FIREImportResults](../FIREImportResults.md) - converts reduction results from .table files to `GLI`s
 - [FIREPrepareStartFile](../FIREPrepareStartFile.md) - prepares a Mathematica script that generates the relevant FIRE .start file
 - [FIRERunReduction](../FIRERunReduction.md) - starts reduction using C++ FIRE from the current notebook
 - [FIREToFCTopology](../FIREToFCTopology.md) - converts the given FIRE topology to `FCTopology`
-- [FIREBinaryPath](../FIREBinaryPath.md), [FIREBucket](../FIREBucket.md), [FIRECompressor](../FIRECompressor.md), [FIREFthreads](../FIREFthreads.md), [FIREIntegrals](../FIREIntegrals.md), [FIRELthreads](../FIRELthreads.md), [FIREMathematicaKernelPath](../FIREMathematicaKernelPath.md), [FIREPosPref](../FIREPosPref.md), [FIREShowOutput](../FIREShowOutput.md), [FIRESthreads](../FIRESthreads.md), [FIREThreads](../FIREThreads.md) - options of functions related to the C++ FIRE interface
+- [FIREAutoDetectRestrictions](../FIREAutoDetectRestrictions.md), [FIREBinaryPath](../FIREBinaryPath.md), [FIREBucket](../FIREBucket.md), [FIRECompressor](../FIRECompressor.md), [FIREDatabase](../FIREDatabase.md), [FIREFthreads](../FIREFthreads.md), [FIREIntegrals](../FIREIntegrals.md), [FIRELI](../FIRELI.md),, [FIRELthreads](../FIRELthreads.md), [FIREMathematicaKernelPath](../FIREMathematicaKernelPath.md), [FIREParallel](../FIREParallel.md), [FIREProblemId](../FIREProblemId.md), [FIREPosPref](../FIREPosPref.md), [FIREShowOutput](../FIREShowOutput.md), [FIRESthreads](../FIRESthreads.md), [FIREThreads](../FIREThreads.md), [FIREUseLiteRed](../FIREUseLiteRed.md) - options of functions related to the C++ FIRE interface
 
 ## Mathematica FIRE interface
 

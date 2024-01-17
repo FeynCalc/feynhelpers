@@ -46,8 +46,8 @@ All the following commands should be run from Documentation/Scripts inside the *
     Notice that when there are new figures (svg files), one would need to run
 
     ```
-    export DOCU_SOURCE_DIR="/media/Data/Projects/VS/FeynCalc/FeynCalc/AddOns/FeynHelpers/Documentation"; ./svgToPdf.sh /media/Data/Projects/VS/fenyhelpers-manual/img/
-    cp -n $DOCU_SOURCE_DIR/Markdown/img/*.pdf /media/Data/Projects/VS/feynhelpers-manual/img/
+    export DOCU_SOURCE_DIR="/media/Data/Projects/VS/FeynCalc/FeynCalc/AddOns/FeynHelpers/Documentation"; ./svgToPdf.sh /media/Data/Projects/VS/feynhelpers-manual/img/
+    cp -n $DOCU_SOURCE_DIR/Markdown/img/*.pdf /media/Data/Projects/VS/feynhelpers-manual/img/    
     ```
 
 * To check Markdown files using mdl (`gem install mdl`, cf. [GitHub repo](https://github.com/markdownlint/markdownlint))

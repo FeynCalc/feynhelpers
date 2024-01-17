@@ -4,15 +4,15 @@
 
 
 (* ::Section:: *)
-(*FIREIntegrals*)
+(*FIREParallel*)
 
 
 (* ::Text:: *)
-(*`FIREIntegrals` is an option for `FIRECreateConfigFile` and other functions of the FIRE interface.*)
+(*`FIREParallel` is an option for `FIREPrepareStartFile` and other functions of the FIRE interface.*)
 
 
 (* ::Text:: *)
-(*It specifies the `#integrals` parameter to be set in a FIRE .config file. The default value is `"LoopIntegrals.m"`.*)
+(*It specifies whether the preparation of start or sbases files should be parallelized. The default value is 2 meaning that 2 parallel kernels will be used for this task.*)
 
 
 (* ::Subsection:: *)

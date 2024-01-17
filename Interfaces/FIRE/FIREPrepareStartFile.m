@@ -29,25 +29,27 @@ The default path to the FIRE package is FileNameJoin[{$UserBaseDirectory,
 option FIREPath.";
 
 FIREAutoDetectRestrictions::usage =
-"FIREAutoDetectRestrictions is an option for FIREPrepareStartFile and other functions of
-the FIRE interface.
+"FIREAutoDetectRestrictions is an option for FIREPrepareStartFile and other
+functions of the FIRE interface.
 
-It specifies the value of the FIREAutoDetectRestrictions option when running FIRE's Prepare command. The
+It specifies the value of the AutoDetectRestrictions option when running
+FIRE's Prepare command. The
 default value is True.";
 
 FIREParallel::usage =
-"FIREParallel is an option for FIREPrepareStartFile and other functions of
-the FIRE interface.
+"FIREParallel is an option for FIREPrepareStartFile and other functions of the
+FIRE interface.
 
 It specifies whether the preparation of start or sbases files should be
-parallelized. The default value is 2 meaning that 2 parallel kernels will
-be used for this task.";
+parallelized. The default value is 2 meaning that 2 parallel kernels will be
+used for this task.";
 
 FIRELI::usage =
-"FIRELI is an option for FIREPrepareStartFile and other functions of
-the FIRE interface.
+"FIRELI is an option for FIREPrepareStartFile and other functions of the FIRE
+interface.
 
-It specifies the value of the LI option when running FIRE's Prepare command. The
+It specifies the value of the LI option when running FIRE's Prepare command.
+The
 default value is True.";
 
 FIREUseLiteRed::usage =
@@ -55,11 +57,11 @@ FIREUseLiteRed::usage =
 the FIRE interface.
 
 It specifies whether the reduction should be prepared using LiteRed. The
-default value is True";
+default value is True.";
 
 FIREProblemId::usage =
-"FIREProblemId is an option for FIREPrepareStartFile and other functions of
-the FIRE interface.
+"FIREProblemId is an option for FIREPrepareStartFile and other functions of the
+FIRE interface.
 
 It specifies the problem ID for the reduction. The default value is 4242.";
 
