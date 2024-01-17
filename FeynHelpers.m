@@ -41,7 +41,7 @@ End[]
 Begin["`FeynHelpers`Private`"];
 
 If[ !ValueQ[FeynCalc`$FeynHelpersLoadInterfaces],
-	FeynCalc`$FeynHelpersLoadInterfaces = {"PackageX", "FIRE", "Kira", "Fermat", "QGRAF", "LoopTools", "pySecDec"}
+	FeynCalc`$FeynHelpersLoadInterfaces = {"PackageX", "FIRE", "Kira", "Fermat", "QGRAF", "LoopTools", "pySecDec", "FIESTA"}
 ];
 
 $FeynHelpersVersion="2.0.0";
@@ -113,6 +113,16 @@ If[	!FreeQ[$FeynHelpersLoadInterfaces,"pySecDec"],
 	Get/@load
 ];
 
+
+If[	!FreeQ[$FeynHelpersLoadInterfaces,"FIESTA"],
+	load = FileNameJoin[{$FeynHelpersDirectory,"Interfaces","FIESTA","FSAShared.m"}];
+	FCDeclareHeader[load];
+	Get[load];
+	load = FileNames[{"*.m"},FileNameJoin[{$FeynHelpersDirectory,"Interfaces","FIESTA"}]];
+	FCDeclareHeader/@load;
+	Get/@load
+];
+
 Remove["FeynCalc`load"];
 EndPackage[]
 
@@ -178,8 +188,11 @@ FeynCalc`FeynHelpersHowToCite[]:=
 	Print[Style["Furthermore, remember to cite the authors of the tools that you are calling from FeynHelpers, which are","Text"]];
 
 
-	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIRE",ButtonData :> {URL["https://bitbucket.org/feynmanIntegrals/fire/"], None},BaseStyle -> "Hyperlink",
-		ButtonNote -> "https://bitbucket.org/feynmanIntegrals/fire/"],"Text"], Style[" by A. Smirnov, if you are using functions that begin with FIRE.","Text"]];
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIRE",ButtonData :> {URL["https://gitlab.com/feynmanintegrals/fire"], None},BaseStyle -> "Hyperlink",
+		ButtonNote -> "https://gitlab.com/feynmanintegrals/fire"],"Text"], Style[" by A. Smirnov, if you are using functions that begin with FIRE.","Text"]];
+
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIESTA",ButtonData :> {URL["https://gitlab.com/feynmanintegrals/fiesta/"], None},BaseStyle -> "Hyperlink",
+		ButtonNote -> "https://gitlab.com/feynmanintegrals/fiesta/"],"Text"], Style[" by A. Smirnov, if you are using functions that begin with FSA.","Text"]];
 
 	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Kira",ButtonData :> {URL["https://gitlab.com/kira-pyred/kira"], None},BaseStyle -> "Hyperlink",
 		ButtonNote -> "https://gitlab.com/kira-pyred/kira"],"Text"], Style[" by the Kira collaboration, if you are using functions that begin with Kira.","Text"]];
@@ -197,7 +210,9 @@ FeynCalc`FeynHelpersHowToCite[]:=
 		ButtonNote -> "http://www.feynarts.de/looptools"],"Text"], Style[" by T. Hahn, if you are using functions that begin with LT.","Text"]];
 
 	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["pySecDec",ButtonData :> {URL["https://secdec.readthedocs.io/en/stable/"], None},BaseStyle -> "Hyperlink",
-		ButtonNote -> "https://secdec.readthedocs.io/en/stable/"],"Text"], Style[" by the SecDec collaboration, if you are using functions that begin with PSD.","Text"]]
+		ButtonNote -> "https://secdec.readthedocs.io/en/stable/"],"Text"], Style[" by the SecDec collaboration, if you are using functions that begin with PSD.","Text"]];
+
+
 
 	);
 

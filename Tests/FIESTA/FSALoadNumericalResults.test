@@ -1,0 +1,20 @@
+(* :Title: FSALoadNumericalResults.test										*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2021-2024 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for FSALoadNumericalResults	*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`FIESTA`FSALoadNumericalResults =
+({
+{"FSALoadNumericalResults-ID1",
+"FCCompareNumbers[Get[FileNameJoin[{$FeynHelpersDirectory, \"Tests\", \"FIESTA\",
+	\"Samples\",
+	\"numres_1._fiesta_FiestaScript_asyR2prop2Ltopo01013X11111N1X11111.m\"}]],
+-5.693982 - 1.644934/ep + ep*(-31.410943 + 2.*^-6*pm[13]) +
+ep^2*(-118.606125 + 0.000015*pm[14]), FCVerbose -> -1]", "0"}
+});
