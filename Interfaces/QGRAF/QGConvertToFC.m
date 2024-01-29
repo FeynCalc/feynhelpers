@@ -18,8 +18,12 @@ using the styling file feyncalc.sty into amplitudes suitable for further
 evaluation using FeynCalc.";
 
 QGConvertToFC::noins=
-"QGConvertToFC cannot find some of the required insertion rules `1`. Only the following rules are available `2`. Evaluation aborted."
+"QGConvertToFC cannot find some of the required insertion rules `1`. \
+Only the following rules are available `2`. Evaluation aborted."
 
+QGConvertToFC::fail=
+"QGConvertToFC has encountered an error and must abort the evaluation. The \
+error description reads: `1`";
 
 Begin["`Package`"]
 
@@ -28,12 +32,15 @@ End[]
 Begin["`QGConvertToFC`Private`"]
 
 
+qgcVerbose::usage="";
+
 Options[QGConvertToFC] = {
 	ChangeDimension 				-> False,
 	Contract 						-> False,
 	DiracChainJoin					-> False,
 	FinalSubstitutions				-> {},
 	Heads 							-> {QGVertex,QGPolarization,QGTruncatedPolarization,QGPropagator},
+	InitialSubstitutions			-> {},
 	List 							-> True,
 	LoopMomenta 					-> {},
 	LorentzIndexNames				-> {},
@@ -44,33 +51,47 @@ Options[QGConvertToFC] = {
 	SMP 							-> False,
 	SUNFIndexNames					-> {},
 	SUNIndexNames					-> {},
-	TransversePolarizationVectors	-> {}
+	TransversePolarizationVectors	-> {},
+	FCVerbose						-> False
 };
 
-QGConvertToFC[amps_String, opts:OptionsPattern[]]/; FileExistsQ[amps] :=
-	QGConvertToFC[Get[amps], opts];
+QGConvertToFC[{amps_String, (*dias*)_String}, opts:OptionsPattern[]] :=
+	QGConvertToFC[amps, opts];
 
-QGConvertToFC[diag_, opts:OptionsPattern[]] :=
-	QGConvertToFC[{diag}, opts]/; Head[diag]=!=List;
-
-QGConvertToFC[amps_List, OptionsPattern[]] :=
+QGConvertToFC[ampsPath_String, OptionsPattern[]] :=
 	Block[{ repRuleInsertions, optQGInsertionRule, optHeads,
 			ampsConverted, repRuleLorentzIndices, headsList, headsListEval,
 			repRulePolVectors,liNames,polVecs,dim, loopMoms, repRuleHeads,
 			sunNames, sunfNames, repRuleSUNIndices, repRuleSUNFIndices,
-			prefactor,liOld,sunOld,sunfOld, len, repRuleMomenta},
+			prefactor,liOld,sunOld,sunfOld, len, repRuleMomenta, time,
+			optInitialSubstitutions, amps},
 
+		optQGInsertionRule 		= OptionValue[QGInsertionRule];
+		optHeads				= OptionValue[Heads];
+		loopMoms				= OptionValue[LoopMomenta];
+		liNames					= OptionValue[LorentzIndexNames];
+		sunNames				= OptionValue[SUNIndexNames];
+		sunfNames				= OptionValue[SUNFIndexNames];
+		polVecs					= OptionValue[TransversePolarizationVectors];
+		dim						= OptionValue[ChangeDimension];
+		prefactor				= OptionValue[Prefactor];
+		optInitialSubstitutions = OptionValue[InitialSubstitutions];
 
+		If[	!FileExistsQ[ampsPath],
+			Message[QGConvertToFC::fail,"The amplitudes files does not exits!"]
+		];
 
-		optQGInsertionRule 	= 	OptionValue[QGInsertionRule];
-		optHeads			= 	OptionValue[Heads];
-		loopMoms			=	OptionValue[LoopMomenta];
-		liNames				=	OptionValue[LorentzIndexNames];
-		sunNames			=	OptionValue[SUNIndexNames];
-		sunfNames			=	OptionValue[SUNFIndexNames];
-		polVecs				=	OptionValue[TransversePolarizationVectors];
-		dim					=	OptionValue[ChangeDimension];
-		prefactor			=	OptionValue[Prefactor];
+		amps = Get[ampsPath];
+
+		If[	OptionValue[FCVerbose]===False,
+			qgcVerbose=$VeryVerbose,
+			If[	MatchQ[OptionValue[FCVerbose], _Integer],
+				qgcVerbose=OptionValue[FCVerbose]
+			];
+		];
+
+		FCPrint[1,"QGConvertToFC: Entering.", FCDoControl->qgcVerbose];
+		FCPrint[3,"QGConvertToFC: Entering with: ", amps, FCDoControl->qgcVerbose];
 
 		If[	!FreeQ[Head/@(QGInsertionRule/@optQGInsertionRule),QGInsertionRule],
 			Message[QGConvertToFC::fail,"Some of the specified insertion rules have not been loaded yet."];
@@ -103,7 +124,7 @@ QGConvertToFC[amps_List, OptionsPattern[]] :=
 
 		headsList = Cases2[ampsConverted, optHeads];
 
-		headsListEval = headsList /. Dispatch[repRuleInsertions];
+		headsListEval = headsList //. optInitialSubstitutions /. Dispatch[repRuleInsertions];
 
 		repRuleHeads = Thread[Rule[headsList,headsListEval]];
 
@@ -153,19 +174,31 @@ QGConvertToFC[amps_List, OptionsPattern[]] :=
 			repRuleSUNFIndices/. repRulePolVectors;
 
 		If[	OptionValue[ChangeDimension]=!=False,
-			ampsConverted= ChangeDimension[ampsConverted,dim]
+			time=AbsoluteTime[];
+			FCPrint[1,"QGConvertToFC: Applying ChangeDimension.", FCDoControl->qgcVerbose];
+			ampsConverted= ChangeDimension[ampsConverted,dim];
+			FCPrint[1,"QGConvertToFC: Done applying DChangeDimension, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->qgcVerbose]
 		];
 
 		If[	TrueQ[OptionValue[DiracChainJoin]],
-			ampsConverted = DiracChainJoin/@ampsConverted
+			time=AbsoluteTime[];
+			FCPrint[1,"QGConvertToFC: Applying DiracChainJoin.", FCDoControl->qgcVerbose];
+			ampsConverted = DiracChainJoin/@ampsConverted;
+			FCPrint[1,"QGConvertToFC: Done applying DiracChainJoin, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->qgcVerbose]
 		];
 
 		If[	TrueQ[OptionValue[PauliChainJoin]],
-			ampsConverted = PauliChainJoin/@ampsConverted
+			time=AbsoluteTime[];
+			FCPrint[1,"QGConvertToFC: Applying PauliChainJoin.", FCDoControl->qgcVerbose];
+			ampsConverted = PauliChainJoin/@ampsConverted;
+			FCPrint[1,"QGConvertToFC: Done applying PauliChainJoin, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->qgcVerbose]
 		];
 
 		If[	TrueQ[OptionValue[Contract]],
-			ampsConverted = Contract/@ampsConverted
+			time=AbsoluteTime[];
+			FCPrint[1,"QGConvertToFC: Applying Contract.", FCDoControl->qgcVerbose];
+			ampsConverted = Contract/@ampsConverted;
+			FCPrint[1,"QGConvertToFC: Done applying Contract, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->qgcVerbose]
 		];
 
 		If[	!OptionValue[List],

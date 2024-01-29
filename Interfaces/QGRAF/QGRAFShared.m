@@ -19,9 +19,9 @@ $QGStylesDirectory::usage=
 "$QGStylesDirectory is the string that represents the full path to the default
 styles directory.";
 
-$QGTeXDirectory::usage=
-"$QGTeXDirectory is the string that represents the full path to the directory
-that contains LaTeX templates files useful for visualizing Feynman diagrams.";
+$QGScriptsDirectory::usage=
+"$QGScriptsDirectory is the string that represents the full path to the
+directory that contains shell scripts useful for visualizing Feynman diagrams.";
 
 $QGInsertionsDirectory::usage=
 "$QGInsertionsDirectory is the string that represents the full path to the
@@ -76,7 +76,7 @@ Begin["`QGRAFShared`Private`"]
 
 $QGModelsDirectory 		= FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "QGRAF", "Models"}];
 $QGStylesDirectory 		= FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "QGRAF", "Styles"}];
-$QGTeXDirectory 		= FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "QGRAF", "LaTeX"}];
+$QGScriptsDirectory 	= FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "QGRAF", "Scripts"}];
 $QGInsertionsDirectory 	= FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "QGRAF", "Insertions"}];
 
 

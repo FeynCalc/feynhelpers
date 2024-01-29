@@ -151,11 +151,10 @@ Options[QGCreateAmp] = {
 	QGOptionalStatements			-> {},
 	QGOptions 						-> {"notadpole"},
 	QGOutputAmplitudes 				-> "amplitudes.m",
-	QGOutputDiagrams 				-> "diagrams.m",
+	QGOutputDiagrams 				:> FileNameJoin[{"TeX","diagrams-raw.tex"}],
 	QGOutputDirectory 				:> Directory[],
 	QGOverwriteExistingAmplitudes	-> True,
 	QGOverwriteExistingDiagrams 	-> True,
-	QGSaveInputFile 				-> False,
 	QGShowOutput 					-> True
 };
 
@@ -167,8 +166,8 @@ QGCreateAmp[nLoops_Integer?NonNegative, Rule[inFields_List, outFields_List], Opt
 			optQGAmplitudeStyle, optQGDiagramStyle, optQGModel, optQGBinaryFile,
 			optQGOverwriteExistingAmplitudes, optQGOverwriteExistingDiagrams,
 			optQGShowOutput, pathQGAmplitudeStyle, pathQGDiagramStyle, pathQGModel,
-			pathQGOutputAmplitudes, pathQGOutputDiagrams, pathQGInputFile, optQGSaveInputFile,
-			pathQGOutputAmplitudesTemporary, pathQGModelTemporary,
+			pathQGOutputAmplitudes, pathQGOutputDiagrams, pathQGInputFile,
+			pathQGOutputAmplitudesTemporary, pathQGModelTemporary, status,
 			pathQGAmplitudeStyleTemporary, pathQGDiagramStyleTemporary, pathQGOutputDiagramsTemporary},
 
 		optQGAmplitudeStyle 				= OptionValue[QGAmplitudeStyle];
@@ -178,7 +177,6 @@ QGCreateAmp[nLoops_Integer?NonNegative, Rule[inFields_List, outFields_List], Opt
 		optQGOutputAmplitudes 				= OptionValue[QGOutputAmplitudes];
 		optQGOutputDiagrams 				= OptionValue[QGOutputDiagrams];
 		optQGOutputDirectory 				= OptionValue[QGOutputDirectory];
-		optQGSaveInputFile 					= OptionValue[QGSaveInputFile];
 		optQGOverwriteExistingAmplitudes 	= OptionValue[QGOverwriteExistingAmplitudes];
 		optQGOverwriteExistingDiagrams 		= OptionValue[QGOverwriteExistingDiagrams];
 		optQGShowOutput 					= OptionValue[QGShowOutput];
@@ -201,7 +199,7 @@ QGCreateAmp[nLoops_Integer?NonNegative, Rule[inFields_List, outFields_List], Opt
 				"Windows",
 					optQGBinaryFile = FileNameJoin[{$FeynHelpersDirectory, "ExternalTools", "QGRAF", "Binary", "qgraf.exe"}],
 				_,
-					Message[FerRunScript::failmsg,"Unsupported operating system!."];
+					Message[QGCreateAmp::failmsg,"Unsupported operating system!."];
 					Abort[]
 			];
 		];
@@ -218,62 +216,71 @@ QGCreateAmp[nLoops_Integer?NonNegative, Rule[inFields_List, outFields_List], Opt
 		stringOptCheck["QGDiagramStyle",	optQGDiagramStyle,		QGCreateAmp::fail];
 		stringOptCheck["QGModel",			optQGModel,				QGCreateAmp::fail];
 		stringOptCheck["QGOutputAmplitudes",optQGOutputAmplitudes,	QGCreateAmp::fail];
-		(*stringOptCheck["QGOutputDiagrams",	optQGOutputDiagrams,	QGCreateAmp::fail];*)
+		stringOptCheck["QGOutputDiagrams",	optQGOutputDiagrams,	QGCreateAmp::fail];
 		stringOptCheck["QGOutputDirectory",	optQGOutputDirectory,	QGCreateAmp::fail];
-		If[	(optQGSaveInputFile=!=True) && (optQGSaveInputFile=!=False),
-			stringOptCheck["QGSaveInputFile",	optQGSaveInputFile,	QGCreateAmp::fail];
-		];
-
 
 		pathQGOutputAmplitudes 	= FileNameJoin[{optQGOutputDirectory, optQGOutputAmplitudes}];
-		If[ pathQGDiagramStyle=!="",
-			pathQGOutputDiagrams 	= FileNameJoin[{optQGOutputDirectory, optQGOutputDiagrams}],
-			(* No diagrams will be generated *)
-			pathQGOutputDiagrams=""
+		pathQGOutputDiagrams 	= FileNameJoin[{optQGOutputDirectory, optQGOutputDiagrams}];
+
+		If[	!DirectoryQ[optQGOutputDirectory],
+			status = CreateDirectory[optQGOutputDirectory];
+			If[	status===$Failed,
+				Message[QGCreateAmp::failmsg, "Failed to create directory ", optQGOutputDirectory];
+				Abort[]
+			];
+		];
+
+		If[	!DirectoryQ[DirectoryName[pathQGOutputAmplitudes]],
+			status = CreateDirectory[DirectoryName[pathQGOutputAmplitudes]];
+			If[	status===$Failed,
+				Message[QGCreateAmp::failmsg, "Failed to create directory ", DirectoryName[pathQGOutputAmplitudes]];
+				Abort[]
+			];
+		];
+
+		If[	!DirectoryQ[DirectoryName[pathQGOutputDiagrams]],
+			status = CreateDirectory[DirectoryName[pathQGOutputDiagrams]];
+			If[	status===$Failed,
+				Message[QGCreateAmp::failmsg, "Failed to create directory ", DirectoryName[pathQGOutputDiagrams]];
+				Abort[]
+			];
 		];
 
 		(* Check that the speciified model and style files exist *)
 		FCPrint[1, "QGCreateAmp: Checking model and style files.", FCDoControl->qgcaVerbose];
 
-		pathQGAmplitudeStyle=FeynCalc`Package`qdLoadFileFrom[optQGAmplitudeStyle,$QGStylesDirectory];
-
-		If[ optQGDiagramStyle=!="",
-			pathQGDiagramStyle=FeynCalc`Package`qdLoadFileFrom[optQGDiagramStyle,$QGStylesDirectory],
-			pathQGDiagramStyle=""
-		];
-
-		pathQGModel=FeynCalc`Package`qdLoadFileFrom[optQGModel,$QGModelsDirectory];
-
-
+		pathQGAmplitudeStyle	= FeynCalc`Package`qdLoadFileFrom[optQGAmplitudeStyle,$QGStylesDirectory];
+		pathQGDiagramStyle		= FeynCalc`Package`qdLoadFileFrom[optQGDiagramStyle,$QGStylesDirectory];
+		pathQGModel				= FeynCalc`Package`qdLoadFileFrom[optQGModel,$QGModelsDirectory];
 		(*
 			These files will be located in the same directory as the QGRAF binary.
 			Existing files must be deleted since otherweise QGRAF will refuse to overwrite them
 		*)
-		pathQGOutputAmplitudesTemporary = FileNameJoin[{qgBinaryDirectory,optQGOutputAmplitudes}];
-		pathQGOutputDiagramsTemporary = FileNameJoin[{qgBinaryDirectory,optQGOutputDiagrams}];
+		pathQGOutputAmplitudesTemporary	= FileNameJoin[{qgBinaryDirectory, FileNameTake[optQGOutputAmplitudes]}];
+		pathQGOutputDiagramsTemporary	= FileNameJoin[{qgBinaryDirectory, FileNameTake[optQGOutputDiagrams]}];
 
 		FCPrint[1, "QGCreateAmp: Removing possible leftover output files.", FCDoControl->qgcaVerbose];
 		deleteIfExists[pathQGOutputAmplitudesTemporary];
 		deleteIfExists[pathQGOutputDiagramsTemporary];
 
 		(* Model and style files should be also be located in the same directory as the QGRAF binary *)
-		pathQGModelTemporary 			= FileNameJoin[{qgBinaryDirectory,FileNameTake[pathQGModel]}];
-		pathQGAmplitudeStyleTemporary 	= FileNameJoin[{qgBinaryDirectory,FileNameTake[pathQGAmplitudeStyle]}];
-		pathQGDiagramStyleTemporary 	= FileNameJoin[{qgBinaryDirectory,FileNameTake[pathQGDiagramStyle]}];
+		pathQGModelTemporary 			= FileNameJoin[{qgBinaryDirectory, FileNameTake[pathQGModel]}];
+		pathQGAmplitudeStyleTemporary 	= FileNameJoin[{qgBinaryDirectory, FileNameTake[pathQGAmplitudeStyle]}];
+		pathQGDiagramStyleTemporary 	= FileNameJoin[{qgBinaryDirectory, FileNameTake[pathQGDiagramStyle]}];
 
 
 		FCPrint[1, "QGCreateAmp: Copying model and style files to the QGRAF directory.", FCDoControl->qgcaVerbose];
 		(* existing file are automatically overwritten	*)
 		copyFile[pathQGAmplitudeStyle,pathQGAmplitudeStyleTemporary, OverwriteTarget->True];
 		copyFile[pathQGModel,pathQGModelTemporary, OverwriteTarget->True];
-		If[	pathQGDiagramStyle=!="",
-			copyFile[pathQGDiagramStyle,pathQGDiagramStyleTemporary, OverwriteTarget->True];
-		];
+		copyFile[pathQGDiagramStyle,pathQGDiagramStyleTemporary, OverwriteTarget->True];
 
 		(* Create qgraf.dat for the amplitudes *)
 		inputFileAsList = {
 			"output= '"			<> optQGOutputAmplitudes <> "';",
 			"style= '" 			<> FileNameTake[pathQGAmplitudeStyle] <> "';",
+			"output= '"			<> FileNameTake[optQGOutputDiagrams] <> "';",
+			"style= '" 			<> FileNameTake[pathQGDiagramStyle] <> "';",
 			"model= '"			<> FileNameTake[pathQGModel] <> "';",
 			"in= "				<> StringJoin[Riffle[inFields, ", "]] <> ";",
 			"out= "				<> StringJoin[Riffle[outFields, ", "]] <> ";",
@@ -287,7 +294,7 @@ QGCreateAmp[nLoops_Integer?NonNegative, Rule[inFields_List, outFields_List], Opt
 		pathQGInputFile 	= FileNameJoin[{DirectoryName[optQGBinaryFile],"qgraf.dat"}];
 
 
-		FCPrint[1, "QGCreateAmp: Running QGRAF to generate the amplitudes.", FCDoControl->qgcaVerbose];
+		FCPrint[1, "QGCreateAmp: Running QGRAF.", FCDoControl->qgcaVerbose];
 		runQgraf[optQGBinaryFile, pathQGInputFile, finalInputAsString, optQGShowOutput];
 
 		FCPrint[1, "QGCreateAmp: Copying the amplitudes to the correct location.", FCDoControl->qgcaVerbose];
@@ -296,47 +303,12 @@ QGCreateAmp[nLoops_Integer?NonNegative, Rule[inFields_List, outFields_List], Opt
 			Abort[]
 		];
 
-		(*
-			Possibly need to save the input file before it will overwritten during
-			the 2nd run or deleted at the very end.
-		*)
-		If[	optQGSaveInputFile=!=False,
-			FCPrint[1, "QGCreateAmp: Saving qgraf.dat", FCDoControl->qgcaVerbose];
-			Which[
-				optQGSaveInputFile===True,
-					copyFile[pathQGInputFile, FileNameJoin[{Directory[], FileNameTake[pathQGInputFile]}], OverwriteTarget->True],
-				StringQ[optQGSaveInputFile],
-					copyFile[pathQGInputFile, optQGSaveInputFile, OverwriteTarget->True],
-				True,
-				Message[QGCreateAmp::fail,"Unknown value of the QGSaveInputFile option."];
-				Abort[]
-			]
+		FCPrint[1, "QGCreateAmp: Copying the diagrams to the correct location.", FCDoControl->qgcaVerbose];
+		If[	copyFile[pathQGOutputDiagramsTemporary,pathQGOutputDiagrams, OverwriteTarget->optQGOverwriteExistingDiagrams]===$Failed,
+			Message[QGCreateAmp::fail,"The file " <> pathQGOutputDiagrams <> " already exists and can or should not be removed."];
+			Abort[]
 		];
 
-		If[	pathQGOutputDiagrams=!="" && pathQGDiagramStyle=!="" && pathQGDiagramStyle=!=optQGAmplitudeStyle,
-			FCPrint[1, "QGCreateAmp: Preparing to generate the diagrams.", FCDoControl->qgcaVerbose];
-			(*	The generation of the diagrams is not mandatory!	*)
-
-			(* Copy the diagram style file to the QGRAF directory	*)
-			FCPrint[1, "QGCreateAmp: Copying model and style files to the QGRAF directory.", FCDoControl->qgcaVerbose];
-			copyFile[pathQGDiagramStyle, pathQGDiagramStyleTemporary, OverwriteTarget->True];
-			copyFile[pathQGModel,FileNameJoin[{qgBinaryDirectory,FileNameTake[pathQGModel]}], OverwriteTarget->True];
-
-			(* Edit the original qgraf.dat *)
-			finalInputAsString 	= StringJoin[Riffle[ReplacePart[inputFileAsList,{
-				1 -> "output= '" <> optQGOutputDiagrams <> "';",
-				2 -> "style= '" <> FileNameTake[pathQGDiagramStyle] <> "';"
-			}], "\n\n"]];
-
-			(* Run QGRAF to generate the diagrams *)
-			runQgraf[optQGBinaryFile, pathQGInputFile, finalInputAsString, optQGShowOutput];
-
-			(*Copy the diagrams to the correct location *)
-			If[	copyFile[pathQGOutputDiagramsTemporary,pathQGOutputDiagrams, OverwriteTarget->optQGOverwriteExistingDiagrams]===$Failed,
-				Message[QGCreateAmp::fail,"The file " <> pathQGOutputDiagrams <> " already exists and can or should not be removed."];
-				Abort[]
-			];
-		];
 
 		(*	Clean up the directory containing the QGRAF binary	*)
 		If[	OptionValue[QGCleanUpOutputDirectory],
@@ -366,32 +338,14 @@ runQgraf[optQGBinaryFile_, pathQGInputFile_, finalInputAsString_, optQGShowOutpu
 		WriteString[currentFile, finalInputAsString];
 		Close[currentFile];
 
-		If[	$VersionNumber >= 10.,
-			out=RunProcess[optQGBinaryFile, ProcessDirectory->qgBinaryDirectory];
-			If[	out===$Failed,
-				Message[QGCreateAmp::fail,"Failed to execute the QGRAF binary."];
-				Abort[]
-			];
-			out = out["StandardOutput"],
 
-			(*In Mma  8 and 9 there is no RunProcess*)
-			saveDirectory=Directory[];
-			SetDirectory[qgBinaryDirectory];
-			stream = OpenRead["!"<>optQGBinaryFile];
-			If[	Head[stream]=!=InputStream,
-				Message[QGCreateAmp::fail,"OpenRead failed to create an InputStream object."];
-				Abort[]
-			];
-			out = ReadList[stream, String];
-			Close[stream];
-			SetDirectory[saveDirectory];
-			If[	MatchQ[out, {__String}],
-				out = StringJoin[Riffle[out, "\n"]],
-				Print[out];
-				Message[QGCreateAmp::fail,"Failed to execute the QGRAF binary."];
-				Abort[]
-			]
+		out=RunProcess[optQGBinaryFile, ProcessDirectory->qgBinaryDirectory];
+		If[	out===$Failed,
+			Message[QGCreateAmp::fail,"Failed to execute the QGRAF binary."];
+			Abort[]
 		];
+		out = out["StandardOutput"];
+
 
 		$QGLogOutputAmplitudes = StringTrim[out];
 
