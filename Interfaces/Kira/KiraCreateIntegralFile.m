@@ -51,7 +51,7 @@ fpsfVerbose::usage="";
 Options[KiraCreateIntegralFile] = {
 	FCI					-> False,
 	FCVerbose			-> False,
-	KiraIntegrals		-> "KiraLoopIntegrals.txt",
+	KiraIntegrals		-> "KiraLoopIntegrals",
 	OverwriteTarget		-> True
 };
 
@@ -63,7 +63,7 @@ KiraCreateIntegralFile[expr_, topos: {__FCTopology}, dirs: {__String}, opts:Opti
 
 KiraCreateIntegralFile[expr_, topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 	Block[{	ex, topo, gliList, optNames, newNames, res, vars, id, topoName,
-			file, filePath, optOverwriteTarget, status, dir, null1, null2},
+			file, filePath, optOverwriteTarget, status, dir, null1, null2, gliString},
 
 		If[	OptionValue[FCVerbose]===False,
 			fpsfVerbose=$VeryVerbose,
@@ -112,6 +112,8 @@ KiraCreateIntegralFile[expr_, topoRaw_FCTopology, dirRaw_String, OptionsPattern[
 
 		FCPrint[3,"KiraCreateIntegralFile: Converted GLIs: ", gliList, FCDoControl->fpsfVerbose];
 
+		gliString = StringRiffle[ToString/@gliList,"\n"];
+
 
 		filePath = FileNameJoin[{dir, OptionValue[KiraIntegrals]}];
 
@@ -122,11 +124,14 @@ KiraCreateIntegralFile[expr_, topoRaw_FCTopology, dirRaw_String, OptionsPattern[
 			Abort[]
 		];
 
-		file = Put[gliList,filePath];
+		file = OpenWrite[filePath];
 		If[	file===$Failed,
-			Message[KiraCreateIntegralFile::failmsg, "Failed to save the integrals to ", filePath];
+			Message[KiraCreateIntegralFile::failmsg, "Failed to open ", file, " for writing."];
 			Abort[]
 		];
+
+		WriteString[file, gliString];
+		Close[file];
 
 		filePath
 	];

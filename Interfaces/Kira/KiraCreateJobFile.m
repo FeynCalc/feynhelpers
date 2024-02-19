@@ -75,27 +75,34 @@ Options[KiraCreateJobFile] = {
 	DateString			-> False,
 	FCI					-> False,
 	FCVerbose			-> False,
-	KiraIntegrals		-> {"KiraLoopIntegrals.txt"},
+	KiraIntegrals		-> {"KiraLoopIntegrals"},
 	KiraJobFileName		-> "job.yaml",
-	OverwriteTarget		-> True
+	OverwriteTarget		-> True,
+	Top					-> True
 };
 
+(*
 KiraCreateJobFile[topos: {__FCTopology}, topSectors: {{{__Integer}..}..}, rs: {{_Integer, _Integer}..}, dir_String, opts:OptionsPattern[]] :=
 	MapThread[KiraCreateJobFile[#1,#2,#3,dir,opts]&,{topos,topSectors,rs}];
 
 KiraCreateJobFile[topos: {__FCTopology}, topSectors: {{{__Integer}..}..}, rs: {{_Integer, _Integer}..}, dirs: {__String}, opts:OptionsPattern[]] :=
 	MapThread[KiraCreateJobFile[#1,#2,#3,#4,opts]&,{topos,topSectors,rs,dirs}];
-
+*)
 KiraCreateJobFile[topoRaw_FCTopology, glis:{__GLI}, dirRaw_String, opts:OptionsPattern[]] :=
-	KiraCreateJobFile[topoRaw, {FCLoopFindSectors[SelectNotFree[glis, topoRaw[[1]]], Last -> True, GatherBy -> False]},
-		KiraGetRS[SelectNotFree[glis, topoRaw[[1]]]], dirRaw, opts];
+	KiraCreateJobFile[topoRaw, Sequence@@Transpose@Map[{#[[1]],KiraGetRS[#[[2]]]}&,FCLoopFindSectors[glis][[1]]], dirRaw, opts];
+
+	(*KiraCreateJobFile[topoRaw, {FCLoopFindSectors[SelectNotFree[glis, topoRaw[[1]]], Last -> True, GatherBy -> False]},
+		{KiraGetRS[SelectNotFree[glis, topoRaw[[1]]]]}, dirRaw, opts];*)
+
+
+
 
 KiraCreateJobFile[topos: {__FCTopology}, glis:{__GLI}, dirRaw_String, opts:OptionsPattern[]] :=
 	KiraCreateJobFile[#, glis, dirRaw, opts]&/@topos;
 
-KiraCreateJobFile[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, {r_Integer, s_Integer}, dirRaw_String, OptionsPattern[]] :=
-	Block[{	topo, topSectors, reduce, res,  dir, file, optOverwriteTarget,
-			topoName, jobPath, optKiraIntegrals, selectMandatoryList},
+KiraCreateJobFile[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, rs: {{_Integer, _Integer}..}, dirRaw_String, OptionsPattern[]] :=
+	Block[{	topo, topSectors, reduce, res,  dir, file, optOverwriteTarget, integralsString,
+			topoName, jobPath, optKiraIntegrals, selectMandatoryList, reduceStrings},
 
 		If[	OptionValue[FCVerbose]===False,
 			fpsfVerbose=$VeryVerbose,
@@ -128,19 +135,21 @@ KiraCreateJobFile[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, {r_Integer
 
 		topoName = topo[[1]];
 
-		topSectors =
-			ToString["sectors: " @@ Map["b" <> StringReplace[ToString[#,   InputForm], {"," | " " | "}" | "{" -> ""}] &, topSectorsRaw]];
 
-		reduce = "- {topologies: ["<>StringReplace[ToString[topoName,InputForm], "\"" -> ""]<>"], "<> topSectors<>", r: "<>ToString[r]<>", s: " <> ToString[s]<>" }";
+		topSectors = Map["sectors: [b" <> StringReplace[ToString[#,   InputForm] <> "]", {"," | " " | "}" | "{" -> ""}] &, topSectorsRaw];
 
+		reduceStrings = MapThread["        - {topologies: ["<>StringReplace[ToString[topoName,InputForm], "\"" -> ""]<>"], "<> #1<>", r: "<>ToString[#2[[1]]]<>", s: " <> ToString[#2[[2]]]<>" }"&,{topSectors,rs}];
 
+		reduceStrings = StringRiffle[reduceStrings,"\n"] <> "\n";
+
+		integralsString = Map["       - [" <> ToString[topoName] <>", " <> ToString[#,InputForm] <>  "]\n"&, optKiraIntegrals];
+
+		integralsString = StringRiffle[integralsString,"\n"] <> "\n";
 
 		If[	Length[optKiraIntegrals]=!={},
 			selectMandatoryList = "- "<>StringReplace[ToString[""@@ToString[optKiraIntegrals,InputForm]], {"}" | "{" -> ""}],
 			selectMandatoryList = ""
 		];
-
-		FCPrint[3,"KiraCreateJobFile: reduce: ", StandardForm[reduce], FCDoControl->fpsfVerbose];
 
 		(*TODO: More freedom here*)
 		dir = FileNameJoin[{dirRaw,ToString[topo[[1]]]}];
@@ -174,7 +183,7 @@ KiraCreateJobFile[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, {r_Integer
 		WriteString[file, "jobs:\n"];
 		WriteString[file, "  - reduce_sectors:\n"];
 		WriteString[file, "      reduce:\n"];
-		WriteString[file, "        "<>reduce<>"\n"];
+		WriteString[file, reduceStrings];
 		WriteString[file, "      select_integrals:\n"];
 		If[	selectMandatoryList=!={},
 			WriteString[file, "        select_mandatory_list:\n"];
@@ -186,11 +195,12 @@ KiraCreateJobFile[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, {r_Integer
 		WriteString[file, "    run_back_substitution: true\n"];
 		WriteString[file, "  - kira2math:\n"];
 		WriteString[file, "      target:\n"];
-		WriteString[file, "        "<>reduce<>"\n"];
+		WriteString[file, integralsString];
+
+		(*- [topology5635, "KiraLoopIntegrals.txt"]*)
 		Close[file];
 		jobPath
 	];
-
 
 
 End[]

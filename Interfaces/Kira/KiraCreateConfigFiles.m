@@ -52,20 +52,36 @@ of the Kira interface.
 It specifies the mass dimensions of kinematic invariants occurring in the
 given topologies.";
 
+KiraIncomingMomenta::usage=
+"KiraIncomingMomenta is an option for KiraCreateConfigFiles and other functions
+of the Kira interface.
 
-KiraImplicitIncomingMomenta::usage=
-"KiraImplicitIncomingMomenta is an option for KiraCreateConfigFiles and other
+It specifies incoming momenta in the original amplitude. The default value is
+Automatic, meaning that FeynHelpers will simply treat all external momenta
+present in the topology as incoming ones. This is the safest way to do the
+reduction.
+
+Alternatively, the user may want to specify the momenta by hand. In that case
+the same should be done also for the options KiraOutgoingMomenta and
+KiraMomentumConservation.";
+
+KiraOutgoingMomenta::usage=
+"KiraOutgoingMomenta is an option for KiraCreateConfigFiles and other functions
+of the Kira interface.
+
+It specifies outgoing momenta in the original amplitude. The default value is
+an empty list. Normally, you do not need to use this option as long as the
+option KiraIncomingMomenta is set to Automatic.";
+
+
+KiraMomentumConservation::usage=
+"KiraMomentumConservation is an option for KiraCreateConfigFiles and other
 functions of the Kira interface.
 
-It specifies incoming momenta in the original amplitude that have been
-eliminated using momentum conservation. These momenta may not  appear in the
-integrals that need to be reduced, but should be nevertheless passed to Kira.
-Otherwise the
-reduction may not run.";
-
-
-
-
+It specifies the momentum conservation in the original amplitude. The default
+value
+is an empty list. Normally, you do not need to use this option as long as the
+option KiraIncomingMomenta is set to Automatic.";
 
 KiraCreateConfigFiles::failmsg =
 "Error! KiraCreateConfigFiles has encountered a fatal problem and must abort the computation. \
@@ -88,8 +104,10 @@ Options[KiraCreateConfigFiles] = {
 	FCI							-> False,
 	FCVerbose					-> False,
 	OverwriteTarget				-> True,
-	KiraImplicitIncomingMomenta -> {},
-	KiraMassDimensions			-> {}
+	KiraMassDimensions			-> {},
+	KiraIncomingMomenta			-> Automatic,
+	KiraOutgoingMomenta			-> {},
+	KiraMomentumConservation	-> {}
 };
 
 KiraCreateConfigFiles[topos: {__FCTopology}, topSectors: {{{__Integer}..}..}, dir_String, opts:OptionsPattern[]] :=
@@ -106,10 +124,11 @@ KiraCreateConfigFiles[topoRaw_FCTopology, glis:{__GLI}, dirRaw_String, opts:Opti
 		dirRaw, opts];
 
 KiraCreateConfigFiles[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, dirRaw_String, OptionsPattern[]] :=
-	Block[{	topo, topSectors, loopMomenta, extMomenta, incomingMomenta, outgoingMomenta, momentumConservation,
+	Block[{	topo, topSectors, loopMomenta, incomingMomenta, outgoingMomenta, momentumConservation,
 			propagators, dir, fPar, vars, fp, replacements, file, optOverwriteTarget, status,
 			optKiraMassDimensions, topoName, kinematicInvariants,scalarProductRules,
-			integralfamiliesPath, kinematicsPath, topoID, optKiraImplicitIncomingMomenta},
+			integralfamiliesPath, kinematicsPath, topoID, kiraGeneralProp,
+			optKiraIncomingMomenta, optKiraOutgoingMomenta, optKiraMomentumConservation},
 
 		If[	OptionValue[FCVerbose]===False,
 			fpsfVerbose=$VeryVerbose,
@@ -120,7 +139,10 @@ KiraCreateConfigFiles[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, dirRaw
 
 		optOverwriteTarget 				= OptionValue[OverwriteTarget];
 		optKiraMassDimensions 			= OptionValue[KiraMassDimensions];
-		optKiraImplicitIncomingMomenta	= OptionValue[KiraImplicitIncomingMomenta];
+
+		optKiraIncomingMomenta			= OptionValue[KiraIncomingMomenta];
+		optKiraOutgoingMomenta			= OptionValue[KiraOutgoingMomenta];
+		optKiraMomentumConservation		= OptionValue[KiraMomentumConservation];
 
 		FCPrint[1,"KiraCreateConfigFiles: Entering.", FCDoControl->fpsfVerbose];
 		FCPrint[3,"KiraCreateConfigFiles: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
@@ -148,6 +170,21 @@ KiraCreateConfigFiles[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, dirRaw
 		If[	FCLoopScalelessQ[topo, FCI->True],
 			Message[KiraCreateConfigFiles::failmsg, "The given topology is scaleless so that all integrals from this family vanish."];
 			Abort[]
+		];
+
+		If[	!(MatchQ[optKiraIncomingMomenta, {__Symbol}] || optKiraIncomingMomenta===Automatic),
+			Message[KiraCreateConfigFiles::failmsg, "Incorrect value of the KiraIncomingMomenta option."];
+			Abort[];
+		];
+
+		If[	!(MatchQ[optKiraOutgoingMomenta, {__Symbol}] || optKiraOutgoingMomenta==={}),
+			Message[KiraCreateConfigFiles::failmsg, "Incorrect value of the KiraIncomingMomenta option."];
+			Abort[];
+		];
+
+		If[	!(MatchQ[optKiraMomentumConservation, {__Symbol}] || optKiraMomentumConservation==={}),
+			Message[KiraCreateConfigFiles::failmsg, "Incorrect value of the KiraMomentumConservation option."];
+			Abort[];
 		];
 
 		If[ TrueQ[FeynCalc`FCLoopBasis`Private`cartesianIntegralQ[topo[[2]]]],
@@ -178,7 +215,9 @@ KiraCreateConfigFiles[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, dirRaw
 
 		FCPrint[3,"KiraCreateConfigFiles: Output of FCLoopPropagatorsToTopology: ", propagators, FCDoControl->fpsfVerbose];
 
-		propagators = (fcProp/@propagators);
+		propagators = (fcProp/@propagators) /. fcProp[x_] :> kiraGeneralProp[x];
+
+		propagators = propagators /. Pair[Momentum[a_,d_:4],Momentum[b_,d_:4]] -> a b;
 
 		FCPrint[3,"KiraCreateConfigFiles: Conversion of propagators to the KIRA notation: ", propagators, FCDoControl->fpsfVerbose];
 
@@ -189,6 +228,8 @@ KiraCreateConfigFiles[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, dirRaw
 
 
 		propagators = propagators /. {
+				kiraGeneralProp[moms_] :>
+					"- [ \"" <> ToString[moms, InputForm] <> "\", 0]",
 				kiraQuadraticProp[mom_, m_ /; m =!= 0] :>
 					"- [ \"" <> ToString[mom, InputForm] <> "\", \"" <> ToString[m, InputForm] <> "\"]",
 				kiraQuadraticProp[mom_, 0] :>
@@ -231,24 +272,15 @@ KiraCreateConfigFiles[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, dirRaw
 			==================================================================
 		*)
 
-		extMomenta = DeleteDuplicates[Join[topo[[4]],optKiraImplicitIncomingMomenta]];
+		If[	TrueQ[optKiraIncomingMomenta === Automatic],
 
-		Switch[Length[extMomenta],
-			0,
-				incomingMomenta = "incoming_momenta: []";
-				outgoingMomenta = "outgoing_momenta: []";
-				momentumConservation = "momentum_conservation: []",
-			1,
-				incomingMomenta = ToString["incoming_momenta: " @@ extMomenta];
-				outgoingMomenta = ToString["outgoing_momenta: " @@ extMomenta];
-				momentumConservation = "momentum_conservation: []",
-			ii_Integer/;ii>1,
-				incomingMomenta = ToString["incoming_momenta: " @@ extMomenta];
-				outgoingMomenta = "outgoing_momenta: []";
-				momentumConservation = ToString["momentum_conservation: " @@ {extMomenta[[1]], Total@(-extMomenta[[2 ;;]])}],
-			_,
-				Message[KiraCreateConfigFiles::failmsg, "Failed to resolve the number of external momenta."];
-				Abort[]
+			incomingMomenta = ToString["incoming_momenta: " @@ topo[[4]] (*all external momenta*)];
+			outgoingMomenta = "outgoing_momenta: []";
+			momentumConservation = "momentum_conservation: []",
+
+			incomingMomenta = ToString["incoming_momenta: " @@ optKiraIncomingMomenta];
+			outgoingMomenta = ToString["outgoing_momenta: " @@ optKiraOutgoingMomenta];
+			momentumConservation = ToString["momentum_conservation: " @@ {optKiraMomentumConservation[[1]], optKiraMomentumConservation[[2]]}]
 		];
 
 
@@ -397,6 +429,7 @@ fcProp[c_. Pair[Momentum[a_, ___], Momentum[b_, ___]] -  massSq_]:=
 
 fcProp[c_. Pair[Momentum[a_, ___], Momentum[b_, ___]]] :=
 	kiraLinearProp[c a, b, 0]/; a=!=b && IntegerQ[c];
+
 
 
 End[]
