@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## KiraCreateIntegralFile
 
 `KiraCreateIntegralFile[ex, topo, path]` extracts `GLI` symbols from `ex` that belong to the topology `topo`. The resulting list of integrals is saved to `path/topoName/KiraLoopIntegrals.txt` and can be referred to in the corresponding Kira job file.
@@ -52,7 +48,7 @@ fileName // FilePrint
 
 $$\text{KiraCreateIntegralFile: Number of loop integrals: }10$$
 
-```
+```mathematica
 (*{asyR3prop2Ltopo01310X11111N1[-7, 1, 1, 9, 1], 
  asyR3prop2Ltopo01310X11111N1[-6, 0, 2, 8, 1], 
  asyR3prop2Ltopo01310X11111N1[-6, 1, 1, 8, 1], 
@@ -72,7 +68,7 @@ fileName // FilePrint
 
 $$\text{FIRECreateIntegralFile: Number of loop integrals: }10$$
 
-```
+```mathematica
 (*{{1500, {-7, 1, 1, 9, 1}}, {1500, {-6, 0, 2, 8, 1}}, 
  {1500, {-6, 1, 1, 8, 1}}, {1500, {-6, 1, 2, 8, 1}}, 
  {1500, {-5, -1, 3, 7, 1}}, {1500, {-5, 0, 2, 7, 1}}, 

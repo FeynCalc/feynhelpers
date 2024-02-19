@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## FSAShowOutput
 
 `FSAShowOutput` is an option for `FSARunIntegration` and other functions of the FIESTA interface.

@@ -19,14 +19,14 @@ a particular tools please contact the corresponding developer team.*
 
 Run the following instruction in a Kernel or Notebook session of Mathematica to install the stable version
 
-```
+```mathematica
 Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
 InstallFeynHelpers[]
 ```
 
 If you like the bleeding edge and you are already using the development version of FeynCalc, you can also install the development version of FeynHelpers
 
-```
+```mathematica
 Import["https://raw.githubusercontent.com/FeynCalc/feynhelpers/master/install.m"]
 InstallFeynHelpers[InstallFeynHelpersDevelopmentVersion->True]
 ```
@@ -35,7 +35,7 @@ InstallFeynHelpers[InstallFeynHelpersDevelopmentVersion->True]
 
 Create a directory _FeynHelpers_ inside
 
-```
+```mathematica
 FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns"}]
 ```
 
@@ -63,7 +63,7 @@ You can download the source code of FIRE from the [developer's website](https://
 
 We recommend to enable support for zstd, lthreads, tcmalloc, snappy and zlib via
 
-```
+```mathematica
 ./configure --enable_zlib --enable_snappy --enable_lthreads --enable_tcmalloc --enable_zstd
 ```
 
@@ -141,7 +141,7 @@ You can download the source code of QGRAF from the [developer's website](http://
 The compilation instructions can be found in the section "Compiling" of the manual `qgraf-3.x.y.pdf` inside the tarball. For example,
 on a Linux system equipped with a GNU Fortran compiler something like
 
-```
+```mathematica
 gfortran qgraf-3.6.3.f08 -o qgraf
 ```
 

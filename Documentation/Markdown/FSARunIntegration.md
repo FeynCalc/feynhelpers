@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## FSARunIntegration
 
 `FSARunIntegration[path]` evaluates a FIESTA script `FiestaScript.m` in `path`. To that aim a Mathematica kernel is started in the background via `RunProcess`. The function returns `True` if the evaluation succeeds and `False` otherwise.

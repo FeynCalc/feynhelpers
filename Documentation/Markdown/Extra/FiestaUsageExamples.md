@@ -13,7 +13,7 @@ The main high-level function of this interface is called `FSACreateMathematicaSc
 
 Here is a simple 1-loop example that incorporates all of the above. Notice that it is crucial to switch the $i \eta$ sign of propagators from plus to minus, otherwise the result will be incorrect.
 
-```
+```mathematica
 int = GLI[prop1L, {1, 1}]
 topo = FCLoopSwitchEtaSign[FCTopology[prop1L, {FAD[{p1, m1}], FAD[{p1 + q, m2}]}, {p1}, {q}, {}, {}], -1]
 files = FSACreateMathematicaScripts[int, topo, NotebookDirectory[], FinalSubstitutions -> {Hold[SPD][q] -> qq} , 
@@ -22,7 +22,7 @@ files = FSACreateMathematicaScripts[int, topo, NotebookDirectory[], FinalSubstit
 
 The output is a list containing two elements. The first one is the full path to the Mathematica script file `FiestaScript.m`, while the second give the name of the output file containing numerical result for the given integral. For simple integrals you can evaluate the script directly in your Mathematica session by running
 
-```
+```mathematica
 FSARunIntegration[files[[1]]]
 ```
 Notice that the evaluation of sufficiently complicated integrals can take hours or even days so in general it is not recommended to use 
@@ -30,7 +30,7 @@ Notice that the evaluation of sufficiently complicated integrals can take hours 
 
 Here is a sample the script file
 
-```
+```mathematica
 Get["/home/vs/.Mathematica/Applications/FIESTA5/FIESTA5.m"];
 
 
@@ -57,13 +57,13 @@ Put[res, resFileName];
 
 To load the numerical results into your Mathematica session you can use the function `FSALoadNumericalResults`. To that aim you just need to give it `files` as input.
 
-```
+```mathematica
 FSALoadNumericalResults[files]
 ```
 
 If you want to perform an asymptotic expansion, you need to set the option `FSASDExpandAsy` to `True`, specify the expansion variable using `FSAExpandVar` and set the desired expansion order via `FSASDExpandAsyOrder`. For example,
 
-```
+```mathematica
 int = GLI[prop1L, {1, 1}]
 topo = FCLoopSwitchEtaSign[FCTopology[prop1L, {FAD[{p1, m1}], FAD[{p1 + q, m2}]}, {p1}, {q}, {}, {}], -1]
 files = FSACreateMathematicaScripts[int, topo, NotebookDirectory[], FinalSubstitutions -> {Hold[SPD][q] -> qq} , 

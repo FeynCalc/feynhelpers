@@ -52,7 +52,8 @@ FSAPrecision::usage=
 of the FIESTA interface.
 
 It specifies the value of the Precision option to be passed to the FIESTA
-package when evaluating an integral.";
+package when evaluating an integral. The default value is 8 meaning 8 
+significant digits.";
 
 FSAStrategy::usage=
 "FSAStrategy is an option for FSAPrepareMathematicaScripts and other functions

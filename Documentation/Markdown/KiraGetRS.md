@@ -1,9 +1,5 @@
 ![0eugcbgadj6yz](img/0eugcbgadj6yz.svg)
 
-```mathematica
- 
-```
-
 ## KiraGetRS
 
 `KiraGetRS[{sec1, {gli1, ...}}]` returns the number of positive and negative propagator powers ($r$ and $s$ in the Kira/Reduze syntax) for the `GLI` integrals belonging to sector `sec1`. The input can be also a list of such entries.

@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## KiraCreateConfigFiles
 
 `KiraCreateConfigFiles[topo, sectors, path]` can be used to generate Kira configuration files (`integralfamilies.yaml` and `kinematics.yaml`) from an FCTopology or list thereof. Here `sectors` is a list of sectors need to be reduced, e.g. `{{1,0,0,0}, {1,1,0,0}, {1,1,1,0}}` etc.

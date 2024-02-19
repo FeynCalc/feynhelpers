@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## KiraCreateJobFile
 
 KiraCreateJobFile[topo, sectors, {r,s}, path] can be used to generate Kira job files from an `FCTopology` or a list thereof. Here `sectors` is a list of sectors need to be reduced, e.g. `{{1,0,0,0}, {1,1,0,0}, {1,1,1,0}}` etc. The values of `r` and `s` correspond to the maximal positive and negative powers that may appear in the loop integrals to be reduced.

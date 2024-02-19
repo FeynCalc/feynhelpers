@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## KiraImportResults
 
 `KiraImportResults[topoName, path]`  imports the content of a Kira reduction table and converts the results to replacement rules for `GLI`s with the id `topoName`.

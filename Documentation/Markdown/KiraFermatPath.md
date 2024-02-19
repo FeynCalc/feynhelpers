@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## KiraFermatPath
 
 `KiraFermatPath` is an option for `KiraRunReduction` and other Kira-related functions.

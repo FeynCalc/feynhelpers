@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## FSAOrderInEps
 
 `FSAOrderInEps` is an option for `FSAOrderInEps` and other functions of the FIESTA interface.

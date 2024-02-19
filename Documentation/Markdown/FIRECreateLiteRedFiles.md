@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## FIRECreateLiteRedFiles
 
 `FIRECreateLiteRedFiles[path]` creates lbases  files (generated with LiteRed) using the script `CreateLiteRedFiles.m` in `path`. To that aim a Mathematica kernel is started in the background via `RunProcess`. The function returns `True` if the evaluation succeeds and `False` otherwise.

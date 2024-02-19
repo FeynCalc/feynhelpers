@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## FSAd0
 
 `FSAd0` is an option for `FSAPrepareMathematicaScripts` and other functions of the FIESTA interface.

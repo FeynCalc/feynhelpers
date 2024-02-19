@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## KiraLabelSector
 
 `KiraLabelSector[sec]` returns the standard Kira labelling $S$ for the given sector `sec` (e.g. `{1,1,0,1,1}`).

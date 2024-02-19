@@ -1,9 +1,5 @@
 ![0uw74idqq2ilw](img/0uw74idqq2ilw.svg)
 
-```mathematica
- 
-```
-
 ## PSDCreatePythonScripts
 
 `PSDCreatePythonScripts[int, topo, path]` creates a set of Python scripts needed for the evaluation of the integral `int` (in the `GLI` representation) belonging to the topology `topo`. The files are saved to the directory `path/topoNameXindices`. The function returns a list of two strings that point to the generation and integration scripts for pySecDec.

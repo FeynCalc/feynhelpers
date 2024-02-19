@@ -26,24 +26,6 @@ Notice that the current manual applies to the development version of FeynHelpers
 
 The installation instructions can be found [here](https://feyncalc.github.io/FeynHelpersBookDev/Extra/Install.html)
 
-
-## Experimental QGRAF interface
-
-The interface to QGRAF is still work in progress. Just to 
-give a general idea of how it is supposed to work, here is a simple QED 2-loop example
-
-```
-SetDirectory[NotebookDirectory[]];
-QGLoadInsertions[];
-out = QGCreateAmp[2, {"El[p]"} -> {"El[p]"}, QGLoopMomentum -> l, 
-  QGModel -> "QEDOneFlavor", QGShowOutput -> False]
-  
-QGConvertToFC[out[[1]], DiracChainJoin -> True]  
-
-QGPrepareDiagramsTeX[out[[2]], "dias.tex"]
-(*or QGPrepareDiagramsTeX[out[[2]], "Dias", Split -> True] *)
-```
-
 # Acknowledgments
 
 If you use FeynHelpers in you work, please have a look [here](https://feyncalc.github.io/FeynHelpersBookDev/Extra/Cite.html).

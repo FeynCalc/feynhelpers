@@ -46,7 +46,7 @@ fileName // FilePrint
 
 $$\text{FIRECreateIntegralFile: Number of loop integrals: }10$$
 
-```
+```mathematica
 (*{{4242, {-7, 1, 1, 9, 1}}, {4242, {-6, 0, 2, 8, 1}}, 
  {4242, {-6, 1, 1, 8, 1}}, {4242, {-6, 1, 2, 8, 1}}, 
  {4242, {-5, -1, 3, 7, 1}}, {4242, {-5, 0, 2, 7, 1}}, 
@@ -61,7 +61,7 @@ fileName // FilePrint
 
 $$\text{FIRECreateIntegralFile: Number of loop integrals: }10$$
 
-```
+```mathematica
 (*{{1500, {-7, 1, 1, 9, 1}}, {1500, {-6, 0, 2, 8, 1}}, 
  {1500, {-6, 1, 1, 8, 1}}, {1500, {-6, 1, 2, 8, 1}}, 
  {1500, {-5, -1, 3, 7, 1}}, {1500, {-5, 0, 2, 7, 1}}, 

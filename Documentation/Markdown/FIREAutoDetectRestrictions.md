@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## FIREAutoDetectRestrictions
 
 `FIREAutoDetectRestrictions` is an option for `FIREPrepareStartFile` and other functions of the FIRE interface.

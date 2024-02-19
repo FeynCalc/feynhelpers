@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## FIREParallel
 
 `FIREParallel` is an option for `FIREPrepareStartFile` and other functions of the FIRE interface.

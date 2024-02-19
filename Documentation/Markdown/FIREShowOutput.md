@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## FIREShowOutput
 
 `FIREShowOutput` is an option for `FIRECreateStartFile` and other FIRE-related functions.

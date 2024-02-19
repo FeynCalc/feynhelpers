@@ -18,7 +18,7 @@ LToolsLoadLibrary[]
 
 $$\text{LoopTools library loaded.}$$
 
-```
+```mathematica
 (* ====================================================
    FF 2.0, a package to evaluate one-loop integrals
  written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam

@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## KiraRunReduction
 
 `KiraRunReduction[path]` runs Kira on the job  file specified by path.  To that aim the Kira binary is started in the background via `RunProcess`. The function returns `True` if the evaluation succeeds and `False` otherwise.

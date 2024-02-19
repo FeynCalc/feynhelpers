@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## FSAGPUIntegration
 
 `FSAGPUIntegration` is an option for `FSAPrepareMathematicaScripts` and other functions of the FIESTA interface.

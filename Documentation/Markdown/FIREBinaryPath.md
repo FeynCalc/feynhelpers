@@ -1,9 +1,5 @@
 ![1klto42084vx8](img/1klto42084vx8.svg)
 
-```mathematica
- 
-```
-
 ## FIREBinaryPath
 
 `FIREBinaryPath` is an option for `FIRERunReduction`. It specifies the full path to the C++ FIRE binary.

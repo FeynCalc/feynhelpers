@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## KiraMassDimensions
 
 `KiraMassDimensions` is an option for `KiraCreateConfigFiles` and other functions of the Kira interface.

@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## KiraJobFileName
 
 `KiraJobFileName` is an option for `KiraCreateJobFile` and other functions of the Kira interface.

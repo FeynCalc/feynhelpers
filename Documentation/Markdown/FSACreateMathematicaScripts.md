@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## FSACreateMathematicaScripts
 
 `FSACreateMathematicaScripts[int, topo, path]` creates a Mathematica script  needed for the evaluation of the integral `int` (in the `GLI` representation) belonging to the topology `topo`. The files are saved to the directory `path/topoNameXindices`. The function returns a list of two strings that point to the script for FIESTA and the output file.

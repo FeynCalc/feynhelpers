@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## KiraShowOutput
 
 `KiraShowOutput` is an option for `KiraRunReduction` and other Kira-related functions.

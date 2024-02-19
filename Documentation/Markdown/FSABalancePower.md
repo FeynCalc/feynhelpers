@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## FSABalancePower
 
 `FSABalancePower` is an option for `FSAPrepareMathematicaScripts` and other functions of the FIESTA interface.

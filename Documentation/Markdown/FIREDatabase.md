@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## FIREDatabase
 
 `FIREDatabase` is an option for `FIRECreateConfigFile` and other functions of the FIRE interface.

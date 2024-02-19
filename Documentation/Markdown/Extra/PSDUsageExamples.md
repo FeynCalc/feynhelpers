@@ -13,7 +13,7 @@ The main high-level function of this interface is called `PSDCreatePythonScripts
 
 Here is a simple 1-loop example that incorporates all of the above
 
-```
+```mathematica
 int = GLI[prop1L, {1, 1}]
 topo = FCTopology[prop1L, {FAD[{p1, m1}], FAD[{p1 + q, m2}]}, {p1}, {q}, {Hold[SPD][q] -> qq}, {}]
 files = PSDCreatePythonScripts[int, topo, NotebookDirectory[], 
@@ -22,13 +22,13 @@ files = PSDCreatePythonScripts[int, topo, NotebookDirectory[],
 
 The output is a list containing two elements which are full paths to the two pySecDec script files `generate_int.py` and `integrate_int.py`. You can now switch to the terminal, enter the corresponding directory and perform the integral evaluation by first running
 
-```
+```mathematica
 python generate_int.py
 ```
 
 Here is a sample output of this script
 
-```
+```mathematica
 running "sum_package" for loopint
 running "make_package" for "loopint_integral"
 computing Jacobian determinant for primary sector 0
@@ -45,7 +45,7 @@ expanding the prefactor exp(EulerGamma*eps)*gamma(eps) (regulators: [eps] , orde
 
 Now you need to compile the generated library files. This can be done via
 
-```
+```mathematica
 make -j8 -C loopint
 ```
 
@@ -53,7 +53,7 @@ where 8 stands for the number threads to be run simultaneously. It depends on ho
 
 Finally, entering
 
-```
+```mathematica
 python integrate_int.py
 ```
 
@@ -63,6 +63,6 @@ modify those values without the need to recompile the libraries by simply editin
 For Mathematica users the file `numres_*_mma.m` is probably the most useful one. You can load the content of this file into your Mathematica session using the function `PSDLoadNumericalResults`. To that aim you just need to give it
 the output of `PSDCreatePythonScripts` and set the options `PSDRealParameterRules` and `PSDComplexParameterRules` to the same values that were used when invoking `PSDCreatePythonScripts`
 
-```
+```mathematica
 PSDLoadNumericalResults[files, PSDRealParameterRules -> {qq -> 1., m1 -> 2., m2 -> 3.}]
 ```

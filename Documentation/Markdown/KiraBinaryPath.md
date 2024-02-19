@@ -1,7 +1,3 @@
-```mathematica
- 
-```
-
 ## KiraBinaryPath
 
 `KiraBinaryPath` is an option for `KiraRunReduction` and other Kira-related functions.

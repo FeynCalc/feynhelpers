@@ -36,7 +36,7 @@ PaXEvaluate[%]
   
  
 
-```
+```mathematica
 
 $$\text{C}_0\left(0,p^2,p^2,0,0,M\right)$$
 
