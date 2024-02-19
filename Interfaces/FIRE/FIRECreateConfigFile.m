@@ -140,6 +140,7 @@ Options[FIRECreateConfigFile] = {
 	FIREFthreads		:> 2*$ProcessorCount,
 	FIRELthreads		-> 4,
 	FIREIntegrals		-> "LoopIntegrals.m",
+	FIREOutput			-> Default,
 	FIREPosPref			-> Default,
 	FIREUseLiteRed		-> True,
 	FIRESthreads		:> $ProcessorCount,
@@ -168,7 +169,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, dirRaw_String, opts:OptionsPattern[]] :
 	FIRECreateConfigFile[topoRaw, 4242, dirRaw, opts];
 
 FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]] :=
-	Block[{	topo, optNames, newNames, res, vars, id, topoName, dir,
+	Block[{	topo, optNames, newNames, res, vars, id, topoName, dir, optFIREOutput,
 			file, filePath, optOverwriteTarget, status, x, optFIREBucket,
 			optFIRECompressor, optFIREFthreads, optFIRELthreads, optFIREUseLiteRed,
 			optFIREPosPref, optFIRESthreads, optFIREThreads, optFIREProblemId,
@@ -194,6 +195,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 		optFIREThreads		= OptionValue[FIREThreads];
 		optFIREIntegrals	= OptionValue[FIREIntegrals];
 		optFIREUseLiteRed	= OptionValue[FIREUseLiteRed];
+		optFIREOutput		= OptionValue[FIREOutput];
 
 		FCPrint[1,"FIRECreateConfigFile: Entering.", FCDoControl->fpsfVerbose];
 		FCPrint[3,"FIRECreateConfigFile: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
@@ -363,7 +365,11 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 				""
 			],
 			"#integrals " <> optFIREIntegrals,
-			"#output "<>topoName<>".tables"
+			If[	optFIREOutput===Default,
+				"#output "<>topoName<>".tables",
+				"#output "<>optFIREOutput
+			],
+			"\n"
 		};
 
 		configString = StringRiffle[configString /. "" -> Unevaluated[Sequence[]],"\n"];

@@ -29,12 +29,12 @@ The default path to the FIRE package is FileNameJoin[{$UserBaseDirectory,
 option FIREPath.";
 
 FIREAutoDetectRestrictions::usage =
-"FIREAutoDetectRestrictions is an option for FIREPrepareStartFile and other
-functions of the FIRE interface.
+"FIREParallel is an option for FIREPrepareStartFile and other functions of the
+FIRE interface.
 
-It specifies the value of the AutoDetectRestrictions option when running
-FIRE's Prepare command. The
-default value is True.";
+It specifies whether the preparation of start or sbases files should be
+parallelized. The default value is 2 meaning that 2 parallel kernels will be
+used for this task.";
 
 FIREParallel::usage =
 "FIREParallel is an option for FIREPrepareStartFile and other functions of the
@@ -45,12 +45,10 @@ parallelized. The default value is 2 meaning that 2 parallel kernels will be
 used for this task.";
 
 FIRELI::usage =
-"FIRELI is an option for FIREPrepareStartFile and other functions of the FIRE
-interface.
+"FIREProblemId is an option for FIREPrepareStartFile and other functions of the
+FIRE interface.
 
-It specifies the value of the LI option when running FIRE's Prepare command.
-The
-default value is True.";
+It specifies the problem ID for the reduction. The default value is 4242.";
 
 FIREUseLiteRed::usage =
 "FIREUseLiteRed is an option for FIREPrepareStartFile and other functions of
@@ -131,8 +129,8 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 		FCPrint[3,"FIREPrepareStartFile: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
 
 		If[	OptionValue[FCI],
-			topo = topoRaw,
-			topo = FCI[topoRaw]
+			topo = FRH[topoRaw],
+			topo = FCI[FRH[topoRaw]]
 		];
 
 		(* This is necessary to account for scalar products defined via downvalues *)
@@ -188,13 +186,10 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 
 		FCPrint[3, "FIREPrepareStartFile: Output of FCLoopPropagatorsToTopology: ", propagators, FCDoControl->fpsfVerbose];
 
-		(*	Warning, do not apply FRH to the kinematics, otherwise it will get messed up by the downvalues.	*)
-		{propagators, replacements} =  {propagators, topo[[5]]} /. {
-			Hold[SPD][a_, b_] -> a b,
-			Hold[CSPD][a_, b_] -> a b,
-			Pair[Momentum[a_,d_:4],Momentum[b_,d_:4]] -> a b,
+		{propagators, replacements} =  {propagators, FRH[topo[[5]]]} /. {
+			Pair[Momentum[a_,___],Momentum[b_,___]] -> a b,
 			CartesianPair[CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b,
-			Hold[Pair][Momentum[a_,d_:4],Momentum[b_,d_:4]] -> a b,
+			Hold[Pair][Momentum[a_,___],Momentum[b_,___]] -> a b,
 			Hold[CartesianPair][CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b
 		};
 
@@ -339,9 +334,68 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 
 		Close[file];
 
-		filePath
+		If[	optFIREUseLiteRed,
+				filePathLR = FileNameJoin[{dir,"CreateLiteRedFiles.m"}];
+
+				FCPrint[3,"FIREPrepareStartFile: LiteRed script path: ", filePathLR, FCDoControl->fpsfVerbose];
+
+				If[	FileExistsQ[filePathLR] && !optOverwriteTarget,
+					Message[FIREPrepareStartFile::failmsg, "The file ", filePathLR, " already exists and the option OverwriteTarget is set to False."];
+					Abort[]
+				];
+
+				fileLR = OpenWrite[filePathLR];
+				If[	fileLR===$Failed,
+					Message[FIREPrepareStartFile::failmsg, "Failed to open ", filePathLR, " for writing."];
+					Abort[]
+				];
+
+
+				lrFileString = {
+					If[	OptionValue[DateString],
+						WriteString[fileLR, "(* Generated on "<> DateString[] <>" *)\n\n"],
+						""
+					],
+					"SetDirectory[FileNameJoin[{DirectoryName["<> ToString[optFIREPath,InputForm] <> "],\"extra\",\"LiteRed\",\"Setup\"}]];\n",
+					"Get[\"LiteRed.m\"];\n",
+					"\n\n",
+					"Get["<> ToString[optFIREPath,InputForm]  <>"];\n",
+					"\n\n",
+					"If[$FrontEnd===Null,\n",
+					"  projectDirectory=DirectoryName[$InputFileName],\n",
+					"  projectDirectory=NotebookDirectory[]\n",
+					"];\n",
+					"SetDirectory[projectDirectory];\n",
+					"Print[\"Working directory: \", projectDirectory];\n",
+					"\n\n",
+					"Internal=" <> ToString[internal,InputForm] <> ";\n",
+					"External=" <> ToString[external,InputForm] <> ";\n",
+					"Propagators=" <> ToString[propagators,InputForm] <> ";\n",
+					"Replacements=" <> ToString[replacements,InputForm] <> ";\n",
+					"Quiet[CreateNewBasis[topology, Directory->FileNameJoin[{Directory[],\"LR\"}]], {DiskSave::overwrite,DiskSave::dir}];\n",
+					"Quiet[GenerateIBP[topology], FrontEndObject::notavail];\n",
+					"Quiet[AnalyzeSectors[topology], FrontEndObject::notavail];\n",
+					"Quiet[FindSymmetries[topology, EMs->True], FrontEndObject::notavail];\n",
+					"Quiet[DiskSave[topology], {DiskSave::overwrite,DiskSave::dir}];\n"
+				};
+
+
+				If[	optStringReplace=!={},
+					lrFileString = StringReplace[lrFileString,optStringReplace];
+				];
+
+				lrFileString = StringJoin[lrFileString];
+
+				WriteString[fileLR, lrFileString];
+
+				Close[fileLR];
+		];
+
+		If[	TrueQ[optFIREUseLiteRed],
+			{filePath,filePathLR},
+			filePath
+		]
+
 	];
-
-
 
 End[]
