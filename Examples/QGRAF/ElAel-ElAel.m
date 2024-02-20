@@ -31,7 +31,6 @@ If[ $Notebooks === False,
 ];
 $LoadAddOns={"FeynHelpers"};
 <<FeynCalc`
-$FAVerbose = 0;
 
 FCCheckVersion[10,0,0];
 

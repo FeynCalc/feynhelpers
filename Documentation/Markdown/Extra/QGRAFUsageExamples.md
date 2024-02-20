@@ -1,5 +1,7 @@
 ## QGRAF usage examples
 
+### Generic approach
+
 The main idea behind the FeynHelpers interface to QGRAF is to facilitate the generation of Feynman diagrams using QGRAF and the subsequent conversion of the obtained amplitudes into the FeynCalc notation.
 
 The main high-level function of this interface is called `QGCreateAmp`. In the simplest case we need to provide following arguments and options
@@ -29,12 +31,12 @@ QGFieldStyles->{{"Ga","photon","\\gamma"},
 ```
 we can create a file containing the styling for the fields present in our model, so that the diagrams will look nice. Then, 
 
-```
+```mathematica
 QGTZFCreateTeXFiles[qgOutput,Split->True];
 ```
 will generate a TeX file for each of the diagrams located in `FileNameJoin[{$FeynCalcDirectory,"Database","ElAelToElAelAt1L","TeX"}]]`. Provided that we have `GNU parallel` and `pdfunite` installed, we can now switch to the terminal, enter the corresponding directory and generate the diagrams via
 
-```
+```mathematica
 ./makeDiagrams.sh
 ./glueDiagrams.sh
 ```
@@ -54,3 +56,54 @@ amps=QGConvertToFC[qgOutput,DiracChainJoin->True];
 ```
 
 we obtain the list of our amplitudes ready for a subsequent evaluation within FeynCalc.
+
+### Custom models
+
+The following example shows how to generate diagrams for a custom $\phi^4$-model, where we write our own model file and implement the corresponding Feynman rules.
+
+The process of writing new models is explained in the QGRAF manual. The only special feature required for a FeynCalc is a custom function in the propagators called `mass` that encodes the mass of the particles. A model for the real scalar field with quartic self-interactions can be implemented as follows
+
+```mathematica
+[ model = 'phi^4' ]
+
+% Propagators:
+[Phi, Phi, +; mass='mphi']
+
+% Vertices:
+[Phi,  Phi,  Phi, Phi]
+```
+
+We need to introduce Feynman rules for the external states, propagators and vertices. Notice that in the case of vertices all momenta should be ingoing. The corresponding model file and the collection of insertions are located in 
+`FileNameJoin[{$FeynHelpersDirectory,"Documentation","Examples","Phi4}];` When using QGRAF via the FeynHelpers interface we need to specify the full path to those files. For example,
+
+```mathematica
+qgModel=FileNameJoin[{$FeynHelpersDirectory,"Documentation",
+"Examples","Phi4","Phi4"}];
+
+qgInsertions=FileNameJoin[{$FeynHelpersDirectory,"Documentation",
+"Examples","Phi4","Insertions-Phi4.m"}];
+
+qgOutput=QGCreateAmp[1,{"Phi[p1]","Phi[p2]"}->{"Phi[p3]","Phi[p4]"},
+QGModel->qgModel, QGLoopMomentum->l,QGOptions->{"notadpole","onshell"},
+QGOutputDirectory->FileNameJoin[{$FeynCalcDirectory,"Database","PhiPhiToPhiPhiAt1L"}]];
+
+tikzStyles=QGTZFCreateFieldStyles[qgModel,qgOutput,
+QGFieldStyles->{{"Phi","scalar","\\phi"}}];
+
+QGTZFCreateTeXFiles[qgOutput,Split->True];
+
+QGLoadInsertions[qgInsertions]
+
+amps=QGConvertToFC[qgOutput,DiracChainJoin->True,QGInsertionRule->{FileBaseName[qgInsertions]}]//SMPToSymbol;
+
+amps
+```
+
+
+
+
+
+
+
+
+

@@ -168,7 +168,8 @@ QGCreateAmp[nLoops_Integer?NonNegative, Rule[inFields_List, outFields_List], Opt
 			optQGShowOutput, pathQGAmplitudeStyle, pathQGDiagramStyle, pathQGModel,
 			pathQGOutputAmplitudes, pathQGOutputDiagrams, pathQGInputFile,
 			pathQGOutputAmplitudesTemporary, pathQGModelTemporary, status,
-			pathQGAmplitudeStyleTemporary, pathQGDiagramStyleTemporary, pathQGOutputDiagramsTemporary},
+			pathQGAmplitudeStyleTemporary, pathQGDiagramStyleTemporary,
+			pathQGOutputDiagramsTemporary},
 
 		optQGAmplitudeStyle 				= OptionValue[QGAmplitudeStyle];
 		optQGDiagramStyle 					= OptionValue[QGDiagramStyle];

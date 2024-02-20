@@ -1,0 +1,9 @@
+[ model = 'phi^4' ]
+
+% Propagators:
+
+[Phi, Phi, +; mass='mphi']
+
+% Vertices:
+
+[Phi,  Phi,  Phi, Phi]

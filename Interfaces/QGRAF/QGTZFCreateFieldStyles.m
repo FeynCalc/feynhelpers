@@ -23,7 +23,7 @@ The stylings can be generated in a semi-automatic fashion but for higher
 quality results it is recommended to provide the necessary information for
 each field via the option QGFieldStyles. It is a list of lists, where each
 sublist contains the field name (e.g. El), its type (e.g. photon, boson,
-fermion, anti fermion etc.) and its T EX label (e.g \\\gamma).";
+fermion, anti fermion etc.) and its T EX label.";
 
 QGFieldStyles::usage=
 "QGFieldStyles is an option for QGTZFCreateFieldStyles, which specifies the

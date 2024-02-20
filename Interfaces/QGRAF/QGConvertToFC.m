@@ -93,6 +93,11 @@ QGConvertToFC[ampsPath_String, OptionsPattern[]] :=
 		FCPrint[1,"QGConvertToFC: Entering.", FCDoControl->qgcVerbose];
 		FCPrint[3,"QGConvertToFC: Entering with: ", amps, FCDoControl->qgcVerbose];
 
+		If[	Head[optQGInsertionRule]=!=List,
+			Message[QGConvertToFC::fail, "The value of the option QGInsertionRule must be a list."];
+			Abort[]
+		];
+
 		If[	!FreeQ[Head/@(QGInsertionRule/@optQGInsertionRule),QGInsertionRule],
 			Message[QGConvertToFC::fail,"Some of the specified insertion rules have not been loaded yet."];
 		];
