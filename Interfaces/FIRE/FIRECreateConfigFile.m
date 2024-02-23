@@ -116,6 +116,13 @@ FIRE interface.
 It specifies the #integrals parameter to be set in a FIRE .config file. The
 default value is \"LoopIntegrals.m\".";
 
+FIREOutput::usage=
+"FIREShowOutput is an option for FIRECreateConfigFile and other FIRE-related
+functions.
+
+It specifies the #output parameter to be set in a FIRE .config file. When set
+to Default, the file name is just the name of topology preceded by \".config\"";
+
 FIRECreateConfigFile::failmsg =
 "Error! FIRECreateConfigFile has encountered a fatal problem and must abort the computation. \
 The problem reads: `1`";
@@ -391,7 +398,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 		WriteString[file, configString];
 		Close[file];
 
-		FCPrint[0,"FIRECreateConfigFile: Created .config file for ", topoName, FCDoControl->fpsfVerbose];
+		FCPrint[0,"FIRECreateConfigFile: Created .config file "<> FileNameTake[filePath] <> " for ", topoName, FCDoControl->fpsfVerbose];
 
 
 		filePath
