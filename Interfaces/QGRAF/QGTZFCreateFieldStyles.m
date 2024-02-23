@@ -132,26 +132,28 @@ QGTZFCreateFieldStyles[modelRaw_String/;modelRaw=!="", outputRaw_String, Options
 		fermionicTikzSetString =	StringJoin[StringRiffle[Flatten[Map[{"qg" <> # <> "EdgeName/.style={edge label=" <> # <> "}"} &,
 			fermionicFields]], ",\n"]];
 
-
+(*
 		tikzFeynmanSetString	= Join[{tikzFeynmanSetString,bosonicTikzFeynmanSetString,fermionicTikzFeynmanSetString}];
 		tikzSetString			= Join[{tikzSetString,bosonicTikzSetString,fermionicTikzSetString}];
-
+*)
 		finalPrologString = {
 			"\n",
 			"\\tikzfeynmanset{",
-			tikzFeynmanSetString,
+			tikzFeynmanSetString<>",",
 			bosonicTikzFeynmanSetString,
 			fermionicTikzFeynmanSetString,
 			"}",
 			"\n",
 			"\\tikzset{",
-			tikzSetString,
+			tikzSetString<>",",
 			bosonicTikzSetString,
 			fermionicTikzSetString,
 			"}"
 		};
 
 		finalPrologString = StringRiffle[Flatten[finalPrologString] /. "" -> Unevaluated[Sequence[]],"\n"];
+
+		FCPrint[3,"QGTZFCreateFieldStyles: Output: ", finalPrologString, FCDoControl->qgtzfcfsVerbose];
 
 		FCPrint[1,"QGTZFCreateFieldStyles: Saving the output.", FCDoControl->qgtzfcfsVerbose];
 		time = AbsoluteTime[];

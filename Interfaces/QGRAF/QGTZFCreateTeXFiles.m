@@ -79,7 +79,7 @@ Options[QGTZFCreateTeXFiles] = {
 	},
 	"QGTZFTeXPrologStandalone"		-> {
 		"% !TeX program = lualatex",
-		"\\documentclass[tikz]{standalone}",
+		"\\documentclass[tikz, border={2mm 2mm 2mm 2mm}]{standalone}",
 		"\\usepackage[utf8]{inputenc}",
 		"\\usepackage{amsmath}",
 		"\\usepackage[compat=1.1.0]{tikz-feynman}"
