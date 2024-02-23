@@ -1,0 +1,30 @@
+(* :Title: QGTZFCreateFieldStyles.test										*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2021-2024 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for QGTZFCreateFieldStyles	*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`QGRAF`QGTZFCreateFieldStyles =
+({
+{"QGTZFCreateFieldStyles-ID1",
+"outDir=QGTZFCreateFieldStyles[\"QEDOneFlavor\",$TemporaryDirectory]; \n
+(Import[outDir,\"Text\"])===(Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",
+\"QGRAF\",\"Samples\",\"qed-tikz-styles-v1.tex\"}],\"Text\"])", "True"},
+
+{"QGTZFCreateFieldStyles-ID2",
+"outDir=QGTZFCreateFieldStyles[\"QEDOneFlavor\",$TemporaryDirectory,
+QGFieldStyles->{{\"Ga\",\"photon\",\"\\\\gamma\"},
+{\"El\",\"fermion\",\"e^-\"},
+{\"Ael\",\"anti fermion\",\"e^+\"}}]; \n
+(Import[outDir,\"Text\"])===(Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",
+\"QGRAF\",\"Samples\",\"qed-tikz-styles-v2.tex\"}],\"Text\"])", "True"},
+{"QGTZFCreateFieldStyles-ID3",
+"outDir=QGTZFCreateFieldStyles[\"QCDOneFlavor\",$TemporaryDirectory]; \n
+(Import[outDir,\"Text\"])===(Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",
+\"QGRAF\",\"Samples\",\"qcd-tikz-styles-v1.tex\"}],\"Text\"])", "True"}
+});

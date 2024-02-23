@@ -1,6 +1,6 @@
 kinematics:
   incoming_momenta: [q]
-  outgoing_momenta: [q]
+  outgoing_momenta: []
   momentum_conservation: []
   kinematic_invariants:
     - [mb, 1]

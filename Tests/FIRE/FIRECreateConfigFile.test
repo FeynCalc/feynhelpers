@@ -15,7 +15,7 @@ Tests`FIRE`FIRECreateConfigFile =
 "outDir=FIRECreateConfigFile[FCTopology[prop2LtopoG10,{SFAD[{{I*p1,\
 0},{-m3^2,-1},1}],SFAD[{{I*(p1+q1),0},{0,-1},1}],SFAD[{{I*p3,0},{0,-1}\
 ,1}],SFAD[{{I*(p3+q1),0},{0,-1},1}],SFAD[{{I*(p1-p3),0},{0,-1},1}]},{\
-p1,p3},{q1},{SPD[q1,q1]->m1^2},{}],$TemporaryDirectory];\
+p1,p3},{q1},{SPD[q1,q1]->m1^2},{}],$TemporaryDirectory,FCVerbose->-1];\
 \[IndentingNewLine]Import[outDir,\"Text\"]===\[IndentingNewLine]\
 Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",\"FIRE\",\"\
 Samples\",\"prop2LtopoG10-v1.config\"}],\"Text\"]", "True"},
@@ -24,7 +24,7 @@ Samples\",\"prop2LtopoG10-v1.config\"}],\"Text\"]", "True"},
 0},{-m3^2,-1},1}],SFAD[{{I*(p1+q1),0},{0,-1},1}],SFAD[{{I*p3,0},{0,-1}\
 ,1}],SFAD[{{I*(p3+q1),0},{0,-1},1}],SFAD[{{I*(p1-p3),0},{0,-1},1}]},{\
 p1,p3},{q1},{SPD[q1,q1]->m1^2},{}],$TemporaryDirectory,\
-FIREThreads->16];\[IndentingNewLine]Import[outDir,\"Text\"]\
+FIREThreads->16,FCVerbose->-1];\[IndentingNewLine]Import[outDir,\"Text\"]\
 ===\[IndentingNewLine]Import[FileNameJoin[{$FeynHelpersDirectory,\"\
 Tests\",\"FIRE\",\"Samples\",\"prop2LtopoG10-v2.config\"}],\"Text\"]",
 	"True"},
@@ -32,17 +32,16 @@ Tests\",\"FIRE\",\"Samples\",\"prop2LtopoG10-v2.config\"}],\"Text\"]",
 "outDir=FIRECreateConfigFile[FCTopology[prop2LtopoG10,{SFAD[{{I*p1,\
 0},{-m3^2,-1},1}],SFAD[{{I*(p1+q1),0},{0,-1},1}],SFAD[{{I*p3,0},{0,-1}\
 ,1}],SFAD[{{I*(p3+q1),0},{0,-1},1}],SFAD[{{I*(p1-p3),0},{0,-1},1}]},{\
-p1,p3},{q1},{SPD[q1,q1]->m1^2},{}],$TemporaryDirectory,\
-FIRECompressor->Default];\[IndentingNewLine]Import[outDir,\"Text\"]\
+p1,p3},{q1},{SPD[q1,q1]->m1^2},{}],$TemporaryDirectory,\n
+FIRECompressor->Default,FCVerbose->-1];\[IndentingNewLine]Import[outDir,\"Text\"]\
 ===\[IndentingNewLine]Import[FileNameJoin[{$FeynHelpersDirectory,\"\
 Tests\",\"FIRE\",\"Samples\",\"prop2LtopoG10-v3.config\"}],\"Text\"]",
 	"True"},
 {"FIRECreateConfigFile-ID4",
 "outDir=FIRECreateConfigFile[FCTopology[prop2LtopoG10,{SFAD[{{I*p1,\
-0},{-m3^2,-1},1}],SFAD[{{I*(p1+q1),0},{0,-1},1}],SFAD[{{I*p3,0},{0,-1}\
-,1}],SFAD[{{I*(p3+q1),0},{0,-1},1}],SFAD[{{I*(p1-p3),0},{0,-1},1}]},{\
-p1,p3},{q1},{SPD[q1,q1]->m1^2},{}],104,$TemporaryDirectory];\
-\[IndentingNewLine]Import[outDir,\"Text\"]===\[IndentingNewLine]\
-Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",\"FIRE\",\"\
-Samples\",\"prop2LtopoG10-v4.config\"}],\"Text\"]", "False"}
+0},{-m3^2,-1},1}],SFAD[{{I*(p1+q1),0},{0,-1},1}],SFAD[{{I*p3,0},{0,-1},1}],
+SFAD[{{I*(p3+q1),0},{0,-1},1}],SFAD[{{I*(p1-p3),0},{0,-1},1}]},
+{p1,p3},{q1},{SPD[q1,q1]->m1^2},{}],104,$TemporaryDirectory,FCVerbose->-1];\n
+Import[outDir,\"Text\"]===Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",\"FIRE\",\"\
+Samples\",\"prop2LtopoG10-v4.config\"}],\"Text\"]", "True"}
 });

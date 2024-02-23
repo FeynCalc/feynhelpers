@@ -22,7 +22,7 @@ asyR2prop2Ltopo01013X11111N1, {SFAD[{{(-I)*p3, 0}, {0, -1}, 1}],
 	SFAD[{{(-I)*(p1 + q), 0}, {-mb^2, -1}, 1}],
 	GFAD[{{SPD[p1, -p1 + 2*p3] - SPD[p3, p3], -1}, 1}]}, {p1,
 	p3}, {q}, {SPD[q, q] -> mb^2}, {}], $TemporaryDirectory,
-FSAParameterRules -> {mb -> 1}, FSAOrderInEps -> 2]; \n
+FSAParameterRules -> {mb -> 1}, FSAOrderInEps -> 2, OverwriteTarget->True]; \n
 Import[outDir[[1]], \"Text\"] ===
 Import[FileNameJoin[{$FeynHelpersDirectory, \"Tests\", \"FIESTA\",
 	\"Samples\", \"FiestaScript_asyR2prop2Ltopo01013X11111N1X11111.m\"}],

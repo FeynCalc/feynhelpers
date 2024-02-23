@@ -47,6 +47,9 @@ QGLoopMomentum->l,QGOptions->{"notadpole","onshell"},
 QGOutputDirectory->FileNameJoin[{$FeynCalcDirectory,"Database","GlToGlAt2L"}]];
 
 
+QGTZFCreateFieldStyles["QCDOneFlavor",$TemporaryDirectory]
+
+
 tikzStyles=QGTZFCreateFieldStyles[qgModel,qgOutput,
 QGFieldStyles->{{"Gl","gluon","g"},
 {"Gh","fermion","c"},
@@ -55,7 +58,9 @@ QGFieldStyles->{{"Gl","gluon","g"},
 {"Qbar","anti fermion","\\bar{q}"}}];
 
 
-QGTZFCreateTeXFiles[qgOutput,Split->True];
+QGTZFCreateTeXFiles["/media/Data/Projects/VS/FeynCalc/FeynCalc/AddOns/FeynHelpers/Tests/QGRAF/Samples/qcd-diagrams-v1.tex",
+Split->False,QGDiagramStyle->"/media/Data/Projects/VS/FeynCalc/FeynCalc/AddOns/FeynHelpers/Tests/QGRAF/Samples/qcd-tikz-styles-v1.tex",
+QGOutputDiagrams->FileNameJoin[{$TemporaryDirectory,"fctmp.tex"}]]
 
 
 QGLoadInsertions["QGCommonInsertions.m"];

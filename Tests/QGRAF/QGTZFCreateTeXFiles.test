@@ -1,0 +1,22 @@
+(* :Title: QGTZFCreateTeXFiles.test											*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2021-2024 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for QGTZFCreateTeXFiles		*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`QGRAF`QGTZFCreateTeXFiles =
+({
+{"QGTZFCreateTeXFiles-ID1",
+"outFile=QGTZFCreateTeXFiles[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",
+\"QGRAF\",\"Samples\",\"qcd-diagrams-raw-v1.tex\"}],Split->False,QGDiagramStyle->FileNameJoin[{$FeynHelpersDirectory,
+\"Tests\",\"QGRAF\",\"Samples\",\"qcd-tikz-styles-v1.tex\"}],QGOutputDiagrams->FileNameJoin[{$TemporaryDirectory,
+\"fctmp.tex\"}]];\n
+(Import[outFile,\"Text\"])===(Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",
+\"QGRAF\",\"Samples\",\"qcd-diagrams-v1.tex\"}],\"Text\"])", "True"}
+});
+

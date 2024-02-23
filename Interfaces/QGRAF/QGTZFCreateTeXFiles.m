@@ -30,7 +30,7 @@ The styling file contains stylings for the involved fields defined up via
 tikzset and tikzfeynmanset. This file can be generated in advance using
 QGTZFCreateFieldStyles in a semi-automatic fashion.
 
-The resulting T EX code is saved to the same directory as the input file. 
+The resulting T EX code is saved to the same directory as the input file.
 When the option Split is set to False (default), all diagrams are put into a
 single tex file called  diagrams.tex. Compiling this file with lualatex can
 take some time,  which is why this approach is recommended only for a small
@@ -97,7 +97,7 @@ QGTZFCreateTeXFiles[{(*amps*)_String, dias_String}, opts:OptionsPattern[]] :=
 
 QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 	Block[{	importedFile, time, diagramsRaw, prolog, diagrams, optNames,
-			optOverwriteTarget, status, texPrologEpilog,
+			optOverwriteTarget, status, texPrologEpilog, optQGOutputDiagrams,
 			finalTeXString, optAlignment, texStyle, optStringSplit, optCopyFile,
 			optSplit, output, styleFile, optQGDiagramStyle},
 
@@ -117,6 +117,7 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 		optOverwriteTarget				= OptionValue[OverwriteTarget];
 		optTadpoleOrientation			= OptionValue["TadpoleOrientation"];
 		optTadpoleMinDistance			= OptionValue["TadpoleMinDistance"];
+		optQGOutputDiagrams				= OptionValue[QGOutputDiagrams];
 
 		FCPrint[1,"QGTZFCreateTeXFiles: Entering. ", FCDoControl->qgtzfctxVerbose];
 
@@ -137,7 +138,12 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 
 		If[	TrueQ[optSplit],
 			output = DirectoryName[input],
-			output = FileNameJoin[{DirectoryName[input],OptionValue[QGOutputDiagrams]}]
+			If[	TrueQ[DirectoryQ[DirectoryName[optQGOutputDiagrams]]],
+				(*This directory actually exists*)
+				output = optQGOutputDiagrams,
+				(*It is a subdirectory *)
+				output = FileNameJoin[{DirectoryName[input],OptionValue[QGOutputDiagrams]}]
+			]
 		];
 
 		FCPrint[1,"QGTZFCreateTeXFiles: Importig the style file.", FCDoControl->qgtzfctxVerbose];
