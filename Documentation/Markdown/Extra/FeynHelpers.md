@@ -4,13 +4,17 @@ FeynHelpers is a collection of interfaces that allow you to use other HEP-relate
 
 - [How to cite this package and the related tools](Cite.md)
 - [Installation instructions](Install.md)
-- [Tensor reduction with Fermat](TensorReductionWithFermat.md)
 
 ## Tutorials
 
-- [FIESTA usage examples](FiestaUsageExamples.md)  - a small tutorial on using the FIESTA interface
-- [pySecDec usage examples](PSDUsageExamples.md) - a small tutorial on using the pySecDec interface
-- [QGRAF usage examples](QGRAFUsageExamples.md) - a small tutorial on using the QFRAF interface
+- [FIESTA usage examples](FiestaUsageExamples.md)
+- [FIRE usage examples](FireUsageExamples.md)
+- [KIRA usage examples](KiraUsageExamples.md)
+- [LoopTools usage examples](LoopToolsUsageExamples.md)
+- [Package-X usage examples](PackageXUsageExamples.md)
+- [pySecDec usage examples](PSDUsageExamples.md)
+- [QGRAF usage examples](QGRAFUsageExamples.md)
+- [Tensor reduction with Fermat](TensorReductionWithFermat.md)
 
 ## Generic functions and symbols
 
@@ -55,7 +59,7 @@ FeynHelpers is a collection of interfaces that allow you to use other HEP-relate
 ## Mathematica FIRE interface
 
 - [FIREBurn](../FIREBurn.md) - reduced the given integral using Mathematica version of FIRE
-- [FIREAddPropagators](../FIREAddPropagators.md), [FIREConfigFiles](../FIREConfigFiles.md), [FIREPath](../FIREPath.md), [FIRERun](../FIRERun.md), [FIRESilentMode](../FIRESilentMode.md), [FIREStartFile](../FIREStartFile.md), [FIREUsingFermat](../FIREUsingFermat.md) - options of functions related to the Mathematica FIRE interface
+- [FIREAddPropagators](../FIREAddPropagators.md), [FIREConfigFiles](../FIREConfigFiles.md), [FIREOutput](../FIREOutput.md), [FIREPath](../FIREPath.md), [FIRERun](../FIRERun.md), [FIRESilentMode](../FIRESilentMode.md), [FIREStartFile](../FIREStartFile.md), [FIREUsingFermat](../FIREUsingFermat.md) - options of functions related to the Mathematica FIRE interface
 
 ## Kira interface
 

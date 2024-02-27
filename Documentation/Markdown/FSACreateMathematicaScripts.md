@@ -1,6 +1,6 @@
 ## FSACreateMathematicaScripts
 
-`FSACreateMathematicaScripts[int, topo, path]` creates a Mathematica script  needed for the evaluation of the integral `int` (in the `GLI` representation) belonging to the topology `topo`. The files are saved to the directory `path/topoNameXindices`. The function returns a list of two strings that point to the script for FIESTA and the output file.
+`FSACreateMathematicaScripts[int, topo, path]` creates a Mathematica script needed for the evaluation of the integral `int` (in the `GLI` representation) belonging to the topology `topo`. The files are saved to the directory `path/topoNameXindices`. The function returns a list of two strings that point to the script for FIESTA and the output file.
 
 One can also use the `FeynAmpDenominator`-representation as in `FSACreateMathematicaScripts[fadInt, lmoms, path]`, where `lmoms` is the list of the loop momenta on which `fadInt` depends. In this case the FIESTA script will directly go into `path`.
 
@@ -10,7 +10,7 @@ Unless you are computing a single scale integral with the scale variable set to 
 
 Another important option that you most likely would like to specify is `FSAOrderInEps` which specifies the order in $\varepsilon$ up to which the integral should be evaluated.
 
-The names of the FIESTA script can be changed via the option `FSAScriptFileName with the default value being `FIESTAScript.m`.
+The names of the FIESTA script can be changed via the option `FSAScriptFileName` with the default value being `FIESTAScript.m`.
 
 The integrator used for the numerical evaluation of the integral is set by the option `FSAIntegrator`, where `"quasiMonteCarlo"` is the default value. Accordingly, if you want to increase the number of iterations, you should use the option `FSAIntegratorOptions`.
 
@@ -40,7 +40,7 @@ fileNames = FSACreateMathematicaScripts[int1, topo1, FileNameJoin[{$FeynCalcDire
     FinalSubstitutions -> {SPD[q] -> qq, qq -> 20. , m1 -> 2. , m2 -> 2.}];
 ```
 
-![15bie2p9wh0uq](img/15bie2p9wh0uq.svg)
+![1eo5wsq2ojuzs](img/1eo5wsq2ojuzs.svg)
 
 $$\text{\$Aborted}$$
 
@@ -48,9 +48,9 @@ $$\text{\$Aborted}$$
 fileNames[[1]] // FilePrint[#, 1 ;; 20] &
 ```
 
-![17rauzqegivvs](img/17rauzqegivvs.svg)
+![0atqy5p84j6p9](img/0atqy5p84j6p9.svg)
 
-![0jjbj48wa80cb](img/0jjbj48wa80cb.svg)
+![0rcz2tphdg2rt](img/0rcz2tphdg2rt.svg)
 
 $$\text{FilePrint}[\text{fileNames}[[1]],1\text{;;}20]$$
 
@@ -65,7 +65,7 @@ fileNames = FSACreateMathematicaScripts[SFAD[{I p, {-m^2, -1}}], {p}, FileNameJo
     FinalSubstitutions -> {m -> 1.}];
 ```
 
-![1fewa4926cnb4](img/1fewa4926cnb4.svg)
+![1rzhy3960bfmw](img/1rzhy3960bfmw.svg)
 
 $$\text{\$Aborted}$$
 
@@ -73,9 +73,9 @@ $$\text{\$Aborted}$$
 fileNames[[1]] // FilePrint[#, 1 ;; 20] &
 ```
 
-![0xax37b3to6o9](img/0xax37b3to6o9.svg)
+![04volbxbplnim](img/04volbxbplnim.svg)
 
-![0zgw7om8p0zoz](img/0zgw7om8p0zoz.svg)
+![1u3kvusck6g4t](img/1u3kvusck6g4t.svg)
 
 $$\text{FilePrint}[\text{fileNames}[[1]],1\text{;;}20]$$
 
@@ -88,6 +88,6 @@ FSACreateMathematicaScripts[GLI[asyR2prop2Ltopo01013X11111N1, {1, 1, 1, 1, 1}],
    FSAParameterRules -> {mb -> 1}, FSAOrderInEps -> 2];
 ```
 
-![0iax3lha5f3x2](img/0iax3lha5f3x2.svg)
+![0ufeuds32147o](img/0ufeuds32147o.svg)
 
 $$\text{\$Aborted}$$

@@ -41,6 +41,3 @@ PaXEvaluate[%,l,PaXImplicitPrefactor->1/(2 Pi)^(4-2 Epsilon)]
 
 PaVe[0, {0, Pair[Momentum[p, D], Momentum[p, D]],Pair[Momentum[p, D], Momentum[p, D]]}, {0, 0, M}]
 PaXEvaluate[%]
-
-
-

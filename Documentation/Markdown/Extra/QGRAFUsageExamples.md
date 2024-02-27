@@ -29,11 +29,13 @@ QGFieldStyles->{{"Ga","photon","\\gamma"},
 {"El","fermion","e^-"},
 {"Ael","anti fermion","e^+"}}];
 ```
-we can create a file containing the styling for the fields present in our model, so that the diagrams will look nice. Then, 
+
+we can create a file containing the styling for the fields present in our model, so that the diagrams will look nice. Then,
 
 ```mathematica
 QGTZFCreateTeXFiles[qgOutput,Split->True];
 ```
+
 will generate a TeX file for each of the diagrams located in `FileNameJoin[{$FeynCalcDirectory,"Database","ElAelToElAelAt1L","TeX"}]]`. Provided that we have `GNU parallel` and `pdfunite` installed, we can now switch to the terminal, enter the corresponding directory and generate the diagrams via
 
 ```mathematica
@@ -43,7 +45,7 @@ will generate a TeX file for each of the diagrams located in `FileNameJoin[{$Fey
 
 If everything goes as expected, this will give us a file `allDiagrams.pdf` containing all the generated diagrams.
 
-Coming back to the analytic part of the calculation, we need to load the list of Feynman rules for the vertices and propagators present in the generated amplitudes. Again, FeynHelpers contains a built-in collection of Feynman rules that can be loaded using 
+Coming back to the analytic part of the calculation, we need to load the list of Feynman rules for the vertices and propagators present in the generated amplitudes. Again, FeynHelpers contains a built-in collection of Feynman rules that can be loaded using
 
 ```mathematica
 QGLoadInsertions["QGCommonInsertions.m"];
@@ -73,8 +75,7 @@ The process of writing new models is explained in the QGRAF manual. The only spe
 [Phi,  Phi,  Phi, Phi]
 ```
 
-We need to introduce Feynman rules for the external states, propagators and vertices. Notice that in the case of vertices all momenta should be ingoing. The corresponding model file and the collection of insertions are located in 
-`FileNameJoin[{$FeynHelpersDirectory,"Documentation","Examples","Phi4}];` When using QGRAF via the FeynHelpers interface we need to specify the full path to those files. For example,
+We need to introduce Feynman rules for the external states, propagators and vertices. Notice that in the case of vertices all momenta should be ingoing. The corresponding model file and the collection of insertions are located in `FileNameJoin[{$FeynHelpersDirectory,"Documentation","Examples","Phi4}];` When using QGRAF via the FeynHelpers interface we need to specify the full path to those files. For example,
 
 ```mathematica
 qgModel=FileNameJoin[{$FeynHelpersDirectory,"Documentation",
@@ -98,12 +99,3 @@ amps=QGConvertToFC[qgOutput,DiracChainJoin->True,QGInsertionRule->{FileBaseName[
 
 amps
 ```
-
-
-
-
-
-
-
-
-

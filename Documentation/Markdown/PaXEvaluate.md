@@ -32,11 +32,8 @@ $$\frac{i}{16 \pi ^2 \varepsilon }+\frac{i \log \left(-\frac{4 \pi  \mu ^2}{q^2}
 
 ```mathematica
 PaVe[0, {0, Pair[Momentum[p, D], Momentum[p, D]], Pair[Momentum[p, D], Momentum[p, D]]}, {0, 0, M}]
-PaXEvaluate[%] 
-  
- 
-
-```mathematica
+PaXEvaluate[%]
+```
 
 $$\text{C}_0\left(0,p^2,p^2,0,0,M\right)$$
 
