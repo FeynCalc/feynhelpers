@@ -39,7 +39,8 @@ kirVerbose::usage="";
 Options[KiraImportResults] = {
 	FCI				-> False,
 	FCReplaceD		-> {ToExpression["Global`d"]->D},
-	FCVerbose		-> False
+	FCVerbose		-> False,
+	KiraIntegrals	-> "KiraLoopIntegrals"
 };
 
 KiraImportResults[topos:{__String}, filePathRaw_String, opts:OptionsPattern[]] :=
@@ -49,7 +50,8 @@ KiraImportResults[topos:{__FCTopology}, filePathRaw_String, opts:OptionsPattern[
 	KiraImportResults[#[[1]],filePathRaw,opts]&/@topos;
 
 KiraImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, OptionsPattern[]] :=
-	Block[{	res, tmp, tableData, repRule, path, time, optFCReplaceD, gliInts, gli},
+	Block[{	res, tmp, tableData, repRule, path, time, optFCReplaceD,
+			gliInts, gli, optKiraIntegrals},
 
 		If[	OptionValue[FCVerbose]===False,
 			kirVerbose=$VeryVerbose,
@@ -59,6 +61,7 @@ KiraImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, O
 		];
 
 		optFCReplaceD = OptionValue[FCReplaceD];
+		optKiraIntegrals = OptionValue[KiraIntegrals];
 
 		FCPrint[1,"KiraImportResults: Entering.", FCDoControl->kirVerbose];
 
@@ -66,7 +69,7 @@ KiraImportResults[topoName_/;!MatchQ[topoName,{__FCTopology}], pathRaw_String, O
 			FileExistsQ[pathRaw] && !DirectoryQ[pathRaw],
 				path = pathRaw,
 			FileExistsQ[pathRaw] && DirectoryQ[pathRaw],
-				path = FileNameJoin[{pathRaw,ToString[topoName],"results",ToString[topoName],"kira_" <> ToString[topoName] <> ".m"}];
+				path = FileNameJoin[{pathRaw,ToString[topoName],"results",ToString[topoName],"kira_" <> optKiraIntegrals <> ".m"}];
 				If[	!FileExistsQ[path],
 					Message[KiraImportResults::failmsg, "File not found: " <> path];
 					Abort[]
