@@ -129,13 +129,14 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 		FCPrint[3,"FIREPrepareStartFile: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
 
 		If[	OptionValue[FCI],
-			topo = FRH[topoRaw],
-			topo = FCI[FRH[topoRaw]]
+			topo = topoRaw,
+			topo = FCI[topoRaw]
 		];
 
+		(*
 		(* This is necessary to account for scalar products defined via downvalues *)
 		topo[[5]] = Map[Head[#][#[[1]],FRH[#[[2]]]]&, topo[[5]] ];
-
+		*)
 		If[ OptionValue[Check],
 			FCPrint[1, "FIREPrepareStartFile: Checking the correctness of topologies.", FCDoControl->fpsfVerbose];
 			time=AbsoluteTime[];
@@ -186,7 +187,9 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 
 		FCPrint[3, "FIREPrepareStartFile: Output of FCLoopPropagatorsToTopology: ", propagators, FCDoControl->fpsfVerbose];
 
-		{propagators, replacements} =  {propagators, FRH[topo[[5]]]} /. {
+		{propagators, replacements} =  {propagators, topo[[5]]} /. {
+			Hold[SPD][a_, b_] -> a b,
+			Hold[CSPD][a_, b_] -> a b,
 			Pair[Momentum[a_,___],Momentum[b_,___]] -> a b,
 			CartesianPair[CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b,
 			Hold[Pair][Momentum[a_,___],Momentum[b_,___]] -> a b,
