@@ -122,7 +122,7 @@ QGTZFCreateFieldStyles[modelRaw_String/;modelRaw=!="", outputRaw_String, Options
 
 		bosonicTikzFeynmanSetString = StringJoin[StringRiffle[Flatten[Map[{"qg" <> # <> "Name/.style={particle=" <> # <> "}",
 			"qg" <> # <> "Style/.style={boson}"} &, bosonicFields]], ",\n"]];
-
+		Global`HH = bosonicTikzFeynmanSetString;
 		fermionicTikzFeynmanSetString = StringJoin[StringRiffle[Flatten[Map[{"qg" <> # <> "Name/.style={particle=" <> # <> "}",
 			"qg" <> # <> "Style/.style={fermion}"} &, fermionicFields]], ",\n"]];
 
@@ -132,24 +132,40 @@ QGTZFCreateFieldStyles[modelRaw_String/;modelRaw=!="", outputRaw_String, Options
 		fermionicTikzSetString =	StringJoin[StringRiffle[Flatten[Map[{"qg" <> # <> "EdgeName/.style={edge label=" <> # <> "}"} &,
 			fermionicFields]], ",\n"]];
 
-(*
-		tikzFeynmanSetString	= Join[{tikzFeynmanSetString,bosonicTikzFeynmanSetString,fermionicTikzFeynmanSetString}];
-		tikzSetString			= Join[{tikzSetString,bosonicTikzSetString,fermionicTikzSetString}];
-*)
 		finalPrologString = {
 			"\n",
 			"\\tikzfeynmanset{",
-			tikzFeynmanSetString<>",",
-			bosonicTikzFeynmanSetString,
-			fermionicTikzFeynmanSetString,
+			"qgMomentumArrowStyle/.style n args={2}{{momentum={[arrow style=red, arrow shorten=0.35]{\\tiny \(#1\)}}}},",
+			If[	tikzFeynmanSetString=!="",
+				tikzFeynmanSetString<>",",
+				Unevaluated[Sequence[]]
+			],
+			If[	bosonicTikzFeynmanSetString=!="",
+				bosonicTikzFeynmanSetString<>",",
+				Unevaluated[Sequence[]]
+			],
+			If[	fermionicTikzFeynmanSetString=!="",
+				fermionicTikzFeynmanSetString<>",",
+				Unevaluated[Sequence[]]
+			],
 			"}",
 			"\n",
 			"\\tikzset{",
-			tikzSetString<>",",
-			bosonicTikzSetString,
-			fermionicTikzSetString,
+			If[	tikzSetString=!="",
+				tikzSetString<>",",
+				Unevaluated[Sequence[]]
+			],
+			If[	bosonicTikzSetString=!="",
+				bosonicTikzSetString<>",",
+				Unevaluated[Sequence[]]
+			],
+			If[	fermionicTikzSetString=!="",
+				fermionicTikzSetString<>",",
+				Unevaluated[Sequence[]]
+			],
 			"}"
 		};
+		Global`VV  = bosonicTikzSetString;
 
 		finalPrologString = StringRiffle[Flatten[finalPrologString] /. "" -> Unevaluated[Sequence[]],"\n"];
 

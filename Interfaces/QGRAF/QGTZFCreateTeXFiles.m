@@ -30,7 +30,7 @@ The styling file contains stylings for the involved fields defined up via
 tikzset and tikzfeynmanset. This file can be generated in advance using
 QGTZFCreateFieldStyles in a semi-automatic fashion.
 
-The resulting T EX code is saved to the same directory as the input file. 
+The resulting T EX code is saved to the same directory as the input file.
 When the option Split is set to False (default), all diagrams are put into a
 single tex file called  diagrams.tex. Compiling this file with lualatex can
 take some time,  which is why this approach is recommended only for a small
@@ -86,6 +86,12 @@ Options[QGTZFCreateTeXFiles] = {
 	},
 	"TadpoleOrientation" 			-> {"135","45"},
 	"TadpoleMinDistance" 			-> {"2cm"},
+	StringReplace 	-> {
+		"p1"->"p_1","p2"->"p_2","p3"->"p_3","p4"->"p_4","p5"->"p_5",
+		"k1"->"k_1","k2"->"k_2","k3"->"k_3","k4"->"k_4","k5"->"k_5",
+		"l1"->"l_1","l2"->"l_2","l3"->"l_3","l4"->"l_4","l5"->"l_5",
+		"q1"->"q_1","q2"->"q_2","q3"->"q_3","q4"->"q_4","q5"->"q_5"
+	},
 	QGOutputDiagrams				-> "diagrams.tex",
 	QGDiagramStyle					-> "tikz-styles.tex",
 	Split							-> False,
@@ -99,7 +105,7 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 	Block[{	importedFile, time, diagramsRaw, prolog, diagrams, optNames,
 			optOverwriteTarget, status, texPrologEpilog, optQGOutputDiagrams,
 			finalTeXString, optAlignment, texStyle, optStringSplit, optCopyFile,
-			optSplit, output, styleFile, optQGDiagramStyle},
+			optSplit, output, styleFile, optQGDiagramStyle, optStringReplace},
 
 		If [OptionValue[FCVerbose]===False,
 			qgtzfctxVerbose=$VeryVerbose,
@@ -118,6 +124,7 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 		optTadpoleOrientation			= OptionValue["TadpoleOrientation"];
 		optTadpoleMinDistance			= OptionValue["TadpoleMinDistance"];
 		optQGOutputDiagrams				= OptionValue[QGOutputDiagrams];
+		optStringReplace				= OptionValue[StringReplace];
 
 		FCPrint[1,"QGTZFCreateTeXFiles: Entering. ", FCDoControl->qgtzfctxVerbose];
 
@@ -184,6 +191,10 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 		time = AbsoluteTime[];
 		diagrams = fixSELoopsTikz /@ diagramsRaw;
 		FCPrint[1, "QGTZFCreateTeXFiles: Done fixing collapsing loops, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->qgtzfctxVerbose];
+
+		If[optStringReplace=!={},
+			diagrams = StringReplace[diagrams,optStringReplace]
+		];
 
 		FCPrint[1,"QGTZFCreateTeXFiles: Saving the output.", FCDoControl->qgtzfctxVerbose];
 		time = AbsoluteTime[];

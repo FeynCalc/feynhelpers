@@ -15,7 +15,6 @@ Tests`QGRAF`QGTZFCreateFieldStyles =
 "outDir=QGTZFCreateFieldStyles[\"QEDOneFlavor\",$TemporaryDirectory]; \n
 (Import[outDir,\"Text\"])===(Import[FileNameJoin[{$FeynHelpersDirectory,\"Tests\",
 \"QGRAF\",\"Samples\",\"qed-tikz-styles-v1.tex\"}],\"Text\"])", "True"},
-
 {"QGTZFCreateFieldStyles-ID2",
 "outDir=QGTZFCreateFieldStyles[\"QEDOneFlavor\",$TemporaryDirectory,
 QGFieldStyles->{{\"Ga\",\"photon\",\"\\\\gamma\"},

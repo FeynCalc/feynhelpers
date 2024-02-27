@@ -24,7 +24,7 @@ QGOutputDirectory->FileNameJoin[{$FeynCalcDirectory,"Database","ElAelToElAelAt1L
 The output is a list containing two elements which are full paths to the two files `amplitudes.m` and `diagrams-raw.tex`. Since QGRAF has no built-in capabilities for visualizing the generated Feynman diagrams, we need to use extra tools for this task. The most convenient way to do this is to employ `lualatex` together with the TikZ-Feyman package. By evaluating 
 
 ```mathematica
-tikzStyles=QGTZFCreateFieldStyles[qgModel,"QEDOneFlavor",
+tikzStyles=QGTZFCreateFieldStyles["QEDOneFlavor", qgOutput,
 QGFieldStyles->{{"Ga","photon","\\gamma"},
 {"El","fermion","e^-"},
 {"Ael","anti fermion","e^+"}}];
@@ -44,6 +44,9 @@ will generate a TeX file for each of the diagrams located in `FileNameJoin[{$Fey
 ```
 
 If everything goes as expected, this will give us a file `allDiagrams.pdf` containing all the generated diagrams.
+
+If one wants to visualize the momentum flow through the diagrams, one can use a special style when calling `QGCreateAmp`. This is done by setting the option `QGDiagramStyle` to `tikz-feynman-momentumflow.sty`.
+
 
 Coming back to the analytic part of the calculation, we need to load the list of Feynman rules for the vertices and propagators present in the generated amplitudes. Again, FeynHelpers contains a built-in collection of Feynman rules that can be loaded using
 

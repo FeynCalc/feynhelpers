@@ -104,12 +104,11 @@ FeynCalc`Package`qdLoadFileFrom[fileString_String, dirToCheck_String]:=
 		If[	TrueQ[FileNameTake[fileString] === fileString],
 			(* only the filename was given *)
 			Which[
+				FileExistsQ[FileNameJoin[{dirToCheck,fileString}]],
+				finalPath = FileNameJoin[{dirToCheck,fileString}],
 
 				FileExistsQ[FileNameJoin[{Directory[],fileString}]],
 				finalPath = FileNameJoin[{Directory[],fileString}],
-
-				FileExistsQ[FileNameJoin[{dirToCheck,fileString}]],
-				finalPath = FileNameJoin[{dirToCheck,fileString}],
 
 				True,
 				Message[QGShared::failmsg,"The file " <> fileString <> " does not exist."];
