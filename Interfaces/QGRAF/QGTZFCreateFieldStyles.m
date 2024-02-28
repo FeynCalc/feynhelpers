@@ -122,7 +122,7 @@ QGTZFCreateFieldStyles[modelRaw_String/;modelRaw=!="", outputRaw_String, Options
 
 		bosonicTikzFeynmanSetString = StringJoin[StringRiffle[Flatten[Map[{"qg" <> # <> "Name/.style={particle=" <> # <> "}",
 			"qg" <> # <> "Style/.style={boson}"} &, bosonicFields]], ",\n"]];
-		Global`HH = bosonicTikzFeynmanSetString;
+
 		fermionicTikzFeynmanSetString = StringJoin[StringRiffle[Flatten[Map[{"qg" <> # <> "Name/.style={particle=" <> # <> "}",
 			"qg" <> # <> "Style/.style={fermion}"} &, fermionicFields]], ",\n"]];
 
@@ -165,7 +165,6 @@ QGTZFCreateFieldStyles[modelRaw_String/;modelRaw=!="", outputRaw_String, Options
 			],
 			"}"
 		};
-		Global`VV  = bosonicTikzSetString;
 
 		finalPrologString = StringRiffle[Flatten[finalPrologString] /. "" -> Unevaluated[Sequence[]],"\n"];
 
