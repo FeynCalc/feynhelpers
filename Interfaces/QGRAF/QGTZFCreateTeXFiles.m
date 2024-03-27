@@ -153,7 +153,7 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 			]
 		];
 
-		FCPrint[1,"QGTZFCreateTeXFiles: Importig the style file.", FCDoControl->qgtzfctxVerbose];
+		FCPrint[1,"QGTZFCreateTeXFiles: Importig the style file ", styleFile ,FCDoControl->qgtzfctxVerbose];
 		time = AbsoluteTime[];
 		texStyle = Import[styleFile, "String"];
 
@@ -163,7 +163,7 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 		];
 		FCPrint[1, "QGTZFCreateTeXFiles: Done importing the style file, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->qgtzfctxVerbose];
 
-		FCPrint[1,"QGTZFCreateTeXFiles: Importig the input file.", FCDoControl->qgtzfctxVerbose];
+		FCPrint[1,"QGTZFCreateTeXFiles: Importig the input file ",input, FCDoControl->qgtzfctxVerbose];
 		time = AbsoluteTime[];
 		importedFile = Import[input, "String"];
 
@@ -178,9 +178,8 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 		time = AbsoluteTime[];
 		diagramsRaw = StringSplit[importedFile, optStringSplit];
 
-
 		If[	Length[diagramsRaw]<2,
-			Message[QGTZFCreateTeXFiles::fail,"Something went wrong when splitting the input file."];
+			Message[QGTZFCreateTeXFiles::fail,"Something went wrong when splitting the input file or no diagrams were generated."];
 			Abort[]
 		];
 		FCPrint[1, "QGTZFCreateTeXFiles: Done splitting the input file, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->qgtzfctxVerbose];
