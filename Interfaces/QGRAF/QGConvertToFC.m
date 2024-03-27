@@ -136,7 +136,7 @@ QGConvertToFC[ampsPath_String, OptionsPattern[]] :=
 		ampsConverted= ampsConverted /. Dispatch[repRuleHeads];
 
 		If[	!FreeQ2[ampsConverted, optHeads],
-			Print["Warning! Some insertion rules are missing."]
+			FCPrint[0, "QGConvertToFC: ",FeynCalc`Package`FCStyle["Warning! Some insertion rules are missing.", {Darker[Red,0.55], Bold}], FCDoControl->qgcVerbose]
 		];
 
 		ampsConverted = prefactor ampsConverted;
