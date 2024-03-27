@@ -327,8 +327,8 @@ FSACreateMathematicaScripts[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /; !
 			Abort[];
 		];
 
-		If[	!(optFSAParameterRules==={} || MatchQ[optFSAParameterRules,{Rule[_,_?NumberQ]..}]),
-			Message[FSACreateMathematicaScripts::failmsg, "Incorrect value of the FSAParameterRules option."];
+		If[	!(optFSARegVar===Default || MatchQ[optFSARegVar,_Symbol]),
+			Message[FSACreateMathematicaScripts::failmsg, "Incorrect value of the FSARegVar option."];
 			Abort[];
 		];
 
@@ -337,8 +337,8 @@ FSACreateMathematicaScripts[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /; !
 			Abort[];
 		];
 
-		If[	!(optFSARegVar===Default || MatchQ[optFSARegVar,_Symbol]),
-			Message[FSACreateMathematicaScripts::failmsg, "Incorrect value of the FSARegVar option."];
+		If[	!(optFSAParameterRules==={} || MatchQ[SelectFree[optFSAParameterRules,optFSARegVar,optFSAExpandVar],{Rule[_,_?NumberQ]..}]),
+			Message[FSACreateMathematicaScripts::failmsg, "Incorrect value of the FSAParameterRules option."];
 			Abort[];
 		];
 
@@ -468,7 +468,7 @@ FSACreateMathematicaScripts[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /; !
 			(*TODO*)
 			{parameters, parameterValues} = N[Transpose[List@@@optFSAParameterRules],OptionValue[N]];
 			FCPrint[1,"FSACreateMathematicaScripts: parameterValues:  ", optFSAParameterRules, FCDoControl->fspsVerbose];
-			If[	!MatchQ[parameterValues,{__?NumberQ}],
+			If[	!MatchQ[SelectFree[parameterValues,optFSAExpandVar],{__?NumberQ}],
 				Message[FSACreateMathematicaScripts::failmsg, "Failed to generate the list of numerical values for the parameters."];
 				Abort[];
 			],
