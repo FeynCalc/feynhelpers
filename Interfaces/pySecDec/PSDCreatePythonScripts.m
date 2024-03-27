@@ -172,6 +172,7 @@ Begin["`PSDCreatePythonScripts`Private`"]
 psdpVerbose::usage="";
 
 Options[PSDCreatePythonScripts] = {
+	Check									-> True,
 	FCI										-> False,
 	FCReplaceD								-> {D->4-2 Epsilon},
 	FCVerbose								-> False,
@@ -266,20 +267,22 @@ PSDCreatePythonScripts[glis:{__GLI}, topos:{__FCTopology}, paths:{__String}, opt
 
 PSDCreatePythonScripts[glis:{__GLI}, topos:{__FCTopology}, path_String, opts:OptionsPattern[]] :=
 	Block[{toposOneToOne},
-		toposOneToOne=FCLoopSelectTopology[#,topos]&/@glis;
+		toposOneToOne=FCLoopSelectTopology[glis,topos,"OneToOneCorrespondence"->True];
 		MapThread[PSDCreatePythonScripts[#1,#2,path,opts]&,{glis,toposOneToOne}]
 	];
 
 PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_String, OptionsPattern[]] :=
 	Block[{	ex, loopPackage, loopIntegralFromPropagators, nLoops, optPSDLoopIntegralName, lmoms,
 			optPSDOutputDirectory, optPSDRequestedOrder, generateFileString, status,
-			optPSDGenerateFileName, optPSDIntegrateFileName, filePath, file,
+			optPSDGenerateFileName, optPSDIntegrateFileName, filePath, file, time, time0,
 			integratorString, integrationString, optPSDOverwritePackageDirectory, optPSDAdditionalPrefactor,
 			optOverwriteTarget, integrateFileString, numParamsReal, numParamsComplex, sumPackage,
 			optFinalSubstitutions, fp, vars, realParameters, optPSDExpansionByRegionsParameter,
 			complexParameters, optPSDRealParameterRules, extraPref, optPSDExpansionByRegionsOrder,
 			optPSDComplexParameterRules, realParameterValues, complexParameterValues, loopRegions, tmp, momHold,
-			fPar, rulesDVReal, rulesDVComplex, rulesDV, momHoldList, spDownValuesLhs},
+			fPar, rulesDVReal, rulesDVComplex, rulesDV, momHoldList, spDownValuesLhs, optCheck},
+
+		time0=AbsoluteTime[];
 
 		optPSDLoopIntegralName				= OptionValue[PSDLoopIntegralName];
 		optPSDOutputDirectory				= OptionValue[PSDOutputDirectory];
@@ -293,6 +296,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		optPSDExpansionByRegionsParameter	= OptionValue[PSDExpansionByRegionsParameter];
 		optPSDExpansionByRegionsOrder		= OptionValue[PSDExpansionByRegionsOrder];
 		optPSDAdditionalPrefactor			= OptionValue[PSDAdditionalPrefactor];
+		optCheck							= OptionValue[Check];
 
 		(*Need to validate all options first*)
 
@@ -357,11 +361,14 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 
 		optFinalSubstitutions = FRH[optFinalSubstitutions];
 
+		time=AbsoluteTime[];
+		FCPrint[1,"PSDCreatePythonScripts: Applying FCI.", FCDoControl->psdpVerbose];
 		If[	!OptionValue[FCI],
 			{ex, optFinalSubstitutions, optPSDRealParameterRules, optPSDComplexParameterRules} =
 				FCI[{expr, optFinalSubstitutions, optPSDRealParameterRules, optPSDComplexParameterRules}],
 			ex = expr
 		];
+		FCPrint[1,"PSDCreatePythonScripts: Done applying FCI, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->psdpVerbose];
 
 		FCPrint[1,"PSDCreatePythonScripts: Entering.", FCDoControl->psdpVerbose];
 		FCPrint[2,"PSDCreatePythonScripts: Entering with: ", ex, FCDoControl->psdpVerbose];
@@ -388,62 +395,54 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		FCPrint[2,"PSDCreatePythonScripts: Relevant loop momenta: ", lmoms, FCDoControl->psdpVerbose];
 
 		nLoops = Length[lmoms];
-		fPar = FCFeynmanPrepare[MomentumExpand[Abs[ex] /. Abs -> Identity]/. Momentum[x_, d___] /; ! MemberQ[lmoms, x] :>
-			Momentum[momHold[x], d], lmoms, Names -> fp, FCI->True,FinalSubstitutions->optFinalSubstitutions][[2]];
 
-		momHoldList = Union[Cases[fPar, (CartesianPair | Pair)[x__] /; ! FreeQ[{x}, momHold], Infinity]];
+		time=AbsoluteTime[];
+		FCPrint[1,"PSDCreatePythonScripts: Extracting kinematic invariants.", FCDoControl->psdpVerbose];
+		If[	optCheck,
 
-		FCPrint[2,"PSDCreatePythonScripts: List of all scalar products: ", momHoldList, FCDoControl->psdpVerbose];
+			fPar = FCFeynmanPrepare[MomentumExpand[Abs[ex] /. Abs -> Identity]/. Momentum[x_, d___] /; ! MemberQ[lmoms, x] :>
+				Momentum[momHold[x], d], lmoms, Names -> fp, FCI->True,FinalSubstitutions->optFinalSubstitutions][[2]];
 
-		(*Extract scalar products that have been set via down values*)
-		spDownValuesLhs = Map[If[FreeQ2[# /. momHold -> Identity, {Pair, CartesianPair}], # /. {Pair -> Hold[Pair],
-			CartesianPair -> Hold[CartesianPair]} /. momHold -> Identity, Unevaluated[Sequence[]]] &, momHoldList];
+			momHoldList = Union[Cases[fPar, (CartesianPair | Pair)[x__] /; ! FreeQ[{x}, momHold], Infinity]];
 
-		(*Remove scalar products set via the FinalSubstitutions option*)
-		spDownValuesLhs = Map[If[FreeQ2[# /. Hold -> Identity, {Pair, CartesianPair}], #, Unevaluated[Sequence[]]] &, spDownValuesLhs];
+			FCPrint[2,"PSDCreatePythonScripts: List of all scalar products: ", momHoldList, FCDoControl->psdpVerbose];
 
-		FCPrint[2,"PSDCreatePythonScripts: Scalar products specified via down values: ", spDownValuesLhs, FCDoControl->psdpVerbose];
+			(*Extract scalar products that have been set via down values*)
+			spDownValuesLhs = Map[If[FreeQ2[# /. momHold -> Identity, {Pair, CartesianPair}], # /. {Pair -> Hold[Pair],
+				CartesianPair -> Hold[CartesianPair]} /. momHold -> Identity, Unevaluated[Sequence[]]] &, momHoldList];
 
-		If[	!SubsetQ[$ScalarProducts, Union[spDownValuesLhs /. Hold[Pair | CartesianPair] ->  List /. (h : Momentum | CartesianMomentum)[xx_, ___] :> h[xx]]],
-			Message[PSDCreatePythonScripts::failmsg, "Missing some scalar products specified via down values."];
-			Abort[]
+			(*Remove scalar products set via the FinalSubstitutions option*)
+			spDownValuesLhs = Map[If[FreeQ2[# /. Hold -> Identity, {Pair, CartesianPair}], #, Unevaluated[Sequence[]]] &, spDownValuesLhs];
+
+			FCPrint[2,"PSDCreatePythonScripts: Scalar products specified via down values: ", spDownValuesLhs, FCDoControl->psdpVerbose];
+
+			If[	!SubsetQ[$ScalarProducts, Union[spDownValuesLhs /. Hold[Pair | CartesianPair] ->  List /. (h : Momentum | CartesianMomentum)[xx_, ___] :> h[xx]]],
+				Message[PSDCreatePythonScripts::failmsg, "Missing some scalar products specified via down values."];
+				Abort[]
+			];
+
+			rulesDV = Thread[Rule[spDownValuesLhs, spDownValuesLhs /. Hold -> Identity/. optFinalSubstitutions]];
+
+			FCPrint[2,"PSDCreatePythonScripts: Rules from down values: ", rulesDV, FCDoControl->psdpVerbose];
+
+			vars = SelectFree[Variables2[fPar/.momHold->Identity/.optFinalSubstitutions], fp],
+
+			vars = Join[First/@optPSDRealParameterRules, First/@optPSDComplexParameterRules];
+			rulesDV = {}
 		];
-
-		rulesDV = Thread[Rule[spDownValuesLhs, spDownValuesLhs /. Hold -> Identity/. optFinalSubstitutions]];
-
-		FCPrint[2,"PSDCreatePythonScripts: Rules from down values: ", rulesDV, FCDoControl->psdpVerbose];
-
-		vars = SelectFree[Variables2[fPar/.momHold->Identity/.optFinalSubstitutions], fp];
 
 		If[optFinalSubstitutions=!={},
 			vars = Variables2[{Last/@optFinalSubstitutions,vars}]
 		];
-		(*
-		If[	rulesDV=!={},
-			(*vars = Join[vars,Last/@rulesDV];*)
-			rulesDVReal = Select[rulesDV,FreeQ2[#[[2]],{Complex,I}]&];
-			rulesDVComplex = Complement[rulesDV,rulesDVReal];
+		FCPrint[1,"PSDCreatePythonScripts: Done extracting kinematic invariants, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->psdpVerbose];
 
-			FCPrint[2,"PSDCreatePythonScripts: Complex valued dv rules: ", rulesDVComplex, FCDoControl->psdpVerbose];
-			FCPrint[2,"PSDCreatePythonScripts: Real valued dv rules: ", rulesDVReal, FCDoControl->psdpVerbose];
 
-			(*If[	!(rulesDVReal==={} || MatchQ[rulesDVReal,{Rule[_,_?NumberQ]..}]),
-				Message[PSDCreatePythonScripts::failmsg, "Nonnumerical real-valued scalar product down values."];
-				Abort[];
-			];
-
-			If[	!(rulesDVComplex==={} || MatchQ[rulesDVComplex,{Rule[_,_?NumberQ]..}]),
-				Message[PSDCreatePythonScripts::failmsg, "Nonnumerical complex-valued scalar product down values.."];
-				Abort[];
-			];*)
-
-			optPSDRealParameterRules = Join[optPSDRealParameterRules,rulesDVReal];
-			optPSDComplexParameterRules = Join[optPSDComplexParameterRules,rulesDVComplex];
-
-		];*)
 
 		FCPrint[1,"PSDCreatePythonScripts: vars: ", vars, FCDoControl->psdpVerbose];
 
+
+		time=AbsoluteTime[];
+		FCPrint[1,"PSDCreatePythonScripts: Working out values of kinematic invariants.", FCDoControl->psdpVerbose];
 
 		FCPrint[2,"PSDCreatePythonScripts: Real parameter rules: ", optPSDRealParameterRules, FCDoControl->psdpVerbose];
 		FCPrint[2,"PSDCreatePythonScripts: Complex parameter rules: ", optPSDComplexParameterRules, FCDoControl->psdpVerbose];
@@ -486,10 +485,16 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 				FCPrint[0,"PSDCreatePythonScripts: Unspecified variables: ", Complement[vars, Union[realParameters, complexParameters]], FCDoControl->psdpVerbose];
 				Abort[];
 		];
+		FCPrint[1,"PSDCreatePythonScripts: Done working out values of kinematic invariants, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->psdpVerbose];
+
+
+		time=AbsoluteTime[];
+		FCPrint[1,"PSDCreatePythonScripts: Applying PSDLoopIntegralFromPropagators.", FCDoControl->psdpVerbose];
 
 		(*generate psd.LoopIntegralFromPropagators() *)
 		{loopIntegralFromPropagators, extraPref} = PSDLoopIntegralFromPropagators[ex, lmoms, FinalSubstitutions->Join[optFinalSubstitutions,rulesDV],
 			FCReplaceD->OptionValue[FCReplaceD]];
+		FCPrint[1,"PSDCreatePythonScripts: Done applying PSDLoopIntegralFromPropagators, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->psdpVerbose];
 
 		FCPrint[3,"PSDCreatePythonScripts: loopIntegralFromPropagators: ", loopIntegralFromPropagators, FCDoControl->psdpVerbose];
 		FCPrint[3,"PSDCreatePythonScripts: extraPref: ", extraPref, FCDoControl->psdpVerbose];
@@ -502,6 +507,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		If[	optPSDExpansionByRegionsParameter===None,
 
 			(*Normal mode*)
+			time=AbsoluteTime[];
 			FCPrint[1,"PSDCreatePythonScripts: Calling PSDLoopPackage", FCDoControl->psdpVerbose];
 			loopPackage = PSDLoopPackage[optPSDOutputDirectory, optPSDLoopIntegralName, optPSDRequestedOrder,
 				PSDAdditionalPrefactor		-> optPSDAdditionalPrefactor,
@@ -517,7 +523,9 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 				PSDRealParameters			-> realParameters,
 				PSDSplit					-> OptionValue[PSDSplit]
 			];
-			FCPrint[1,"PSDCreatePythonScripts: Done calling PSDLoopPackage.", FCDoControl->psdpVerbose],
+			FCPrint[1,"PSDCreatePythonScripts: Done calling PSDLoopPackage.", FCDoControl->psdpVerbose];
+			FCPrint[1,"PSDCreatePythonScripts: Done calling PSDLoopPackage, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->psdpVerbose];
+			,
 
 			(*Expansion by regions*)
 			FCPrint[1,"PSDCreatePythonScripts: Calling PSDLoopRegions", FCDoControl->psdpVerbose];
@@ -724,6 +732,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		Close[file];
 
 		FCPrint[1,"PSDCreatePythonScripts: Leaving.", FCDoControl->psdpVerbose];
+		FCPrint[1,"PSDCreatePythonScripts: Total timing: ", N[AbsoluteTime[] - time0, 4], FCDoControl->psdpVerbose];
 
 		Join[tmp,{filePath}]
 
