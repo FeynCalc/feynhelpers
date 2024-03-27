@@ -11,7 +11,8 @@ fcScriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 fcDiagrams=()
 
 nfiles=$(find ${fcScriptDir} -type f -name "*.pdf" | wc -l)
-readarray -d '' fcDiagrams < <(find ${fcScriptDir}/diagrams -type f -name "*.pdf" -print0 | sort -z);
+readarray -d '' fcDiagrams < <(find ${fcScriptDir}/diagrams -type f -name "*.pdf" -print0);
+fcDiagrams=($(printf "%s\n" "${fcDiagrams[@]}" | sort -V))
 
 sliceSize=100
 nSlices=$(($nfiles / $sliceSize))
