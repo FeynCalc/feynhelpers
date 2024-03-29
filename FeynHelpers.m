@@ -168,18 +168,20 @@ If[	TrueQ[FileExistsQ[FeynCalc`file] && FeynCalc`$FeynHelpersLastCommitDateHash 
 
 (* Print the startup message *)
 If[ $FeynCalcStartupMessages =!= False,
-	Print[Style["FeynHelpers ", "Text", Bold], Style[$FeynHelpersVersion <> " (" <> FeynCalc`$FeynHelpersLastCommitDateHash <>")" <> ", for more information see the accompanying ", "Text"],
-			Style[DisplayForm@ButtonBox["publication.", BaseStyle -> "Hyperlink",	ButtonFunction :>
-				SystemOpen[FileNameJoin[{$FeynHelpersDirectory,"Documentation","1611.06793.pdf"}]],
-				Evaluator -> Automatic, Method -> "Preemptive"], "Text"]];
-	Print[ Style["Have a look at the supplied ","Text"],
-
-	Style[DisplayForm@ButtonBox["examples.", BaseStyle -> "Hyperlink",	ButtonFunction :>
+	Print[Style["FeynHelpers ", "Text", Bold], Style[$FeynHelpersVersion <> " (" <> FeynCalc`$FeynHelpersLastCommitDateHash <>")" <> ". For help, use the ", "Text"],
+	Style[DisplayForm@ButtonBox["online documentation,", ButtonData :> {URL["https://feyncalc.github.io/referenceFeynHelpersDev"], None},BaseStyle -> "Hyperlink",
+				ButtonNote -> "https://feyncalc.github.io/referenceFeynHelpersDev"], "Text"],
+			Style[" visit the ", "Text"],
+			Style[DisplayForm@ButtonBox["forum", ButtonData :> {URL["https://github.com/FeynCalc/feyncalc/discussions"], None},BaseStyle -> "Hyperlink",
+				ButtonNote -> "https://github.com/FeynCalc/feyncalc/discussions/"],"Text"], Style[" and have a look at the supplied ","Text"],
+				Style[DisplayForm@ButtonBox["examples.", BaseStyle -> "Hyperlink",	ButtonFunction :>
 							SystemOpen[FileNameJoin[{$FeynHelpersDirectory, "Examples"}]],
 							Evaluator -> Automatic, Method -> "Preemptive"], "Text"],
-	Style[" If you use FeynHelpers in your research, please evaluate FeynHelpersHowToCite[] to learn how to correctly cite this work.","Text"]];
-
-
+			Style["The PDF-version of the manual can be downloaded ", "Text"],
+			Style[DisplayForm@ButtonBox["here.", ButtonData :> {URL["https://github.com/FeynCalc/feynhelpers-manual/releases/download/dev-manual/FeynHelpersManual.pdf"],
+				None},BaseStyle -> "Hyperlink",	ButtonNote -> "https://github.com/FeynCalc/feynhelpers-manual/releases/download/dev-manual/FeynHelpersManual.pdf"], "Text"]
+			];
+	Print[Style[" If you use FeynHelpers in your research, please evaluate FeynHelpersHowToCite[] to learn how to cite this work.","Text"]];
 ];
 
 FeynCalc`FeynHelpersHowToCite[]:=
