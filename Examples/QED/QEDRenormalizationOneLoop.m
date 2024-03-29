@@ -331,7 +331,7 @@ SPD[p2,p2]=SMP["m_e"]^2;
 (*Here we sandwich the amplitude between two spinors with 4-momenta p1 and p2.*)
 
 
-tmp[12]=SpinorUBarD[p2,SMP["m_e"]].ampVertex.SpinorUD[p1,SMP["m_e"]]//TID[#,
+tmp[12]=SpinorUBarD[p2,SMP["m_e"]] . ampVertex . SpinorUD[p1,SMP["m_e"]]//TID[#,
 l,UsePaVeBasis->True,ToPaVe->True]&//DiracSimplify;
 
 
@@ -347,8 +347,8 @@ Collect2[#,LorentzIndex]&
 (*and applying Gordon decomposition we can bring the expression to the form dictated by the Lorentz covariance.*)
 
 
-tmp[14]=(1/(SMP["e"] I)tmp[13]/.{FCI[FVD[p1p2,i_]SpinorUBarD[p2,m_].SpinorUBarD[p1,m_]]:>
-FCI[SpinorUBarD[p2,m].(2m GAD[i]-I DiracSigma[GAD[i],GSD[p2-p1]]).SpinorUD[p1,m]]})//
+tmp[14]=(1/(SMP["e"] I)tmp[13]/.{FCI[FVD[p1p2,i_]SpinorUBarD[p2,m_] . SpinorUBarD[p1,m_]]:>
+FCI[SpinorUBarD[p2,m] . (2m GAD[i]-I DiracSigma[GAD[i],GSD[p2-p1]]) . SpinorUD[p1,m]]})//
 DotSimplify//Collect2[#,LorentzIndex]&;
 
 
@@ -357,7 +357,7 @@ DotSimplify//Collect2[#,LorentzIndex]&;
 
 
 tmp[15]=Simplify[SelectNotFree2[tmp[14],DiracSigma]/
-FCI[I/(2SMP["m_e"])SpinorUBarD[p2,SMP["m_e"]].DiracSigma[GAD[Lor1],GSD[p2-p1]].SpinorUBarD[p1,SMP["m_e"]]]]
+FCI[I/(2SMP["m_e"])SpinorUBarD[p2,SMP["m_e"]] . DiracSigma[GAD[Lor1],GSD[p2-p1]] . SpinorUBarD[p1,SMP["m_e"]]]]
 
 
 (* ::Text:: *)
@@ -371,7 +371,7 @@ PaXEvaluateUVIRSplit[tmp[15]/.{FCI[SPD[p1,p2]]->SMP["m_e"]^2},PaXImplicitPrefact
 (*We need F_1(0) to recover the on-shell renormalization condition*)
 
 
-tmp[16]=Cancel[DotSimplify[(tmp[14]/.p2->p1)]/FCI[SpinorUBarD[p1,SMP["m_e"]]. GAD[Lor1].SpinorUD[p1,SMP["m_e"]]]]
+tmp[16]=Cancel[DotSimplify[(tmp[14]/.p2->p1)]/FCI[SpinorUBarD[p1,SMP["m_e"]] . GAD[Lor1] . SpinorUD[p1,SMP["m_e"]]]]
 
 
 tmp[17]=PaXEvaluateUVIRSplit[tmp[16],PaXImplicitPrefactor->1/(2Pi)^D,PaXAnalytic->True]//FCHideEpsilon
@@ -411,5 +411,5 @@ solMSbarLit={SMP["d_A^MSbar"] -> -(SMP["alpha_fs"]*SMP["Delta_UV"])/(3*Pi), SMP[
  SMP["d_psi^MSbar"] -> -(GaugeXi[V[1]]*SMP["alpha_fs"]*SMP["Delta_UV"])/(4*Pi)};
 
 
-Print["Check with the literature: ", If[Union[Flatten[{solOS-solOSLit,solMS-solMSLit,solMSbar-solMSbarLit}]]==={0},
+Print["Check with the literature: ", If[Union[Flatten[Simplify[{solOS-solOSLit,solMS-solMSLit,solMSbar-solMSbarLit}]]]==={0},
 		"CORRECT.", "!!! WRONG !!!"]];
