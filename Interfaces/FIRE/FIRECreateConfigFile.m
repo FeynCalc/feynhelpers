@@ -109,6 +109,13 @@ FIRE interface.
 It specifies the #bucket parameter to be set in a FIRE .config-file. The
 default value is 29.";
 
+FIRECalc::usage=
+"FIRECalc is an option for FIRECreateConfigFile and other functions of the FIRE
+interface.
+
+It specifies the #calc parameter to be set in a FIRE .config-file. The default
+value is \"flint\".";
+
 FIREIntegrals::usage=
 "FIREIntegrals is an option for FIRECreateConfigFile and other functions of the
 FIRE interface.
@@ -142,6 +149,7 @@ Options[FIRECreateConfigFile] = {
 	FCI					-> False,
 	FCVerbose			-> False,
 	FIREBucket			-> 29,
+	FIRECalc			-> "flint",
 	FIRECompressor		-> "zstd",
 	FIREDatabase		-> Default,
 	FIREFthreads		:> 2*$ProcessorCount,
@@ -180,7 +188,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 			file, filePath, optOverwriteTarget, status, x, optFIREBucket,
 			optFIRECompressor, optFIREFthreads, optFIRELthreads, optFIREUseLiteRed,
 			optFIREPosPref, optFIRESthreads, optFIREThreads, optFIREProblemId,
-			configString, optFIREIntegrals, optVariables, optFIREDatabase},
+			configString, optFIREIntegrals, optVariables, optFIREDatabase, optFIRECalc},
 
 		If[	OptionValue[FCVerbose]===False,
 			fpsfVerbose=$VeryVerbose,
@@ -193,6 +201,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 		optVariables		= OptionValue[Variables];
 
 		optFIREBucket		= OptionValue[FIREBucket];
+		optFIRECalc			= OptionValue[FIRECalc];
 		optFIRECompressor	= OptionValue[FIRECompressor];
 		optFIREDatabase		= OptionValue[FIREDatabase];
 		optFIREFthreads		= OptionValue[FIREFthreads];
@@ -249,6 +258,11 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 
 		If[ !(MemberQ[{"lz4", "lz4fast", "lz4hc", "zlib", "snappy", "zstd", "none"}, optFIRECompressor] || optFIRECompressor==Default),
 			Message[FIRECreateConfigFile::failmsg, "Incorrect value of the FIRECompressor option."];
+			Abort[];
+		];
+
+		If[ !(MemberQ[{"fermat", "flint", "symbolica"}, optFIRECalc] || optFIRECalc==Default),
+			Message[FIRECreateConfigFile::failmsg, "Incorrect value of the FIRECalc option."];
 			Abort[];
 		];
 
@@ -327,6 +341,10 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 
 
 		configString = {
+			If[	optFIRECalc=!=Default,
+				"#calc " <> optFIRECalc,
+				""
+			],
 			If[	optFIRECompressor=!=Default,
 				"#compressor " <> optFIRECompressor,
 				""
