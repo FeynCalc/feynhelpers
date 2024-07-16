@@ -49,6 +49,7 @@ Begin["`KiraCreateIntegralFile`Private`"]
 fpsfVerbose::usage="";
 
 Options[KiraCreateIntegralFile] = {
+	Check				-> True,
 	FCI					-> False,
 	FCVerbose			-> False,
 	KiraIntegrals		-> "KiraLoopIntegrals",
@@ -82,9 +83,11 @@ KiraCreateIntegralFile[expr_, topoRaw_FCTopology, dirRaw_String, OptionsPattern[
 			{ex, topo} = FCI[{expr, topoRaw}]
 		];
 
-		If[	!FCLoopValidTopologyQ[topo],
-			Message[KiraCreateIntegralFile::failmsg, "The supplied topology is incorrect."];
-			Abort[]
+		If[	OptionValue[Check],
+			If[	!FCLoopValidTopologyQ[topo],
+				Message[KiraCreateIntegralFile::failmsg, "The supplied topology is incorrect."];
+				Abort[]
+			];
 		];
 
 		topoName = topo[[1]];

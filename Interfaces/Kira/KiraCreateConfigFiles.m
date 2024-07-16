@@ -32,7 +32,7 @@ FCLoopFindSectors will be used to determine the top sector for each topology.
 
 The syntax  KiraCreateConfigFiles[{topo1, topo2, ...}, {sectors1, sectors2,
 ...}, path] or KiraCreateConfigFiles[{topo1, topo2, ...}, {glis1, glis2, ...},
- path] is also allowed. This implies that all config files will go into the
+path] is also allowed. This implies that all config files will go into the
 corresponding subdirectories of path, e.g. path/topoName1/config,
 path/topoName2/config etc.
 
@@ -103,6 +103,7 @@ Options[KiraCreateConfigFiles] = {
 	DateString					-> False,
 	FCI							-> False,
 	FCVerbose					-> False,
+	FinalSubstitutions			-> {},
 	OverwriteTarget				-> True,
 	KiraMassDimensions			-> {},
 	KiraIncomingMomenta			-> Automatic,
@@ -128,7 +129,8 @@ KiraCreateConfigFiles[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, dirRaw
 			propagators, dir, fPar, vars, fp, replacements, file, optOverwriteTarget, status,
 			optKiraMassDimensions, topoName, kinematicInvariants,scalarProductRules,
 			integralfamiliesPath, kinematicsPath, topoID, kiraGeneralProp,
-			optKiraIncomingMomenta, optKiraOutgoingMomenta, optKiraMomentumConservation},
+			optKiraIncomingMomenta, optKiraOutgoingMomenta, optKiraMomentumConservation,
+			optFinalSubstitutions},
 
 		If[	OptionValue[FCVerbose]===False,
 			fpsfVerbose=$VeryVerbose,
@@ -143,6 +145,7 @@ KiraCreateConfigFiles[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, dirRaw
 		optKiraIncomingMomenta			= OptionValue[KiraIncomingMomenta];
 		optKiraOutgoingMomenta			= OptionValue[KiraOutgoingMomenta];
 		optKiraMomentumConservation		= OptionValue[KiraMomentumConservation];
+		optFinalSubstitutions			= OptionValue[FinalSubstitutions];
 
 		FCPrint[1,"KiraCreateConfigFiles: Entering.", FCDoControl->fpsfVerbose];
 		FCPrint[3,"KiraCreateConfigFiles: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
@@ -212,6 +215,8 @@ KiraCreateConfigFiles[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, dirRaw
 		*)
 
 		propagators = FCLoopPropagatorsToTopology[topo,FCI->True,ExpandScalarProduct->False,MomentumCombine->True];
+
+		propagators = propagators /. optFinalSubstitutions;
 
 		FCPrint[3,"KiraCreateConfigFiles: Output of FCLoopPropagatorsToTopology: ", propagators, FCDoControl->fpsfVerbose];
 
@@ -283,8 +288,7 @@ KiraCreateConfigFiles[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, dirRaw
 			momentumConservation = ToString["momentum_conservation: " @@ {optKiraMomentumConservation[[1]], optKiraMomentumConservation[[2]]}]
 		];
 
-
-		fPar = FCFeynmanPrepare[topo, Names -> fp, FCI->True,FinalSubstitutions->topo[[5]]][[2]];
+		fPar = FCFeynmanPrepare[topo, Names -> fp, FCI->True,FinalSubstitutions->optFinalSubstitutions][[2]];
 		vars = SelectFree[Variables2[fPar], fp, Pair, CartesianPair];
 
 		FCPrint[3,"KiraCreateConfigFiles: Kinematic invariants: ", vars, FCDoControl->fpsfVerbose];
