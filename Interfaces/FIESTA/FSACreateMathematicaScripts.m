@@ -460,11 +460,14 @@ FSACreateMathematicaScripts[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /; !
 
 
 		FCPrint[2,"FSACreateMathematicaScripts: Parameter rules: ", optFSAParameterRules, FCDoControl->fspsVerbose];
-
-
+		(*
 		If[	optFSAParameterRules=!={},
 			(*Removing irrelevant parameters*)
-			optFSAParameterRules = SelectNotFree[optFSAParameterRules,vars];
+			optFSAParameterRules = SelectNotFree[optFSAParameterRules,vars]
+		];
+		*)
+
+		If[	optFSAParameterRules=!={},
 			(*TODO*)
 			{parameters, parameterValues} = N[Transpose[List@@@optFSAParameterRules],OptionValue[N]];
 			FCPrint[1,"FSACreateMathematicaScripts: parameterValues:  ", optFSAParameterRules, FCDoControl->fspsVerbose];
@@ -486,8 +489,7 @@ FSACreateMathematicaScripts[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /; !
 				Abort[];
 		];
 
-
-		fcProps = FCLoopIntegralToPropagators[scalarPart, lmoms, Tally -> True, Rest->True];
+		fcProps = FCLoopIntegralToPropagators[scalarPart, lmoms, Tally -> True, Rest->True, Negative->True];
 
 		fcPref = fcProps[[2]];
 		fcProps = fcProps[[1]]//Transpose;
@@ -505,6 +507,8 @@ FSACreateMathematicaScripts[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /; !
 		];
 
 		{fsaProps, fsaReplacements} =  {fsaProps, Join[rulesDV,optFinalSubstitutions,optFSAParameterRules]} //. {
+			Hold[SPD][a_] -> a^2,
+			Hold[CSPD][a_] -> a^2,
 			Hold[SPD][a_, b_] -> a b,
 			Hold[CSPD][a_, b_] -> a b,
 			Pair[Momentum[a_,___],Momentum[b_,___]] -> a b,
