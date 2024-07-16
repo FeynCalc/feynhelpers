@@ -1,0 +1,46 @@
+(* :Title: ASyGetLeadingPower.test											*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2022-2024 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for ASyGetLeadingPower		*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`Asy`ASyGetLeadingPower =
+({
+{"ASyGetLeadingPower-ID1",
+"ASyLoadPackage[]; \n ASyGetLeadingPower[
+GLI[fctopology20C, {0, 0, 1, 1, 1, 2, 0}], {FCTopology[
+fctopology20C, {SFAD[{{q2, 0}, {0, 1}, 1}],
+	SFAD[{{p2 + q1, 0}, {0, 1}, 1}], SFAD[{{q1, 0}, {m^2, 1}, 1}],
+	SFAD[{{q1 + q2, 0}, {m^2, 1}, 1}],
+	SFAD[{{p1 - q2, 0}, {m^2, 1}, 1}],
+	SFAD[{{p1 - p2 - q1 - q2, 0}, {m^2, 1}, 1}],
+	SFAD[{{0, p1 . q1}, {0, 1}, 1}]}, {q1, q2}, {p1,
+	p2}, {Hold[Pair][Momentum[p1, D], Momentum[p1, D]] -> m^2,
+	Hold[Pair][Momentum[p2, D], Momentum[p2, D]] -> m^2,
+	Hold[Pair][Momentum[p1, D], Momentum[p2, D]] ->
+	m^4/(2*s) + s/2}, {}]}, {m -> la  m}, {{2, 2, 0, 0, 0, 2}, {2, 2,
+	0, 2, 0, 0}, {1, 1, 0, 0, 1, 2}, {1, 1, 0, 2, 1, 0}, {2, 2, 2, 0,
+2, 2}, {2, 2, 2, 2, 0, 2}, {2, 2, 2, 2, 2, 0}, {0, 0, 0, 0, 0,
+0}, {1, 2, 0, 1, 0, 1}, {1, 2, 0, 1, 1, 2}, {1, 2, 0, 2, 1, 1}, {1,
+	2, 0, 2, 2, 2}}, la,
+Names -> x,
+FCReplaceMomenta -> {p1 -> (Q  n/2 + m^2/Q  nb/2),
+p2 -> (Q  nb/2 + m^2/Q  n/2)},
+FinalSubstitutions -> {SPD[n] -> 0, SPD[nb] -> 0, SPD[n, nb] -> 2,
+s -> Q^2},
+ExtraPropagators -> {SFAD[{{0, q1 . n + q1 . nb}, 0, 1}],
+SFAD[{{0, q2 . n + q2 . nb}, 0, 1}]},
+FCReplaceD -> {D -> 4 - 2 ep}, Series -> {al -> 0, ep -> 0, la -> 0}
+]
+",
+"{{{2, 2, 0, 0, 0, 2}, 0}, {{2, 2, 0, 2, 0, 0}, 2}, {{1, 1, 0, 0, 1, 2}, -1},
+{{1, 1, 0, 2, 1, 0}, 1}, {{2, 2, 2, 0, 2, 2}, 0}, {{2, 2, 2, 2, 0, 2}, 2},
+{{2, 2, 2, 2, 2, 0}, 2}, {{0, 0, 0, 0, 0, 0}, 0},
+{{1, 2, 0, 1, 0, 1}, 0}, {{1, 2, 0, 1, 1, 2}, 0},
+{{1, 2, 0, 2, 1, 1}, 1}, {{1, 2, 0, 2, 2, 2}, 1}}"}
+});

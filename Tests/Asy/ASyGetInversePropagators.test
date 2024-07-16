@@ -1,0 +1,59 @@
+(* :Title: AsyGetInversePropagators.test									*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2022-2024 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for AsyGetInversePropagators	*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`Asy`AsyGetInversePropagators =
+({
+{"AsyGetInversePropagators-ID1",
+"ASyGetInversePropagators[GLI[fctopology54C, {1, 1, 2, 1, 0, 0, 0}],
+FCTopology[
+fctopology54C, {SFAD[{{q1, 0}, {0, 1}, 1}],
+SFAD[{{q2, 0}, {m^2, 1}, 1}],
+SFAD[{{p1 - q1 + q2, 0}, {0, 1}, 1}],
+SFAD[{{p1 - p2 - q1, 0}, {0, 1}, 1}],
+SFAD[{{p1 - q1, 0}, {m^2, 1}, 1}],
+	SFAD[{{0, p1 . q2}, {0, 1}, 1}],
+SFAD[{{0, p2 . q2}, {0, 1}, 1}]}, {q1, q2}, {p1,
+p2}, {Hold[Pair][Momentum[p1, D], Momentum[p1, D]] -> m^2,
+Hold[Pair][Momentum[p2, D], Momentum[p2, D]] -> m^2,
+	Hold[Pair][Momentum[p1, D], Momentum[p2, D]] ->
+	m^4/(2*s) + s/2}, {}],FCE->True]",
+"{{q1, q2}, {SPD[q1, q1], -m^2 + SPD[q2, q2], m^2 - 2*SPD[p1, q1] +
+2*SPD[p1, q2] + SPD[q1, q1] - 2*SPD[q1, q2] + SPD[q2, q2],
+2*m^2 - m^4/s - s - 2*SPD[p1, q1] + 2*SPD[p2, q1] + SPD[q1, q1]},
+{SPD[p1, p1] -> m^2, SPD[p2, p2] -> m^2, SPD[p1, p2] -> m^4/(2*s) + s/2},
+{1, 1, 2, 1}}"},
+{"AsyGetInversePropagators-ID2",
+"DataType[Q, FCVariable] = True; \n
+DataType[m, FCVariable] = True; \n
+ASyGetInversePropagators[GLI[fctopology54C, {1, 1, 2, 1, 0, 0, 0}],
+FCTopology[
+fctopology54C, {SFAD[{{q1, 0}, {0, 1}, 1}],
+SFAD[{{q2, 0}, {m^2, 1}, 1}],
+SFAD[{{p1 - q1 + q2, 0}, {0, 1}, 1}],
+SFAD[{{p1 - p2 - q1, 0}, {0, 1}, 1}],
+SFAD[{{p1 - q1, 0}, {m^2, 1}, 1}],
+	SFAD[{{0, p1 . q2}, {0, 1}, 1}],
+SFAD[{{0, p2 . q2}, {0, 1}, 1}]}, {q1, q2}, {p1,
+p2}, {Hold[Pair][Momentum[p1, D], Momentum[p1, D]] -> m^2,
+Hold[Pair][Momentum[p2, D], Momentum[p2, D]] -> m^2,
+	Hold[Pair][Momentum[p1, D], Momentum[p2, D]] ->
+	m^4/(2*s) + s/2}, {}],
+FCReplaceMomenta -> {p1 -> (Q  n/2 + m^2/Q  nb/2),
+p2 -> (Q  nb/2 + m^2/Q  n/2)}, ExtraPropagators ->
+{SFAD[{{0, q1 . n + q1 . nb}, 0, 1}],
+SFAD[{{0, q2 . n + q2 . nb}, 0, 1}]}, FCE -> True]",
+"{{q1, q2}, {SPD[n, q1] + SPD[nb, q1], SPD[n, q2] + SPD[nb, q2], SPD[q1, q1],
+-m^2 + SPD[q2, q2], m^2 - Q*SPD[n, q1] + Q*SPD[n, q2] - (m^2*SPD[nb,
+q1])/Q + (m^2*SPD[nb, q2])/Q + SPD[q1, q1] - 2*SPD[q1, q2] +
+SPD[q2, q2], 2*m^2 - m^4/s - s + (m^2*SPD[n, q1])/Q - Q*SPD[n, q1] -
+(m^2*SPD[nb, q1])/Q + Q*SPD[nb, q1] + SPD[q1, q1]}, {SPD[p1, p1] ->
+m^2, SPD[p2, p2] -> m^2, SPD[p1, p2] -> m^4/(2*s) + s/2}, {1, 1, 2,1, 1, 1}}"}
+});
