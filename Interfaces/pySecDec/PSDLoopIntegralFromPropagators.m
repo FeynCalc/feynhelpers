@@ -210,7 +210,7 @@ PSDLoopIntegralFromPropagators[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /
 		];
 
 
-		fcProps = FCLoopIntegralToPropagators[scalarPart, lmoms, Tally -> True, Rest->True];
+		fcProps = FCLoopIntegralToPropagators[scalarPart, lmoms, Tally -> True, Rest->True, Negative->True];
 
 		pref = fcProps[[2]];
 		fcProps = fcProps[[1]]//Transpose;
