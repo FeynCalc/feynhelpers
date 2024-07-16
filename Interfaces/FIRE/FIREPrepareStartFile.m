@@ -188,6 +188,8 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 		FCPrint[3, "FIREPrepareStartFile: Output of FCLoopPropagatorsToTopology: ", propagators, FCDoControl->fpsfVerbose];
 
 		{propagators, replacements} =  {propagators, topo[[5]]} /. {
+			Hold[SPD][a_] -> a^2,
+			Hold[CSPD][a_] -> a^2,
 			Hold[SPD][a_, b_] -> a b,
 			Hold[CSPD][a_, b_] -> a b,
 			Pair[Momentum[a_,___],Momentum[b_,___]] -> a b,
