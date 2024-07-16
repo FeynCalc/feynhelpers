@@ -41,7 +41,7 @@ End[]
 Begin["`FeynHelpers`Private`"];
 
 If[ !ValueQ[FeynCalc`$FeynHelpersLoadInterfaces],
-	FeynCalc`$FeynHelpersLoadInterfaces = {"PackageX", "FIRE", "Kira", "Fermat", "QGRAF", "LoopTools", "pySecDec", "FIESTA"}
+	FeynCalc`$FeynHelpersLoadInterfaces = {"PackageX", "FIRE", "Kira", "Fermat", "QGRAF", "LoopTools", "pySecDec", "FIESTA", "Asy"}
 ];
 
 $FeynHelpersVersion="2.0.0";
@@ -123,17 +123,26 @@ If[	!FreeQ[$FeynHelpersLoadInterfaces,"FIESTA"],
 	Get/@load
 ];
 
+If[	!FreeQ[$FeynHelpersLoadInterfaces,"Asy"],
+	load = FileNameJoin[{$FeynHelpersDirectory,"Interfaces","ASy","ASyShared.m"}];
+	FCDeclareHeader[load];
+	Get[load];
+	load = FileNames[{"*.m"},FileNameJoin[{$FeynHelpersDirectory,"Interfaces","ASy"}]];
+	FCDeclareHeader/@load;
+	Get/@load
+];
+
 Remove["FeynCalc`load"];
 EndPackage[]
 
 
 fcVersion = StringSplit[$FeynCalcVersion, "."];
-tooOldString = "Your FeynCalc version is too old. FeynHelpers "<> $FeynHelpersVersion <> " requires at least FeynCalc 9.3.0";
+tooOldString = "Your FeynCalc version is too old. FeynHelpers "<> $FeynHelpersVersion <> " requires at least FeynCalc 10.0";
 
-If[ (fcVersion[[1]]<9),
+If[ (fcVersion[[1]]<10),
 	Print[tooOldString];
 	Abort[],
-	If[ fcVersion[[2]]<3,
+	If[ fcVersion[[2]]<0,
 		Print[tooOldString];
 		Abort[]
 	];
@@ -189,30 +198,33 @@ FeynCalc`FeynHelpersHowToCite[]:=
 	Print[Style[" \[Bullet] V. Shtabovenko, \"FeynHelpers: Connecting FeynCalc to FIRE and Package-X\", Comput. Phys. Commun., 218, 48-65, 2017, arXiv:1611.06793","Text"]];
 	Print[Style["Furthermore, remember to cite the authors of the tools that you are calling from FeynHelpers, which are","Text"]];
 
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Asy",ButtonData :> {URL["https://www.ttp.kit.edu/~asmirnov/Tools-Regions.htm"], None},
+		BaseStyle -> "Hyperlink"],"Text"], Style[" if you are using functions that beging with ASy.","Text"]];
 
-	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIRE",ButtonData :> {URL["https://gitlab.com/feynmanintegrals/fire"], None},BaseStyle -> "Hyperlink",
-		ButtonNote -> "https://gitlab.com/feynmanintegrals/fire"],"Text"], Style[" by A. Smirnov, if you are using functions that begin with FIRE.","Text"]];
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Fermat",ButtonData :> {URL["https://home.bway.net/lewis"], None},
+		BaseStyle -> "Hyperlink"],"Text"], Style[" if you are using functions that beging with Fer.","Text"]];
 
-	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIESTA",ButtonData :> {URL["https://gitlab.com/feynmanintegrals/fiesta/"], None},BaseStyle -> "Hyperlink",
-		ButtonNote -> "https://gitlab.com/feynmanintegrals/fiesta/"],"Text"], Style[" by A. Smirnov, if you are using functions that begin with FSA.","Text"]];
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIRE",ButtonData :> {URL["https://gitlab.com/feynmanintegrals/fire"], None},
+		BaseStyle -> "Hyperlink"],"Text"], Style[" if you are using functions that begin with FIRE.","Text"]];
 
-	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Kira",ButtonData :> {URL["https://gitlab.com/kira-pyred/kira"], None},BaseStyle -> "Hyperlink",
-		ButtonNote -> "https://gitlab.com/kira-pyred/kira"],"Text"], Style[" by the Kira collaboration, if you are using functions that begin with Kira.","Text"]];
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["FIESTA",ButtonData :> {URL["https://gitlab.com/feynmanintegrals/fiesta/"], None},
+		BaseStyle -> "Hyperlink"],"Text"], Style[" if you are using functions that begin with FSA.","Text"]];
 
-	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Package-X",ButtonData :> {URL["https://packagex.hepforge.org"], None},BaseStyle -> "Hyperlink",
-		ButtonNote -> "https://packagex.hepforge.org"],"Text"], Style[" by H. Patel, if you are using functions that begin with PaX.","Text"]];
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Kira",ButtonData :> {URL["https://gitlab.com/kira-pyred/kira"], None},
+		BaseStyle -> "Hyperlink"],"Text"], Style[" if you are using functions that begin with Kira.","Text"]];
 
-	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Fermat",ButtonData :> {URL["https://home.bway.net/lewis"], None},BaseStyle -> "Hyperlink",
-		ButtonNote -> "https://home.bway.net/lewis"],"Text"], Style[" by R. Lewis, if you are using functions that beging with Fer.","Text"]];
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["LoopTools",ButtonData :> {URL["http://www.feynarts.de/looptools/"], None},
+		BaseStyle -> "Hyperlink"],"Text"], Style[" if you are using functions that begin with LT.","Text"]];
 
-	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["QGRAF",ButtonData :> {URL["http://cfif.ist.utl.pt/~paulo/qgraf.html"], None},BaseStyle -> "Hyperlink",
-		ButtonNote -> "http://cfif.ist.utl.pt/~paulo/qgraf.html"],"Text"], Style[" by P. Nogueira, if you are using functions that begin with QG.","Text"]];
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Package-X",ButtonData :>
+		{URL["https://inspirehep.net/literature?sort=mostrecent&size=25&page=1&q=find+a+patel%2C+h+and+t+package"], None},
+		BaseStyle -> "Hyperlink"],"Text"], Style[" if you are using functions that begin with PaX.","Text"]];
 
-	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["LoopTools",ButtonData :> {URL["http://www.feynarts.de/looptools/"], None},BaseStyle -> "Hyperlink",
-		ButtonNote -> "http://www.feynarts.de/looptools"],"Text"], Style[" by T. Hahn, if you are using functions that begin with LT.","Text"]];
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["QGRAF",ButtonData :> {URL["http://cfif.ist.utl.pt/~paulo/qgraf.html"], None},
+		BaseStyle -> "Hyperlink"],"Text"], Style[" if you are using functions that begin with QG.","Text"]];
 
-	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["pySecDec",ButtonData :> {URL["https://secdec.readthedocs.io/en/stable/"], None},BaseStyle -> "Hyperlink",
-		ButtonNote -> "https://secdec.readthedocs.io/en/stable/"],"Text"], Style[" by the SecDec collaboration, if you are using functions that begin with PSD.","Text"]];
+	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["pySecDec",ButtonData :> {URL["https://secdec.readthedocs.io/en/stable/"], None},
+		BaseStyle -> "Hyperlink"],"Text"], Style[" if you are using functions that begin with PSD.","Text"]];
 
 
 
