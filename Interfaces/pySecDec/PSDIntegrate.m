@@ -351,12 +351,12 @@ PSDIntegrate[OptionsPattern[]] :=
 			Abort[];
 		];
 
-		If[	!(MatchQ[optPSDEpsAbs, _Real?Positive] || optPSDEpsAbs===Default),
+		If[	!(MatchQ[optPSDEpsAbs, _?NumberQ] || optPSDEpsAbs===Default),
 			Message[PSDIntegrate::failmsg, "Incorrect value of the PSDEpsAbs option."];
 			Abort[];
 		];
 
-		If[	!(MatchQ[optPSDEpsRel, _Real?Positive] || optPSDEpsRel===Default),
+		If[	!(MatchQ[optPSDEpsRel, _?NumberQ] || optPSDEpsRel===Default),
 			Message[PSDIntegrate::failmsg, "Incorrect value of the PSDEpsRel option."];
 			Abort[];
 		];
@@ -378,12 +378,12 @@ PSDIntegrate[OptionsPattern[]] :=
 			Abort[];
 		];
 
-		If[	!(MatchQ[optPSDMaxEpsAbs, _Real?Positive] || optPSDMaxEpsAbs===Default),
+		If[	!(MatchQ[optPSDMaxEpsAbs, _?NumberQ] || optPSDMaxEpsAbs===Default),
 			Message[PSDIntegrate::failmsg, "Incorrect value of the PSDMaxEpsAbs option."];
 			Abort[];
 		];
 
-		If[	!(MatchQ[optPSDMaxEpsRel, _Real?Positive] || optPSDMaxEpsRel===Default),
+		If[	!(MatchQ[optPSDMaxEpsRel, _?NumberQ] || optPSDMaxEpsRel===Default),
 			Message[PSDIntegrate::failmsg, "Incorrect value of the PSDMaxEpsRel option."];
 			Abort[];
 		];
@@ -517,15 +517,15 @@ PSDIntegrate[OptionsPattern[]] :=
 								""
 							],
 							If[	optPSDEpsRel=!=Default,
-								"epsrel = " <> ToString[optPSDEpsRel],
+								"epsrel = " <> ToString[optPSDEpsRel,InputForm],
 								""
 							],
 							If[	optPSDEpsAbs=!=Default,
-								"epsabs = " <> ToString[optPSDEpsAbs],
+								"epsabs = " <> ToString[optPSDEpsAbs,InputForm],
 								""
 							],
 							If[	optPSDMaxEval=!=Default,
-								"maxeval = " <> ToString[optPSDMaxEval],
+								"maxeval = " <> ToString[optPSDMaxEval,InputForm],
 								""
 							],
 							If[	optPSDErrorMode=!=Default,
@@ -533,15 +533,15 @@ PSDIntegrate[OptionsPattern[]] :=
 								""
 							],
 							If[	optPSDEvaluateMinn=!=Default,
-								"evaluateminn = " <> ToString[optPSDEvaluateMinn],
+								"evaluateminn = " <> ToString[optPSDEvaluateMinn,InputForm],
 								""
 							],
 							If[	optPSDMinn=!=Default,
-								"minn = " <> ToString[optPSDMinn],
+								"minn = " <> ToString[optPSDMinn,InputForm],
 								""
 							],
 							If[	optPSDMinm=!=Default,
-								"minm = " <> ToString[optPSDMinm],
+								"minm = " <> ToString[optPSDMinm,InputForm],
 								""
 							],
 							If[	optPSDVerbosity=!=Default,
@@ -555,27 +555,27 @@ PSDIntegrate[OptionsPattern[]] :=
 							useString = ".use_Vegas(";
 							{
 							If[	optPSDEpsRel=!=Default,
-								"epsrel = " <> ToString[optPSDEpsRel],
+								"epsrel = " <> ToString[optPSDEpsRel,InputForm],
 								""
 							],
 							If[	optPSDEpsAbs=!=Default,
-								"epsabs = " <> ToString[optPSDEpsAbs],
+								"epsabs = " <> ToString[optPSDEpsAbs,InputForm],
 								""
 							],
 
 							If[	optPSDFlags=!=Default,
-								"epsabs = " <> ToString[optPSDEpsAbs],
+								"epsabs = " <> ToString[optPSDEpsAbs,InputForm],
 								""
 							],
 
 
 							If[	optPSDMinEval=!=Default,
-								"minxeval = " <> ToString[optPSDMinEval],
+								"minxeval = " <> ToString[optPSDMinEval,InputForm],
 								""
 							],
 
 							If[	optPSDMaxEval=!=Default,
-								"maxeval = " <> ToString[optPSDMaxEval],
+								"maxeval = " <> ToString[optPSDMaxEval,InputForm],
 								""
 							]
 						},
@@ -622,55 +622,55 @@ PSDIntegrate[OptionsPattern[]] :=
 				""
 			],
 			If[	optPSDEpsRel=!=Default,
-				"epsrel = " <> ToString[optPSDEpsRel],
+				"epsrel = " <> ToString[optPSDEpsRel,InputForm],
 				""
 			],
 			If[	optPSDEpsAbs=!=Default,
-				"epsabs = " <> ToString[optPSDEpsAbs],
+				"epsabs = " <> ToString[optPSDEpsAbs,InputForm],
 				""
 			],
 
 			If[	optPSDMinEval=!=Default,
-				"minxeval = " <> ToString[optPSDMinEval],
+				"minxeval = " <> ToString[optPSDMinEval,InputForm],
 				""
 			],
 			If[	optPSDMaxEval=!=Default,
-				"maxeval = " <> ToString[optPSDMaxEval],
+				"maxeval = " <> ToString[optPSDMaxEval,InputForm],
 				""
 			],
 			If[	optPSDMaxIncreaseFac=!=Default,
-				"maxincreasefac = " <> ToString[optPSDMaxIncreaseFac],
+				"maxincreasefac = " <> ToString[optPSDMaxIncreaseFac,InputForm],
 				""
 			],
 			If[	optPSDMinEpsRel=!=Default,
-				"min_epsrel = " <> ToString[optPSDMinEpsRel],
+				"min_epsrel = " <> ToString[optPSDMinEpsRel,InputForm],
 				""
 			],
 
 			If[	optPSDMinEpsAbs=!=Default,
-				"min_epsabs = " <> ToString[optPSDMinEpsAbs],
+				"min_epsabs = " <> ToString[optPSDMinEpsAbs,InputForm],
 				""
 			],
 			If[	optPSDMaxEpsRel=!=Default,
-				"max_epsrel = " <> ToString[optPSDMaxEpsRel],
+				"max_epsrel = " <> ToString[optPSDMaxEpsRel,InputForm],
 				""
 			],
 			If[	optPSDMaxEpsAbs=!=Default,
-				"max_epsabs = " <> ToString[optPSDMaxEpsAbs],
+				"max_epsabs = " <> ToString[optPSDMaxEpsAbs,InputForm],
 				""
 			],
 			If[	optPSDMinDecreaseFactor=!=Default,
-				"min_decrease_factor = " <> ToString[optPSDMinDecreaseFactor],
+				"min_decrease_factor = " <> ToString[optPSDMinDecreaseFactor,InputForm],
 				""
 			],
 
 			If[	optPSDDecreaseToPercentage=!=Default,
-				"decrease_to_percentage = " <> ToString[optPSDDecreaseToPercentage],
+				"decrease_to_percentage = " <> ToString[optPSDDecreaseToPercentage,InputForm],
 				""
 			],
 
 			If[	optPSDNumberOfThreads=!=Default,
-				"number_of_threads = " <> ToString[optPSDNumberOfThreads],
+				"number_of_threads = " <> ToString[optPSDNumberOfThreads,InputForm],
 				""
 			],
 
