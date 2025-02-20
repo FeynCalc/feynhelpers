@@ -507,6 +507,8 @@ FSACreateMathematicaScripts[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /; !
 
 		fsaProps = FCLoopPropagatorsToTopology[fcProps[[1]], FCI->True,MomentumCombine->True];
 
+		fsaProps = ExpandScalarProduct[fsaProps];
+
 		FCPrint[3,"FSACreateMathematicaScripts: fsaProps: ", fsaProps, FCDoControl->fspsVerbose];
 
 		If[	!FreeQ[fsaProps,Complex],

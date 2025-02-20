@@ -221,6 +221,15 @@ PSDLoopIntegralFromPropagators[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /
 
 		psdProps = FCLoopPropagatorsToTopology[fcProps[[1]], FCI->True,MomentumCombine->True];
 
+		(*
+		For stuff like
+
+		Pair[Momentum[k1, D] + (mqb*Momentum[n, D])/2 + (meta*u0b*Momentum[n, D])/2 - gkin*meta*u0b*Momentum[n, D] + (mqb*Momentum[nb, D])/2 + (meta*u0b*Momentum[nb, D])/2 - (meta*u0b*Momentum[nb, D])/(4*gkin),
+			Momentum[k1, D] + (mqb*Momentum[n, D])/2 + (meta*u0b*Momentum[n, D])/2 - gkin*meta*u0b*Momentum[n, D] + (mqb*Momentum[nb, D])/2 + (meta*u0b*Momentum[nb, D])/2 - (meta*u0b*Momentum[nb, D])/(4*gkin)]
+		*)
+
+		psdProps = ExpandScalarProduct[psdProps,FCI->True];
+
 		FCPrint[3,"PSDLoopIntegralFromPropagators: psdProps: ", psdProps, FCDoControl->lifpVerbose];
 
 		If[	!FreeQ[psdProps,Complex],
@@ -236,7 +245,8 @@ PSDLoopIntegralFromPropagators[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /
 		};
 
 		If[!FreeQ2[{psdProps,psdReplacements},{Pair,CartesianPair,Momentum,CartesianMomentum}],
-			Message[PSDLoopIntegralFromPropagators::failmsg,"Failed to create a correct list of propagators or replacements."];
+			Message[PSDLoopIntegralFromPropagators::failmsg,"Failed to create a correct list of propagators or replacements. Check for undefined scalar products " <>
+				ToString[SelectNotFree[{psdProps,psdReplacements},{Pair,CartesianPair,Momentum,CartesianMomentum}],InputForm]];
 			Abort[]
 		];
 
@@ -245,7 +255,9 @@ PSDLoopIntegralFromPropagators[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /
 		psdReplacements			= StringReplace[ToString[Map["('" <> ToString[#[[1]], InputForm] <> "','" <> ToString[#[[2]], InputForm] <> "')" &,
 			psdReplacements]],{"{" -> "[", "}" -> "]", "^" -> "**"}];
 		psdLmoms				= StringReplace[ToString[ToString[#, InputForm] & /@ lmoms, InputForm], {"{" -> "[", "}" -> "]", "\"" -> "'"}];
-		psdPowerlist			= StringReplace[ToString[fcProps[[2]],InputForm], {"{" -> "[", "}" -> "]"}];
+		(*StringReplace[ToString[fcProps[[2]],InputForm], {"{" -> "[", "}" -> "]"}];*)
+		psdPowerlist			= 							StringReplace[ToString[Map["'" <> ToString[#,InputForm] <> "'" &, fcProps[[2]]]], {"{" -> "[", "}" -> "]"}];
+
 		psdDimensionality		= StringReplace[ToString[dim,InputForm],{"\""->""}];
 		psdFeynmanParameters	= StringReplace[ToString[OptionValue[Names],InputForm], { "\"" -> "'"}];
 		optPSDRegulators 		= StringReplace[ToString[Map["'" <> ToString[#] <> "'" &, optPSDRegulators]], {"{" -> "[", "}" -> "]"}];
