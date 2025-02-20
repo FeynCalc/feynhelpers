@@ -45,6 +45,7 @@ Options[PSDLoadNumericalResults] = {
 	FCVerbose								-> False,
 	N										-> MachinePrecision,
 	Normal									-> True,
+	PSDResultFile							-> "numres",
 	PSDComplexParameterRules				-> {},
 	PSDRealParameterRules					-> {}
 };
@@ -54,12 +55,14 @@ PSDLoadNumericalResults[files:{{_String, _String}..}, opt:OptionsPattern[]] :=
 
 PSDLoadNumericalResults[{file1_String, _String}, OptionsPattern[]] :=
 	Block[{ dir, resFile, optPSDRealParameterRules, optPSDComplexParameterRules,
-			res, optChop, optN},
+			res, optChop, optN, fileCandidates, allParameters, optPSDResultFile, optMessage},
 
 		optPSDRealParameterRules			= OptionValue[PSDRealParameterRules];
 		optPSDComplexParameterRules			= OptionValue[PSDComplexParameterRules];
 		optChop								= OptionValue[Chop];
 		optN								= OptionValue[N];
+		optPSDResultFile					= OptionValue[PSDResultFile];
+		optMessage 							= OptionValue[Message];
 
 		dir = DirectoryName[file1];
 
@@ -83,8 +86,9 @@ PSDLoadNumericalResults[{file1_String, _String}, OptionsPattern[]] :=
 			];
 		];
 
-		resFile = "numres_" <> StringRiffle[ToString[#, InputForm] & /@ Last /@ Join[optPSDRealParameterRules,
-			optPSDComplexParameterRules], "_"]<>"_mma.m";
+		allParameters = Join[realParameters,complexParameters] /. optPSDRealParameterRules /. optPSDComplexParameterRules;
+
+		resFile = optPSDResultFile <> "_" <> StringRiffle[ToString[#, InputForm] & /@ allParameters, "_"]<>"_mma.m";
 
 		resFile = StringReplace[resFile,"._"->".0_"];
 

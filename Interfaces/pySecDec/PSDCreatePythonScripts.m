@@ -166,6 +166,14 @@ the pySecDec interface.
 
 It specifies the prefix of the file containing the result of the pySecDec run.
 The default value is numres.";
+
+PSDResultFile::usage=
+"PSDResultFile is an option for PSDCreatePythonScripts and other functions of
+the pySecDec interface.
+
+It specifies the prefix of the file containing the result of the pySecDec run.
+The default value is numres.";
+
 PSDCreatePythonScripts::failmsg =
 "Error! PSDCreatePythonScripts has encountered a fatal problem and must abort the computation. \
 The problem reads: `1`"
@@ -237,6 +245,7 @@ Options[PSDCreatePythonScripts] = {
 	PSDRegulators							-> {Epsilon},
 	PSDRequestedOrder						-> 0,
 	PSDResetCudaAfter						-> Default,
+	PSDResultFile							-> "numres",
 	PSDSplit								-> Default,
 	PSDTransform							-> Default,
 	PSDVerbose								-> True,
@@ -683,7 +692,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 			"    num_params_complex_str = '_' + num_params_complex_str",
 			"",
 			"print('Numerical result')",
-			"res_file = open(''.join(['numres',num_params_real_str,num_params_complex_str,'_psd.txt']),'w')",
+			"res_file = open(''.join(['"<>optPSDResultFile<>"',num_params_real_str,num_params_complex_str,'_psd.txt']),'w')",
 
 			"for power in " <> StringReplace[ToString[Table[i, {i, -nLoops*2, optPSDRequestedOrder[[1]]}]], {"{" -> "[", "}" -> "]"}] <>":",
 
@@ -698,13 +707,13 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 			"",
 			"res_mma= series_to_mathematica(integral_with_prefactor)",
 			"",
-			"res_file = open(''.join(['numres',num_params_real_str,num_params_complex_str,'_mma.m']),'w')",
+			"res_file = open(''.join(['"<>optPSDResultFile<>"',num_params_real_str,num_params_complex_str,'_mma.m']),'w')",
 			"res_file.write(''.join(['{',res_mma[0],',']))",
 			"res_file.write(''.join([res_mma[1],'}']))",
 			"res_file.close()",
 			"",
 			"res_maple= series_to_maple(integral_with_prefactor)",
-			"res_file = open(''.join(['numres',num_params_real_str,num_params_complex_str,'_maple.mpl']),'w')",
+			"res_file = open(''.join(['"<>optPSDResultFile<>"',num_params_real_str,num_params_complex_str,'_maple.mpl']),'w')",
 			"res_file.write(''.join(['[',res_maple[0],',']))",
 			"res_file.write(''.join([res_maple[1],']']))",
 			"res_file.close()"
