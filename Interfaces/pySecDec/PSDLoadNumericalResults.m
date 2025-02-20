@@ -41,19 +41,24 @@ Begin["`PSDLoadNumericalResults`Private`"]
 pslnrVerbose::usage="";
 
 Options[PSDLoadNumericalResults] = {
+	Abort									-> True,
 	Chop									-> 10^(-10),
 	FCVerbose								-> False,
 	N										-> MachinePrecision,
 	Normal									-> True,
+	Message									-> True,
 	PSDResultFile							-> "numres",
 	PSDComplexParameterRules				-> {},
 	PSDRealParameterRules					-> {}
 };
 
-PSDLoadNumericalResults[files:{{_String, _String}..}, opt:OptionsPattern[]] :=
+PSDLoadNumericalResults[files:{{_String, _String, _List, _List}..}, opt:OptionsPattern[]] :=
 	PSDLoadNumericalResults[#, opt]&/@files;
-
-PSDLoadNumericalResults[{file1_String, _String}, OptionsPattern[]] :=
+(*
+PSDLoadNumericalResults[files:{__String}.., opt:OptionsPattern[]] :=
+	PSDLoadNumericalResults[{#, "dummy"}, opt]&/@files;
+*)
+PSDLoadNumericalResults[{file1_String, _String, realParameters_List, complexParameters_List}, OptionsPattern[]] :=
 	Block[{ dir, resFile, optPSDRealParameterRules, optPSDComplexParameterRules,
 			res, optChop, optN, fileCandidates, allParameters, optPSDResultFile, optMessage},
 
@@ -95,8 +100,15 @@ PSDLoadNumericalResults[{file1_String, _String}, OptionsPattern[]] :=
 		resFile = FileNameJoin[{dir,resFile}];
 
 		If[	!FileExistsQ[resFile],
-			Message[PSDLoadNumericalResults::failmsg,"The file " <> resFile <> "does not exist."];
-			Abort[]
+			If[	optMessage,
+					Message[PSDLoadNumericalResults::failmsg,"The file " <> resFile <> "does not exist."],
+					FCPrint[0, "PSDLoadNumericalResults: The file " <> resFile <> "does not exist.", FCDoControl -> pslnrVerbose]
+				];
+			If[	OptionValue[Abort],
+				Abort[],
+				Return[{FCGV["NoResult"],FCGV["NoResult"]}];
+			]
+
 		];
 
 		res = Get[resFile];

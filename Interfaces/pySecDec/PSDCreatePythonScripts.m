@@ -769,7 +769,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		FCPrint[1,"PSDCreatePythonScripts: Leaving.", FCDoControl->psdpVerbose];
 		FCPrint[1,"PSDCreatePythonScripts: Total timing: ", N[AbsoluteTime[] - time0, 4], FCDoControl->psdpVerbose];
 
-		Join[tmp,{filePath}]
+		Join[tmp,{filePath},{realParameters,complexParameters}]
 
 	];
 
