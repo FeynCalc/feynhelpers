@@ -64,6 +64,12 @@ the option FSASDExpandAsy to True and specify the expansion order via
 FSASDExpandAsyOrder. Furthermore, the expansion parameter must be made known
 using FSAExpandVar.";
 
+FSADryRun::usage =
+"FSADryRun is an option for FSAPrepareMathematicaScripts and other functions of
+the FIESTA interface.
+
+When set to True, no files will be written to the disk.";
+
 FSACreateMathematicaScripts::failmsg =
 "Error! FSACreateMathematicaScripts has encountered a fatal problem and must abort the computation. \
 The problem reads: `1`"
@@ -96,6 +102,7 @@ Options[FSACreateMathematicaScripts] = {
 	FSAContourShiftIgnoreFail 			-> Default,
 	FSAContourShiftShape 				-> Default,
 	FSADataPath 						-> Default,
+	FSADryRun							-> False,
 	FSADebugAllEntries 					-> Default,
 	FSADebugMemory 						-> Default,
 	FSADebugParallel 					-> Default,
@@ -207,7 +214,7 @@ FSACreateMathematicaScripts[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /; !
 			optFSAExactIntegrationTimeout, optFSAGPUIntegration, optFSANoAVX, optFSAAssemblyIntegration, optFSAIntegrator,
 			optFSAIntegratorOptions, optFSACIntegratePath, optFSAMPSmallX, optFSAMPThreshold, optFSAMPMin, optFSAMPPrecisionShift,
 			optFSAMathematicaBinary, optFSAQHullPath, optFSADebugParallel, optFSADebugMemory, optFSADebugAllEntries, optFSADebugSector,
-			numResString, optFSASDExpandAsy, optFSASDExpandAsyOrder, check},
+			numResString, optFSASDExpandAsy, optFSASDExpandAsyOrder, check, optFSADryRun},
 
 		If[	OptionValue[FCVerbose]===False,
 			fspsVerbose=$VeryVerbose,
@@ -216,6 +223,7 @@ FSACreateMathematicaScripts[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /; !
 			];
 		];
 
+		optFSADryRun						= OptionValue[FSADryRun];
 		optOverwriteTarget					= OptionValue[OverwriteTarget];
 		optFSAPath							= OptionValue[FSAPath];
 		optFSAOrderInEps					= OptionValue[FSAOrderInEps];
@@ -538,8 +546,14 @@ FSACreateMathematicaScripts[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /; !
 		];
 
 		filePath = FileNameJoin[{dirRaw,OptionValue[FSAScriptFileName]}];
+		numResString = "numres_" <> StringRiffle[ToString[#, InputForm]&/@parameterValues, "_"] <> "_fiesta.m";
 
 		FCPrint[3,"FSACreateMathematicaScripts: Script path: ", filePath, FCDoControl->fspsVerbose];
+		FCPrint[3,"FSACreateMathematicaScripts: Numerical results file: ", numResString, FCDoControl->fspsVerbose];
+
+		If[	optFSADryRun,
+			Return[{filePath,numResString}]
+		];
 
 		If[	FileExistsQ[filePath] && !optOverwriteTarget,
 			Message[FSACreateMathematicaScripts::failmsg, "The file " <> filePath <> " already exists and the option OverwriteTarget is set to False."];
@@ -880,7 +894,6 @@ FSACreateMathematicaScripts[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /; !
 
 		fsaOptionsString = StringRiffle[fsaOptionsString,","];
 
-		numResString = "numres_" <> StringRiffle[ToString[#, InputForm]&/@parameterValues, "_"] <> "_fiesta.m";
 
 
 		scriptFileString = {
@@ -888,6 +901,9 @@ FSACreateMathematicaScripts[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /; !
 				"(* Generated on "<> DateString[] <>" *)\n\n",
 				Unevaluated[Sequence[]]
 			],
+
+			"(* Integral name "<> FileBaseName[dirRaw] <>" *)\n\n",
+
 			"Get["<> ToString[optFSAPath,InputForm]  <>"];\n",
 			"\n\n",
 			"If[$FrontEnd===Null,\n",

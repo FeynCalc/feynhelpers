@@ -160,6 +160,12 @@ PSDRealParameterRules::usage=
 functions of the pySecDec interface. It is a list of replacement rules
 containing numerical values for the real parameters of the integral.";
 
+PSDDryRun::usage=
+"PSDResultFile is an option for PSDCreatePythonScripts and other functions of
+the pySecDec interface.
+
+It specifies the prefix of the file containing the result of the pySecDec run.
+The default value is numres.";
 PSDCreatePythonScripts::failmsg =
 "Error! PSDCreatePythonScripts has encountered a fatal problem and must abort the computation. \
 The problem reads: `1`"
@@ -191,6 +197,7 @@ Options[PSDCreatePythonScripts] = {
 	PSDDeformationParametersDecreaseFactor	-> Default,
 	PSDDeformationParametersMaximum			-> Default,
 	PSDDeformationParametersMinimum			-> Default,
+	PSDDryRun								-> False,
 	PSDEnforceComplex						-> Default,
 	PSDEpsAbs								-> Default,
 	PSDEpsRel								-> Default,
@@ -280,7 +287,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 			optFinalSubstitutions, fp, vars, realParameters, optPSDExpansionByRegionsParameter,
 			complexParameters, optPSDRealParameterRules, extraPref, optPSDExpansionByRegionsOrder,
 			optPSDComplexParameterRules, realParameterValues, complexParameterValues, loopRegions, tmp, momHold,
-			fPar, rulesDVReal, rulesDVComplex, rulesDV, momHoldList, spDownValuesLhs, optCheck},
+			fPar, rulesDVReal, rulesDVComplex, rulesDV, momHoldList, spDownValuesLhs, optCheck, optDryRun, optPSDResultFile},
 
 		time0=AbsoluteTime[];
 
@@ -297,6 +304,8 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		optPSDExpansionByRegionsOrder		= OptionValue[PSDExpansionByRegionsOrder];
 		optPSDAdditionalPrefactor			= OptionValue[PSDAdditionalPrefactor];
 		optCheck							= OptionValue[Check];
+		optDryRun 							= OptionValue[PSDDryRun];
+		optPSDResultFile					= OptionValue[PSDResultFile];
 
 		(*Need to validate all options first*)
 
@@ -711,38 +720,42 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		filePath = FileNameJoin[{dir,optPSDGenerateFileName}];
 		FCPrint[1,"PSDCreatePythonScripts: Generate file path: ", filePath, FCDoControl->psdpVerbose];
 
-		If[	FileExistsQ[filePath] && !OptionValue[OverwriteTarget],
-			Message[PSDCreatePythonScripts::failmsg, "File " <> filePath <> " already exists and the option OverwriteTarget is set to False."];
-			(*Abort[]*)
-			Return[False]
-		];
+		If[	TrueQ[!optDryRun],
+			If[	FileExistsQ[filePath] && !OptionValue[OverwriteTarget],
+				Message[PSDCreatePythonScripts::failmsg, "File " <> filePath <> " already exists and the option OverwriteTarget is set to False."];
+				(*Abort[]*)
+				Return[False]
+			];
 
-		file = OpenWrite[filePath];
-		If[	file===$Failed,
-			Message[PSDCreatePythonScripts::failmsg, "Failed to open ", file, " for writing."];
-			Abort[]
+			file = OpenWrite[filePath];
+			If[	file===$Failed,
+				Message[PSDCreatePythonScripts::failmsg, "Failed to open ", file, " for writing."];
+				Abort[]
+			];
+			WriteString[file, generateFileString];
+			Close[file];
 		];
-		WriteString[file, generateFileString];
-		Close[file];
 
 		tmp = {filePath};
 
 		filePath = FileNameJoin[{dir,optPSDIntegrateFileName}];
 		FCPrint[1,"PSDCreatePythonScripts: Integrate file path: ", filePath, FCDoControl->psdpVerbose];
 
-		If[	FileExistsQ[filePath] && !OptionValue[OverwriteTarget],
-			Message[PSDCreatePythonScripts::failmsg, "File " <> filePath <> " already exists and the option OverwriteTarget is set to False."];
-			(*Abort[]*)
-			Return[False]
-		];
+		If[	TrueQ[!optDryRun],
+			If[	FileExistsQ[filePath] && !OptionValue[OverwriteTarget],
+				Message[PSDCreatePythonScripts::failmsg, "File " <> filePath <> " already exists and the option OverwriteTarget is set to False."];
+				(*Abort[]*)
+				Return[False]
+			];
 
-		file = OpenWrite[filePath];
-		If[	file===$Failed,
-			Message[PSDCreatePythonScripts::failmsg, "Failed to open ", file, " for writing."];
-			Abort[]
+			file = OpenWrite[filePath];
+			If[	file===$Failed,
+				Message[PSDCreatePythonScripts::failmsg, "Failed to open ", file, " for writing."];
+				Abort[]
+			];
+			WriteString[file, integrateFileString];
+			Close[file];
 		];
-		WriteString[file, integrateFileString];
-		Close[file];
 
 		FCPrint[1,"PSDCreatePythonScripts: Leaving.", FCDoControl->psdpVerbose];
 		FCPrint[1,"PSDCreatePythonScripts: Total timing: ", N[AbsoluteTime[] - time0, 4], FCDoControl->psdpVerbose];
