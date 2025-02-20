@@ -300,6 +300,10 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 
 		(*Need to validate all options first*)
 
+		If[	MatchQ[optPSDRequestedOrder, _Integer],
+			optPSDRequestedOrder = {optPSDRequestedOrder}
+		];
+
 		If[ !(Head[optPSDLoopIntegralName]===String || optPSDLoopIntegralName===Default),
 			Message[PSDCreatePythonScripts::failmsg, "Incorrect value of the PSDLoopIntegralName option."];
 			Abort[];
@@ -315,7 +319,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 			Abort[];
 		];
 
-		If[	!(MatchQ[optPSDRequestedOrder, _Integer]),
+		If[	!(MatchQ[optPSDRequestedOrder, {__Integer}]),
 			Message[PSDCreatePythonScripts::failmsg, "Incorrect value of the PSDRequestedOrder option."];
 			Abort[];
 		];
@@ -441,6 +445,15 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		FCPrint[1,"PSDCreatePythonScripts: vars: ", vars, FCDoControl->psdpVerbose];
 
 
+		If[	optPSDExpansionByRegionsParameter=!=None,
+			If[FreeQ[vars,optPSDExpansionByRegionsParameter],
+				FCPrint[-1,"PSDCreatePythonScripts: The integral ", ToString[FileBaseName[dir]] ," does not depend on the variable ", optPSDExpansionByRegionsParameter,
+					", skipping.", FCDoControl->psdpVerbose];
+				Return[Join[{FCGV["NoResult"],FCGV["NoResult"]},{realParameters,complexParameters}]]
+			]
+		];
+
+
 		time=AbsoluteTime[];
 		FCPrint[1,"PSDCreatePythonScripts: Working out values of kinematic invariants.", FCDoControl->psdpVerbose];
 
@@ -493,7 +506,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 
 		(*generate psd.LoopIntegralFromPropagators() *)
 		{loopIntegralFromPropagators, extraPref} = PSDLoopIntegralFromPropagators[ex, lmoms, FinalSubstitutions->Join[optFinalSubstitutions,rulesDV],
-			FCReplaceD->OptionValue[FCReplaceD]];
+			FCReplaceD->OptionValue[FCReplaceD], PSDRegulators-> OptionValue[PSDRegulators]];
 		FCPrint[1,"PSDCreatePythonScripts: Done applying PSDLoopIntegralFromPropagators, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->psdpVerbose];
 
 		FCPrint[3,"PSDCreatePythonScripts: loopIntegralFromPropagators: ", loopIntegralFromPropagators, FCDoControl->psdpVerbose];
@@ -663,7 +676,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 			"print('Numerical result')",
 			"res_file = open(''.join(['numres',num_params_real_str,num_params_complex_str,'_psd.txt']),'w')",
 
-			"for power in " <> StringReplace[ToString[Table[i, {i, -nLoops*2, optPSDRequestedOrder}]], {"{" -> "[", "}" -> "]"}] <>":",
+			"for power in " <> StringReplace[ToString[Table[i, {i, -nLoops*2, optPSDRequestedOrder[[1]]}]], {"{" -> "[", "}" -> "]"}] <>":",
 
 			"    val = complex(result.coeff('eps', power))",
 

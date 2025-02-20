@@ -118,7 +118,7 @@ Options[PSDLoopPackage] = {
 	PSDSplit					-> Default
 };
 
-PSDLoopPackage[name_String, loopIntegral_String, order_Integer, OptionsPattern[]] :=
+PSDLoopPackage[name_String, loopIntegral_String, order:{__Integer}, OptionsPattern[]] :=
 	Block[{	res, optPSDRealParameters, optPSDComplexParameters, optPSDContourDeformation,
 			optPSDAdditionalPrefactor, optPSDFormOptimizationLevel, optPSDFormWorkSpace,
 			optPSDFormMemoryUse, optPSDFormThreads, optPSDDecompositionMethod,
@@ -211,7 +211,7 @@ PSDLoopPackage[name_String, loopIntegral_String, order_Integer, OptionsPattern[]
 		res = {
 			"name = " <> FeynCalc`Package`psdToString[name],
 			"loop_integral = " <> loopIntegral,
-			"requested_orders = [" <> ToString[order] <> "]",
+			"requested_orders = " <> StringReplace[ToString[Map[ToString[#,InputForm]&, order]], {"{" -> "[", "}" -> "]"}],
 
 			If[	optPSDRealParameters=!="[]",
 					"real_parameters = " <> optPSDRealParameters,

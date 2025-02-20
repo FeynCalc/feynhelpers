@@ -55,7 +55,7 @@ Options[PSDSumPackage] = {
 	PSDRegulators				-> {Epsilon}
 };
 
-PSDSumPackage[name_String, packageGenerators_String, order_Integer, OptionsPattern[]] :=
+PSDSumPackage[name_String, packageGenerators_String, order:{__Integer}, OptionsPattern[]] :=
 	Block[{	res, optPSDRealParameters, optPSDComplexParameters, optPSDCoefficients,
 			optPSDFormExecutable, optPSDPyLinkQMCTransforms, optPSDLoopIntegralName},
 
@@ -126,7 +126,7 @@ PSDSumPackage[name_String, packageGenerators_String, order_Integer, OptionsPatte
 			"package_generators = " <> packageGenerators,
 			"regulators = " <> optPSDLoopIntegralName <>".regulators",
 
-			"requested_orders = [" <> ToString[order] <> "]",
+			"requested_orders = " <> StringReplace[ToString[Map[ToString[#,InputForm]&, order]], {"{" -> "[", "}" -> "]"}],
 
 			If[	optPSDRealParameters=!="[]",
 					"real_parameters = " <> optPSDRealParameters,
