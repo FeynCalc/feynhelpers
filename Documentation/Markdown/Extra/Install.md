@@ -17,6 +17,8 @@ a particular tools please contact the corresponding developer team.*
 
 #### Automatic installation
 
+*Currently the stable version of FeynHelpers is not compatible with FeynCalc 10. Please use the development version instead!*
+
 Run the following instruction in a Kernel or Notebook session of Mathematica to install the stable version
 
 ```mathematica
@@ -51,7 +53,7 @@ Copy the directory `ferl64` to `FileNameJoin[{$UserBaseDirectory, "Applications"
 
 #### macOS
 
-Copy the directory `ferm64` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "Fermat"}]`.
+Copy the directory `ferm6` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "Fermat"}]`.
 
 #### Windows
 
