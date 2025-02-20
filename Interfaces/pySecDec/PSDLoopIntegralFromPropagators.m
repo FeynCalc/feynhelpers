@@ -171,7 +171,7 @@ PSDLoopIntegralFromPropagators[expr_/;FreeQ[{GLI,FCTopology},expr], lmoms_List /
 		];
 		dimRegEps = First[dimRegEps];
 
-		{dim, dimRegEps, optPSDRegulators} = {dim, dimRegEps, optPSDRegulators} /. {Epsilon -> "eps", EpsilonUV -> "epsUV", EpsilonIR -> "epsIR"};
+		{dim, dimRegEps, optPSDRegulators} = {dim, dimRegEps, optPSDRegulators} /. {Epsilon -> "ep", EpsilonUV -> "epUV", EpsilonIR -> "epIR"};
 
 		FCPrint[3,"PSDLoopIntegralFromPropagators: Regulators: ", optPSDRegulators, FCDoControl->lifpVerbose];
 

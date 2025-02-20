@@ -531,7 +531,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 		FCPrint[3,"PSDCreatePythonScripts: extraPref: ", extraPref, FCDoControl->psdpVerbose];
 
 		If[	optPSDAdditionalPrefactor===Default,
-			optPSDAdditionalPrefactor = "("<>ToString[extraPref,InputForm]<>")*exp("<>ToString[nLoops]<>"*EulerGamma*eps)",
+			optPSDAdditionalPrefactor = "("<>ToString[extraPref,InputForm]<>")*exp("<>ToString[nLoops]<>"*EulerGamma*ep)",
 			optPSDAdditionalPrefactor = "("<>ToString[extraPref,InputForm]<>")*" <> optPSDAdditionalPrefactor
 		];
 
@@ -561,7 +561,7 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 			(*Expansion by regions*)
 			FCPrint[1,"PSDCreatePythonScripts: Calling PSDLoopRegions", FCDoControl->psdpVerbose];
 			loopRegions = PSDLoopRegions[optPSDOutputDirectory, optPSDLoopIntegralName, optPSDExpansionByRegionsOrder, optPSDExpansionByRegionsParameter,
-				PSDAdditionalPrefactor			-> (*OptionValue[PSDAdditionalPrefactor]*) "("<>ToString[extraPref,InputForm]<>")*exp("<>ToString[nLoops]<>"*EulerGamma*eps)",
+				PSDAdditionalPrefactor			-> (*OptionValue[PSDAdditionalPrefactor]*) "("<>ToString[extraPref,InputForm]<>")*exp("<>ToString[nLoops]<>"*EulerGamma*ep)",
 				PSDAddMonomialRegulatorPower	-> OptionValue[PSDAddMonomialRegulatorPower],
 				PSDContourDeformation 			-> OptionValue[PSDContourDeformation],
 				PSDDecompositionMethod			-> OptionValue[PSDDecompositionMethod],
@@ -696,10 +696,10 @@ PSDCreatePythonScripts[expr_/;FreeQ2[expr,{GLI,FCTopology}], lmomsRaw_List, dir_
 
 			"for power in " <> StringReplace[ToString[Table[i, {i, -nLoops*2, optPSDRequestedOrder[[1]]}]], {"{" -> "[", "}" -> "]"}] <>":",
 
-			"    val = complex(result.coeff('eps', power))",
+			"    val = complex(result.coeff('ep', power))",
 
-			"    err = complex(error.coeff('eps', power))",
-			"    out=(f'eps^{power:<2} {val: .16f} +/- {err: .16e}')",
+			"    err = complex(error.coeff('ep', power))",
+			"    out=(f'ep^{power:<2} {val: .16f} +/- {err: .16e}')",
 			"    res_file.write(out)",
 			"    res_file.write('\\n')",
 			"    print(out)",
