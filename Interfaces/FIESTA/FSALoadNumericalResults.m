@@ -29,12 +29,16 @@ End[]
 
 Begin["`FSALoadNumericalResults`Private`"]
 
-pslnrVerbose::usage="";
+fslnrVerbose::usage="";
 
 Options[FSALoadNumericalResults] = {
-	Chop									-> 10^(-10),
-	FCVerbose								-> False
+	Abort		-> True,
+	Chop		-> 10^(-10),
+	FCVerbose	-> False
 };
+
+FSALoadNumericalResults[files:{__String}.., opt:OptionsPattern[]] :=
+	FSALoadNumericalResults[{#, "dummy"}, opt]&/@files;
 
 FSALoadNumericalResults[files:{{_String, _String}..}, opt:OptionsPattern[]] :=
 	FSALoadNumericalResults[#, opt]&/@files;
@@ -46,17 +50,21 @@ FSALoadNumericalResults[{script_String, resFileName_String}, OptionsPattern[]] :
 
 
 		If[	OptionValue[FCVerbose]===False,
-			pslnrVerbose=$VeryVerbose,
+			fslnrVerbose=$VeryVerbose,
 			If[	MatchQ[OptionValue[FCVerbose], _Integer],
-				pslnrVerbose=OptionValue[FCVerbose]
+				fslnrVerbose=OptionValue[FCVerbose]
 			];
 		];
 
 		resFile = FileNameJoin[{DirectoryName[script],resFileName}];
 
 		If[	!FileExistsQ[resFile],
-			Message[FSALoadNumericalResults::failmsg,"The file " <> resFile <> "does not exist."];
-			Abort[]
+			If[	OptionValue[Abort],
+				Message[FSALoadNumericalResults::failmsg,"The file " <> resFile <> "does not exist."];
+				Abort[],
+				FCPrint[0,"FSALoadNumericalResults: The file ",resFile,"does not exist.", FCDoControl->fslnrVerbose];
+				Return[FCGV["NoResult"]]
+			]
 		];
 
 		res = Get[resFile];
