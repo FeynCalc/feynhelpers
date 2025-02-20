@@ -354,7 +354,7 @@ PaXEvaluateUVIRSplit[expr_, q:Except[_?OptionQ], opts:OptionsPattern[]]:=
 PaXEvaluateIR[expr_, opts:OptionsPattern[]]:=
 	PaXEvaluateIR[expr, dummyLoopMom, opts];
 
-PaXEvaluateIR[expr_, q:Except[_?OptionQ], opts:OptionsPattern[]]:=
+PaXEvaluateIR[expr_/; !MemberQ[{List,Equal},expr], q:Except[_?OptionQ], opts:OptionsPattern[]]:=
 	Block[{loopRefineOpts, newOpts, res},
 		loopRefineOpts = OptionValue[PaXEvaluate,{opts},PaXLoopRefineOptions];
 		loopRefineOpts = Join[{Part->X`IRDivergent},loopRefineOpts];
@@ -366,10 +366,17 @@ PaXEvaluateIR[expr_, q:Except[_?OptionQ], opts:OptionsPattern[]]:=
 		res
 	];
 
+
+PaXEvaluateUV[a_ == b_, rest___] :=
+	PaXEvaluateUV[a,rest] == PaXEvaluateUV[b,rest];
+
+PaXEvaluateUV[expr_List, rest___]:=
+	PaXEvaluateUV[#, rest]&/@expr;
+
 PaXEvaluateUV[expr_, opts:OptionsPattern[]]:=
 	PaXEvaluateUV[expr, dummyLoopMom, opts];
 
-PaXEvaluateUV[expr_, q:Except[_?OptionQ], opts:OptionsPattern[]]:=
+PaXEvaluateUV[expr_/; !MemberQ[{List,Equal},expr], q:Except[_?OptionQ], opts:OptionsPattern[]]:=
 	Block[{loopRefineOpts, newOpts, res},
 		loopRefineOpts = OptionValue[PaXEvaluate,{opts},PaXLoopRefineOptions];
 		loopRefineOpts = Join[{Part->X`UVDivergent},loopRefineOpts];
@@ -384,10 +391,17 @@ PaXEvaluateUV[expr_, q:Except[_?OptionQ], opts:OptionsPattern[]]:=
 	];
 
 
+PaXEvaluate[a_ == b_, rest___] :=
+	PaXEvaluate[a,rest] == PaXEvaluate[b,rest];
+
+PaXEvaluate[expr_List, rest___]:=
+	PaXEvaluate[#, rest]&/@expr;
+
+
 PaXEvaluate[expr_, opts:OptionsPattern[]]:=
 	PaXEvaluate[expr, dummyLoopMom, opts];
 
-PaXEvaluate[expr_,q:Except[_?OptionQ], OptionsPattern[]]:=
+PaXEvaluate[expr_/; !MemberQ[{List,Equal},expr],q:Except[_?OptionQ], OptionsPattern[]]:=
 	Block[{	ex, resultX, finalResult, xList, ints, fclsOutput, fclcOutput,
 			dim, epsFree, epsNotFree, paxVer, paxOptions={}, paxSeries, paxSeriesVars={}, time, tmp, check,
 			rootsum, optPaXSimplifyEpsilon, seriesProtectList, seriesProtectRule, seriesVarProtectRule, varHold},
