@@ -29,6 +29,10 @@ QGFieldStyles::usage=
 "QGFieldStyles is an option for QGTZFCreateFieldStyles, which specifies the
 TikZ-Feynman stylings for the fields present in the given QGRAF model.";
 
+QGExtraStyles::usage=
+"QGFieldStyles is an option for QGTZFCreateFieldStyles, which specifies
+user-define TikZ-Feynman stylings.";
+
 QGTZFCreateFieldStyles::fail=
 "QGTZFCreateFieldStyles has encountered an error and must abort the evaluation. The \
 error description reads: `1`";
@@ -47,7 +51,8 @@ Options[QGTZFCreateFieldStyles] = {
 	DeleteFile		-> True,
 	FCVerbose 		-> False,
 	Names			-> "tikz-styles.tex",
-	QGFieldStyles	-> {}
+	QGFieldStyles	-> {},
+	QGExtraStyles   -> {}
 };
 
 QGTZFCreateFieldStyles[modelRaw_String, {(*amps*)_String, dias_String}, opts:OptionsPattern[]] :=
@@ -57,7 +62,8 @@ QGTZFCreateFieldStyles[modelRaw_String/;modelRaw=!="", outputRaw_String, Options
 	Block[{	time, optDeleteFile, status, modelAsString, bosonicFields, fermionicFields,
 			tikzFeynmanSetString, optQGFieldStyles, tikzSetString, customFieldStyles,
 			bosonicTikzFeynmanSetString, fermionicTikzFeynmanSetString, finalPrologString,
-			bosonicTikzSetString, fermionicTikzSetString, model, output, optNames
+			bosonicTikzSetString, fermionicTikzSetString, model, output, optNames,
+			optQGExtraStyles, extraStylesString
 		},
 
 		If [OptionValue[FCVerbose]===False,
@@ -69,12 +75,18 @@ QGTZFCreateFieldStyles[modelRaw_String/;modelRaw=!="", outputRaw_String, Options
 
 		optDeleteFile 		= OptionValue[DeleteFile];
 		optQGFieldStyles	= OptionValue[QGFieldStyles];
+		optQGExtraStyles	= OptionValue[QGExtraStyles];
 		optNames			= OptionValue[Names];
 
 		FCPrint[1,"QGTZFCreateFieldStyles: Entering. ", FCDoControl->qgtzfcfsVerbose];
 
 		If[!MatchQ[optQGFieldStyles,{} | {{_String,_String,_String}..}],
 			Message[QGTZFCreateFieldStyles::fail,"The option QGFieldStyles is not of the correct form."];
+			Abort[]
+		];
+
+		If[!MatchQ[optQGExtraStyles,{} | {__String}],
+			Message[QGTZFCreateFieldStyles::fail,"The option QGExtraStyles is not of the correct form."];
 			Abort[]
 		];
 
@@ -103,6 +115,11 @@ QGTZFCreateFieldStyles[modelRaw_String/;modelRaw=!="", outputRaw_String, Options
 
 		FCPrint[1, "QGTZFCreateFieldStyles: Bosonic fields in the model: ", bosonicFields, FCDoControl->qgtzfcfsVerbose];
 		FCPrint[1, "QGTZFCreateFieldStyles: Fermionic fields in the model: ", fermionicFields, FCDoControl->qgtzfcfsVerbose];
+
+		If[	optQGExtraStyles=!={},
+			extraStylesString = StringJoin[StringRiffle[optQGExtraStyles, ",\n"]],
+			extraStylesString = ""
+		];
 
 		If[	optQGFieldStyles=!={},
 			customFieldStyles = First/@optQGFieldStyles;
@@ -135,6 +152,10 @@ QGTZFCreateFieldStyles[modelRaw_String/;modelRaw=!="", outputRaw_String, Options
 		finalPrologString = {
 			"\n",
 			"\\tikzfeynmanset{",
+			If[	extraStylesString=!="",
+				extraStylesString<>",",
+				Unevaluated[Sequence[]]
+			],
 			"qgMomentumArrowStyle/.style n args={2}{{momentum={[arrow style=red, arrow shorten=0.35]{\\tiny \(#1\)}}}},",
 			If[	tikzFeynmanSetString=!="",
 				tikzFeynmanSetString<>",",
@@ -200,12 +221,16 @@ QGTZFCreateFieldStyles[modelRaw_String/;modelRaw=!="", outputRaw_String, Options
 
 (*TODO: Safe for memoization*)
 extractQgBosonicFields[model_String] :=
-	StringCases[model, {Shortest["[" ~~ x__ ~~ "+;"] /; StringFreeQ[x, {"[", "]"}] :> x}] // StringSplit[#, ","] & // Flatten // Union //
+	StringCases[model, {Shortest["[" ~~ x__ ~~ "+;"] /; StringFreeQ[x, {"[", "]"}] :> x,
+		Shortest["[" ~~ x__ ~~ "+, " ~~ __ ~~ ";"] /; StringFreeQ[x, {"[", "]"}] :> x
+		}] // StringSplit[#, ","] & // Flatten // Union //
 	StringTrim // ReplaceAll[#, "" -> Unevaluated[Sequence[]]] & // Union;
 
 
 extractQgFermionicFields[model_String] :=
-	StringCases[model, {Shortest["[" ~~ x__ ~~ "-;"] /; StringFreeQ[x, {"[", "]"}] :> x}] // StringSplit[#, ","] & // Flatten // Union //
+	StringCases[model, {Shortest["[" ~~ x__ ~~ "-;"] /; StringFreeQ[x, {"[", "]"}] :> x,
+		Shortest["[" ~~ x__ ~~ "-, " ~~ __ ~~ ";"] /; StringFreeQ[x, {"[", "]"}] :> x
+		}] // StringSplit[#, ","] & // Flatten // Union //
 	StringTrim // ReplaceAll[#, "" -> Unevaluated[Sequence[]]] & // Union;
 
 End[]
