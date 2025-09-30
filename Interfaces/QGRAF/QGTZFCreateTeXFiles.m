@@ -30,7 +30,7 @@ The styling file contains stylings for the involved fields defined up via
 tikzset and tikzfeynmanset. This file can be generated in advance using
 QGTZFCreateFieldStyles in a semi-automatic fashion.
 
-The resulting T EX code is saved to the same directory as the input file.
+The resulting T EX code is saved to the same directory as the input file. 
 When the option Split is set to False (default), all diagrams are put into a
 single tex file called  diagrams.tex. Compiling this file with lualatex can
 take some time,  which is why this approach is recommended only for a small

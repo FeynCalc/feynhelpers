@@ -65,7 +65,7 @@ You can download the source code of FIRE from the [developer's website](https://
 
 We recommend to enable support for flint, zstd, lthreads, tcmalloc, snappy and zlib via
 
-```
+```mathematica
 ./configure --enable_zlib --enable_snappy --enable_lthreads --enable_tcmalloc --enable_zstd --enable_flint
 ```
 

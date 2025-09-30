@@ -30,8 +30,11 @@ QGFieldStyles::usage=
 TikZ-Feynman stylings for the fields present in the given QGRAF model.";
 
 QGExtraStyles::usage=
-"QGFieldStyles is an option for QGTZFCreateFieldStyles, which specifies
-user-define TikZ-Feynman stylings.";
+"QGExtraStyles is an option for QGTZFCreateFieldStyles, which adds additional
+stylings to those created for Tikz-Feynman.
+
+For example, one can use QGExtraStyles -> {\"every vertex/.style={small,
+dot}\"} to add a small dot to every vertex.";
 
 QGTZFCreateFieldStyles::fail=
 "QGTZFCreateFieldStyles has encountered an error and must abort the evaluation. The \
