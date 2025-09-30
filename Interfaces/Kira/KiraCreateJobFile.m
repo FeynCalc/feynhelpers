@@ -54,6 +54,11 @@ Kira interface.
 It specifies the file name for the created job file. The default value is
 \"job.yaml\".";
 
+KiraIntegralOrdering::usage=
+"KiraIntegralOrdering is an option for KiraCreateJobFile and other functions of the
+Kira interface.
+
+It specifies the value of the integral_ordering parameter.";
 
 KiraCreateJobFile::failmsg =
 "Error! KiraCreateJobFile has encountered a fatal problem and must abort the computation. \
@@ -77,6 +82,7 @@ Options[KiraCreateJobFile] = {
 	FCVerbose			-> False,
 	KiraIntegrals		-> {"KiraLoopIntegrals"},
 	KiraJobFileName		-> "job.yaml",
+	KiraIntegralOrdering -> 2,
 	OverwriteTarget		-> True,
 	Top					-> True
 };
@@ -190,9 +196,10 @@ KiraCreateJobFile[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, rs: {{_Int
 			WriteString[file, "          "<>selectMandatoryList<>"\n"];
 		];
 
-		WriteString[file, "    run_initiate: true\n"];
-		WriteString[file, "    run_triangular: true\n"];
-		WriteString[file, "    run_back_substitution: true\n"];
+		WriteString[file, "      run_initiate: true\n"];
+		WriteString[file, "      run_triangular: true\n"];
+		WriteString[file, "      run_back_substitution: true\n"];
+		WriteString[file, "      integral_ordering: "<>ToString[OptionValue[KiraIntegralOrdering]]<>"\n"];
 		WriteString[file, "  - kira2math:\n"];
 		WriteString[file, "      target:\n"];
 		WriteString[file, integralsString];
