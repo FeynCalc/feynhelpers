@@ -30,7 +30,7 @@ The styling file contains stylings for the involved fields defined up via
 tikzset and tikzfeynmanset. This file can be generated in advance using
 QGTZFCreateFieldStyles in a semi-automatic fashion.
 
-The resulting T EX code is saved to the same directory as the input file. 
+The resulting T EX code is saved to the same directory as the input file.
 When the option Split is set to False (default), all diagrams are put into a
 single tex file called  diagrams.tex. Compiling this file with lualatex can
 take some time,  which is why this approach is recommended only for a small
@@ -59,6 +59,7 @@ qgtzfctxVerbose::usage="";
 
 Options[QGTZFCreateTeXFiles] = {
 	Alignment						-> 6,
+	Extract							-> {},
 	CopyFile						-> {
 		FileNameJoin[{$QGScriptsDirectory,"makeDiagrams.sh"}],
 		FileNameJoin[{$QGScriptsDirectory,"glueDiagrams.sh"}]
@@ -105,7 +106,8 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 	Block[{	importedFile, time, diagramsRaw, prolog, diagrams, optNames,
 			optOverwriteTarget, status, texPrologEpilog, optQGOutputDiagrams,
 			finalTeXString, optAlignment, texStyle, optStringSplit, optCopyFile,
-			optSplit, output, styleFile, optQGDiagramStyle, optStringReplace},
+			optSplit, output, styleFile, optQGDiagramStyle, optStringReplace,
+			optExtract, tmp},
 
 		If [OptionValue[FCVerbose]===False,
 			qgtzfctxVerbose=$VeryVerbose,
@@ -125,6 +127,7 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 		optTadpoleMinDistance			= OptionValue["TadpoleMinDistance"];
 		optQGOutputDiagrams				= OptionValue[QGOutputDiagrams];
 		optStringReplace				= OptionValue[StringReplace];
+		optExtract						= OptionValue[Extract];
 
 		FCPrint[1,"QGTZFCreateTeXFiles: Entering. ", FCDoControl->qgtzfctxVerbose];
 
@@ -144,7 +147,10 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 		];
 
 		If[	TrueQ[optSplit],
+			(* Splitting *)
 			output = DirectoryName[input],
+
+			(* No splitting *)
 			If[	TrueQ[DirectoryQ[DirectoryName[optQGOutputDiagrams]]],
 				(*This directory actually exists*)
 				output = optQGOutputDiagrams,
@@ -152,6 +158,7 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 				output = FileNameJoin[{DirectoryName[input],OptionValue[QGOutputDiagrams]}]
 			]
 		];
+
 
 		FCPrint[1,"QGTZFCreateTeXFiles: Importig the style file ", styleFile ,FCDoControl->qgtzfctxVerbose];
 		time = AbsoluteTime[];
@@ -186,6 +193,13 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 		FCPrint[1, "QGTZFCreateTeXFiles: The input file contains ", Length[diagramsRaw]-1,  " diagram(s).", FCDoControl->qgtzfctxVerbose];
 		(*TODO Write the number of diagrams...*)
 
+		If[	optExtract=!={},
+			FCPrint[1, "QGTZFCreateTeXFiles: We only consider ", Length[optExtract],  " of them.", FCDoControl->qgtzfctxVerbose];
+			tmp  = diagramsRaw[[1;;1]];
+			diagramsRaw=Extract[diagramsRaw[[2;;]],List/@optExtract];
+			diagramsRaw=Join[tmp,diagramsRaw]
+		];
+
 		FCPrint[1,"QGTZFCreateTeXFiles: Fixing collapsing self-energy and tadpole loops.", FCDoControl->qgtzfctxVerbose];
 		time = AbsoluteTime[];
 		diagrams = fixSELoopsTikz /@ diagramsRaw;
@@ -195,10 +209,13 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 			diagrams = StringReplace[diagrams,optStringReplace]
 		];
 
+
+
 		FCPrint[1,"QGTZFCreateTeXFiles: Saving the output.", FCDoControl->qgtzfctxVerbose];
 		time = AbsoluteTime[];
 
 		If[	optSplit,
+
 			(* Save each diagram separately *)
 			FCPrint[1,"QGTZFCreateTeXFiles: Each diagram will be saved into a separate file.", FCDoControl->qgtzfctxVerbose];
 			diagrams = Rest[diagrams];
@@ -213,6 +230,7 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 			(*	Save the files *)
 			status = Table[Export[FileNameJoin[{output,optNames[i]}],StringRiffle[Flatten[{
 				OptionValue["QGTZFTeXPrologStandalone"],
+
 				"\\newcommand{\\diaProlog}{}",
 				"\\newcommand{\\diaEpilog}[1]{}",
 				"\n",
@@ -231,11 +249,14 @@ QGTZFCreateTeXFiles[input_String/;input=!="", OptionsPattern[]] :=
 			];
 
 			,
+			(* Save all diagrams into a single file *)
 
 			FCPrint[1,"QGTZFCreateTeXFiles: All diagram will be saved into a single file.", FCDoControl->qgtzfctxVerbose];
 
-			(*save all diagrams into a single file *)
 			diagrams = Riffle[diagrams, optStringSplit];
+
+			tmp  = diagrams[[1;;1]];
+			diagrams = Join[tmp,Riffle[diagrams[[2;;]],"\\\\\n",optAlignment*2+1]];
 
 			finalTeXString = {
 				OptionValue["QGTZFTeXPrologAllInOne"],
