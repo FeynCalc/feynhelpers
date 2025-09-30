@@ -107,7 +107,8 @@ FerSolve[eqs_List, vars_List, OptionsPattern[]]:=
 		time=AbsoluteTime[];
 
 		res = FerRowReduce[augMatrix, FerInputFile->inFile, FerOutputFile->outFile, FerScriptFile->scriptFile, FCVerbose-> fsVerbose,
-			DeleteFile -> OptionValue[DeleteFile], SparseArray -> OptionValue[SparseArray], "SetPivotStrategy"	-> OptionValue["SetPivotStrategy"]];
+			DeleteFile -> OptionValue[DeleteFile], SparseArray -> OptionValue[SparseArray], "SetPivotStrategy"	-> OptionValue["SetPivotStrategy"],
+			FerPath -> OptionValue[FerPath]];
 
 		FCPrint[1, "FerSolve: RowReduce done, timing: ", N[AbsoluteTime[] - time, 4], FCDoControl->fsVerbose];
 

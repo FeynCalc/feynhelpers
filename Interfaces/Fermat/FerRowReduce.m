@@ -37,7 +37,8 @@ Begin["`FerRowReduce`Private`"]
 frrVerbose::usage="";
 
 Options[FerRowReduce] = {
-	DeleteFile			-> True,
+	DeleteFile										-> True,
+	"DisableProbabilisticPolynomailDivisionTest"	-> True,
 	FCVerbose 			-> False,
 	FerInputFile		-> Automatic,
 	FerOutputFile		-> Automatic,
@@ -82,7 +83,10 @@ FerRowReduce[matRaw_?MatrixQ, OptionsPattern[]]:=
 			Sequence@@(
 			FerCommand["AdjoinPolynomialVariable", #]&/@vars),
 			FerCommand["ReadFromAnInputFile", optFerInputFile],
-			FerCommand["DisableProbabilisticPolynomailDivisionTest"],
+			If[	OptionValue["DisableProbabilisticPolynomailDivisionTest"],
+				FerCommand["DisableProbabilisticPolynomailDivisionTest"],
+				Sequence[]
+			],
 			FerCommand["SetPivotStrategy", OptionValue["SetPivotStrategy"]];
 			FerCommand["ReducedRowEchelonForm", "[fMat]"],
 			FerCommand["EnableUglyDisplay"],
