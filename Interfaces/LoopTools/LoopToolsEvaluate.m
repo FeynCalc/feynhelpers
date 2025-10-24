@@ -48,7 +48,7 @@ the normalization between Passarino-Veltman functions in FeynCalc and
 LoopTools. In addition to that, the prefactor specified via
 LToolsImplicitPrefactor may also depend on $\\varepsilon$.
 
-Setting this option to False will leave the prefactors unexpanded, which 
+Setting this option to False will leave the prefactors unexpanded, which
 might sometimes be useful when examining the obtained results.";
 
 LToolsImplicitPrefactor::usage=
@@ -62,7 +62,7 @@ You may want to use LToolsImplicitPrefactor->1/(2Pi)^D when working with
 beginning.";
 
 LToolsFullResult::usage=
-"LToolsFullResult is an option for LToolsEvaluate. When set to True (default), 
+"LToolsFullResult is an option for LToolsEvaluate. When set to True (default),
 LToolsEvaluate will return the full result including singularities and
 accompanying terms. Otherwise, only the finite part (standard output of
 LoopTools) will be provided.
@@ -177,14 +177,15 @@ LToolsEvaluate[expr_, q:Except[_?OptionQ], OptionsPattern[]]:=
 
 		FCPrint[3,"LToolsEvaluate: Unique integrals with numerical parameters: ", ints, FCDoControl-> lteVerbose];
 
-		If[	!MatchQ[(ints/.loopIntegral[0]->Unevaluated[Sequence[]]/.loopIntegral->Identity), {__PaVe} | {}],
+		If[	!MatchQ[(ints/.loopIntegral[0]->Unevaluated[Sequence[]]/.loopIntegral->Identity/.(DB1|DB0)[__]->Unevaluated[Sequence[]]), {__PaVe} | {}],
 			Message[LToolsEvaluate::failmsg,"List of unique scalar integrals contains integrals that are not written as PaVe functions."];
 			FCPrint[1,"LToolsEvaluate: ints: ", (ints/.loopIntegral->Identity), " ", FCDoControl-> lteVerbose];
 			Abort[];
 		];
 
 
-		If[	!MatchQ[(ints/.loopIntegral[0]->Unevaluated[Sequence[]]/.loopIntegral->Identity), {PaVe[__?NumberQ, {___?NumberQ}, {__?NumberQ}, OptionsPattern[]] ..}  | {}],
+		If[	!MatchQ[(ints/.loopIntegral[0]->Unevaluated[Sequence[]]/.loopIntegral->Identity/.(DB1|DB0)[__]->Unevaluated[Sequence[]]),
+				{PaVe[__?NumberQ, {___?NumberQ}, {__?NumberQ}, OptionsPattern[]] ..}  | {}],
 			Message[LToolsEvaluate::failmsg,"Arguments of PaVe functions are not purely numerical."];
 			FCPrint[1,"LToolsEvaluate: ints: ", (ints/.loopIntegral->Identity), " ", FCDoControl-> lteVerbose];
 			Abort[];
@@ -215,11 +216,19 @@ LToolsEvaluate[expr_, q:Except[_?OptionQ], OptionsPattern[]]:=
 			FCPrint[1,"LToolsEvaluate: Calculating the full result.", FCDoControl->lteVerbose];
 
 			LToolsSetLambda[-2];
-			resEps2 = ints /. loopIntegral->optHead /. PaVe -> LToolsPaVe;
+			resEps2 = ints /. loopIntegral->optHead /. {
+				PaVe -> LToolsPaVe,
+				DB0[pp_,m1_,m2_,___]->LToolsDB0[pp,m1,m2],
+				DB1[pp_,m1_,m2_,___]->LToolsDB1[pp,m1,m2]
+			};
 			FCPrint[3,"LToolsEvaluate: 1/Epsilon^2 term: ", resEps2, " ", FCDoControl->lteVerbose];
 
 			LToolsSetLambda[-1];
-			resEps1 = ints /. loopIntegral->optHead /. PaVe -> LToolsPaVe;
+			resEps1 = ints /. loopIntegral->optHead /. {
+				PaVe -> LToolsPaVe,
+				DB0[pp_,m1_,m2_,___]->LToolsDB0[pp,m1,m2],
+				DB1[pp_,m1_,m2_,___]->LToolsDB1[pp,m1,m2]
+			};
 			FCPrint[3,"LToolsEvaluate: 1/Epsilon term: ", resEps1, " ", FCDoControl->lteVerbose];
 
 			LToolsSetLambda[0];
@@ -233,7 +242,11 @@ LToolsEvaluate[expr_, q:Except[_?OptionQ], OptionsPattern[]]:=
 				]&,intsUV];
 			FCPrint[3,"LToolsEvaluate: Extra finite pieces for the UV-divergences: ", extraFinitePieces, FCDoControl->lteVerbose];
 			*)
-			resFinitePart = ints /.loopIntegral->optHead /. PaVe -> LToolsPaVe;
+			resFinitePart = ints /.loopIntegral->optHead /. {
+				PaVe -> LToolsPaVe,
+				DB0[pp_,m1_,m2_,___]->LToolsDB0[pp,m1,m2],
+				DB1[pp_,m1_,m2_,___]->LToolsDB1[pp,m1,m2]
+			};
 			FCPrint[3,"LToolsEvaluate: finite part: ", resFinitePart, " ", FCDoControl->lteVerbose];
 
 			resultLT = ((resEps2)/Epsilon^2 + (resEps1)/Epsilon + resFinitePart),
@@ -241,7 +254,11 @@ LToolsEvaluate[expr_, q:Except[_?OptionQ], OptionsPattern[]]:=
 			(*False*)
 			FCPrint[1,"LToolsEvaluate: Calculating only the finite part.", FCDoControl->lteVerbose];
 			LToolsSetLambda[optLToolsSetLambda];
-			resultLT = (ints /.loopIntegral->optHead /. PaVe -> LToolsPaVe)
+			resultLT = (ints /.loopIntegral->optHead /. {
+				PaVe -> LToolsPaVe,
+				DB0[pp_,m1_,m2_,___]->LToolsDB0[pp,m1,m2],
+				DB1[pp_,m1_,m2_,___]->LToolsDB1[pp,m1,m2]
+			})
 		];
 
 		FCPrint[3,"LToolsEvaluate: resultLT (raw): ", resultLT, FCDoControl->lteVerbose];
