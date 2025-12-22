@@ -88,7 +88,7 @@ Options[FIREPrepareStartFile] = {
 	FIRELI 						-> True,
 	FIREProblemId				-> 4242,
 	FIREParallel				-> 2,
-	FIREPath 					-> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE6", "FIRE6.m"}],
+	FIREPath 					-> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE7", "FIRE7.m"}],
 	FIREUseLiteRed				-> True,
 	OverwriteTarget				-> True,
 	SetDimensions				-> {3, 4, D, D-1},

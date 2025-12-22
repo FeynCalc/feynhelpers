@@ -29,7 +29,7 @@ If path represents a full path to a file, then this file is used as the
 path/topoName/topoName.config is assumed to be the full path.
 
 The default path to the FIRE binary is FileNameJoin[{$UserBaseDirectory,
-\"Applications\", \"FIRE6\", \"bin\", \"FIRE6\"}]. It can be modified via the
+\"Applications\", \"FIRE7\", \"bin\", \"FIRE7\"}]. It can be modified via the
 option FIREBinaryPath.";
 
 FIRERunReduction::failmsg =
@@ -46,7 +46,7 @@ fcsfVerbose::usage="";
 
 Options[FIRERunReduction] = {
 	FCVerbose			-> False,
-	FIREBinaryPath 		-> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE6", "bin", "FIRE6"}],
+	FIREBinaryPath 		-> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE7", "bin", "FIRE7"}],
 	FIREShowOutput		-> False
 };
 
