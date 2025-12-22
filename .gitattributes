@@ -5,4 +5,14 @@
 *.Gen linguist-language=Mathematica
 *.conf linguist-language=Mathematica
 *.Fac linguist-language=Mathematica
-
+Tests export-ignore
+install.m export-ignore
+.project export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
+docbuild.xml export-ignore
+issue_template.md export-ignore
+SUPPORT.md export-ignore
+README.MD export-ignore
+LICENSE export-ignore
+.version export-subst

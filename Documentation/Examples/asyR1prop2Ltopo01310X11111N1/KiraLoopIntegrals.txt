@@ -1,0 +1,4 @@
+{asyR1prop2Ltopo01310X11111N1[1, 1, 1 ,2 ,2],
+asyR1prop2Ltopo01310X11111N1[1, -2, 1 ,1 ,2],
+asyR1prop2Ltopo01310X11111N1[1, 1, 3, 1, 1], asyR1prop2Ltopo01310X11111N1[1, 
+  1, 1 , -1, -1]}

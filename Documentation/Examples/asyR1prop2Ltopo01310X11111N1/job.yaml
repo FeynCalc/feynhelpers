@@ -1,0 +1,13 @@
+jobs:
+  - reduce_sectors:
+      reduce:
+        - {topologies: [asyR1prop2Ltopo01310X11111N1], sectors: [b11111], r: 6, s: 4 }
+      select_integrals:
+        select_mandatory_list:
+          - "KiraLoopIntegrals.txt"
+    run_initiate: true
+    run_triangular: true
+    run_back_substitution: true
+  - kira2math:
+      target:
+        - {topologies: [asyR1prop2Ltopo01310X11111N1], sectors: [b11111], r: 6, s: 4 }

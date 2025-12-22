@@ -1,0 +1,9 @@
+## PSDDeformationParametersDecreaseFactor
+
+`PSDDeformationParametersDecreaseFactor` is an option for `PSDIntegrate` and other functions of the pySecDec interface. It specifies the value of the `deformation_parameters_decrease_factor` parameter to be passed to pySecDec's `IntegralLibrary` function.
+
+### See also
+
+[Overview](Extra/FeynHelpers.md), [PSDIntegrate](PSDIntegrate.md).
+
+### Examples

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # This software is covered by the GNU General Public License 3.
-# Copyright (C) 1990-2018 Rolf Mertig
-# Copyright (C) 1997-2018 Frederik Orellana
-# Copyright (C) 2014-2018 Vladyslav Shtabovenko
+# Copyright (C) 1990-2026 Rolf Mertig
+# Copyright (C) 1997-2026 Frederik Orellana
+# Copyright (C) 2014-2026 Vladyslav Shtabovenko
 
 # Description:
 
@@ -19,6 +19,15 @@ echo $(pwd)
 
 MATH=$1
 
+#pySecDec Examples
+#-------------------------------------------------------------------------------
+for exFile in 'eik2Lv1' 'V1001'
+
+do
+  echo
+  echo -e "* \c"
+  $MATH -nopromt -script ../Examples/pySecDec/$exFile/convert_int.m
+done
 
 #QED Examples
 #-------------------------------------------------------------------------------
@@ -59,5 +68,7 @@ do
   echo -e "* \c"
   $MATH -nopromt -script ../Examples/$exFile
 done
+
+
 
 notify-send "Finished running examples for FeynHelpers."

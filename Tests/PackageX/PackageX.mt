@@ -2,7 +2,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2018 Vladyslav Shtabovenko
+	Copyright (C) 2015-2026 Vladyslav Shtabovenko
 *)
 
 (* :Summary:  Unit tests for FeynHelpers									*)
@@ -21,5 +21,5 @@ ClearAll[tests];
 tests = FileNames["*.test",FileNameJoin[{$FeynHelpersDirectory, "Tests", "PackageX"}]]
 Get/@tests;
 
-Map[Test[ToExpression[(#[[2]])],ToExpression[(#[[3]])],TestID->#[[1]]]&,
+Map[Test[Chop@Normal@Simplify[ToExpression[(#[[2]])]-ToExpression[(#[[3]])]],0,TestID->#[[1]]]&,
 	Join@@(ToExpression/@Names["Tests`PackageX`*"])];

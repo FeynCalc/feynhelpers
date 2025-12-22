@@ -1,0 +1,15 @@
+ExternalTools/Fermat/ferl6/*
+ExternalTools/Fermat/ferm6/*
+ExternalTools/Fermat/Ferl7/*
+ExternalTools/QGRAF/Binary/*
+ExternalTools/QGRAF/LaTeX/*.aux
+ExternalTools/QGRAF/LaTeX/*.log
+ExternalTools/LoopTools/LoopTools
+ExternalTools/LoopTools/LoopTools.exe
+Examples/pySecDec/*/loopint
+Examples/pySecDec/*/numres*
+Documentation/Examples/*/tmp/*
+Documentation/Examples/*/results/kira.db
+Documentation/Examples/*/sectormappings/*
+Documentation/Examples/*/*.log
+WIP/*

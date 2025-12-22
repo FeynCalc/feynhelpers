@@ -1,0 +1,10 @@
+integralfamilies:
+  - name: asyR1prop2Ltopo01310X11111N1
+    loop_momenta: [p1, p3]
+    top_level_sectors: [b11111]
+    propagators:
+      - [ "p1", 0]
+      - [ "p3", "mg^2"]
+      - { bilinear: [ [ "2*p3", "q"], 0] }
+      - [ "p1 + q", "mb^2"]
+      - { bilinear: [ [ "p1", "p3"], 0] }
