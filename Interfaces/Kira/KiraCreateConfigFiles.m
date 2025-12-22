@@ -32,7 +32,7 @@ FCLoopFindSectors will be used to determine the top sector for each topology.
 
 The syntax  KiraCreateConfigFiles[{topo1, topo2, ...}, {sectors1, sectors2,
 ...}, path] or KiraCreateConfigFiles[{topo1, topo2, ...}, {glis1, glis2, ...},
- path] is also allowed. This implies that all config files will go into the
+path] is also allowed. This implies that all config files will go into the
 corresponding subdirectories of path, e.g. path/topoName1/config,
 path/topoName2/config etc.
 
@@ -301,6 +301,8 @@ KiraCreateConfigFiles[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, dirRaw
 
 		kinematicInvariants = mdRule@@@optKiraMassDimensions;
 
+		FCPrint[3,"KiraCreateConfigFiles: Mass dimensions of kinematic invariants: ", kinematicInvariants, FCDoControl->fpsfVerbose];
+
 		If[	!MatchQ[kinematicInvariants,{___String}],
 			Message[KiraCreateConfigFiles::failmsg, "Failed to convert all the occurring mass dimensions rules to the KIRA notation: " <>
 			ToString[Cases[kinematicInvariants, x_ /; Head[x] =!= String, Infinity],InputForm]];
@@ -309,7 +311,9 @@ KiraCreateConfigFiles[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, dirRaw
 
 		kinematicInvariants  = StringRiffle[kinematicInvariants, "\n    "];
 
-		scalarProductRules = ExpandScalarProduct[SelectFree[FRH[topo[[5]]],{Polarization,TemporalMomentum}]];
+		scalarProductRules = SelectFree[topo[[5]],{Polarization,TemporalMomentum}];
+
+		FCPrint[3,"KiraCreateConfigFiles: Scalar Product rules: ", scalarProductRules, FCDoControl->fpsfVerbose];
 
 		scalarProductRules = spRule[#,topo[[4]]]&/@scalarProductRules;
 
@@ -417,6 +421,27 @@ spRule[Rule[Pair[Momentum[a_, ___], Momentum[b_, ___]], rhs_], relevantMomenta_L
 	MemberQ[relevantMomenta,a] && MemberQ[relevantMomenta,b];
 
 spRule[Rule[Pair[Momentum[a_, ___], Momentum[b_, ___]], _], relevantMomenta_List]:=
+	""/; !MemberQ[relevantMomenta,a] || !MemberQ[relevantMomenta,b];
+
+spRule[Rule[Hold[Pair][Momentum[a_, ___], Momentum[b_, ___]], rhs_], relevantMomenta_List]:=
+	"- [ [ " <> ToString[a, InputForm] <> ", " <> ToString[b, InputForm] <> "],"<> ToString[rhs, InputForm] <>"]"/;
+	MemberQ[relevantMomenta,a] && MemberQ[relevantMomenta,b];
+
+spRule[Rule[Hold[Pair][Momentum[a_, ___], Momentum[b_, ___]], _], relevantMomenta_List]:=
+	""/; !MemberQ[relevantMomenta,a] || !MemberQ[relevantMomenta,b];
+
+spRule[Rule[Hold[SP][a_, b_], rhs_], relevantMomenta_List]:=
+	"- [ [ " <> ToString[a, InputForm] <> ", " <> ToString[b, InputForm] <> "],"<> ToString[rhs, InputForm] <>"]"/;
+	MemberQ[relevantMomenta,a] && MemberQ[relevantMomenta,b];
+
+spRule[Rule[Hold[SP][a_, b_], _], relevantMomenta_List]:=
+	""/; !MemberQ[relevantMomenta,a] || !MemberQ[relevantMomenta,b];
+
+spRule[Rule[Hold[SPD][a_, b_], rhs_], relevantMomenta_List]:=
+	"- [ [ " <> ToString[a, InputForm] <> ", " <> ToString[b, InputForm] <> "],"<> ToString[rhs, InputForm] <>"]"/;
+	MemberQ[relevantMomenta,a] && MemberQ[relevantMomenta,b];
+
+spRule[Rule[Hold[SPD][a_, b_], _], relevantMomenta_List]:=
 	""/; !MemberQ[relevantMomenta,a] || !MemberQ[relevantMomenta,b];
 
 fcProp[Pair[Momentum[a_, ___], Momentum[a_, ___]] - massSq_]:=
