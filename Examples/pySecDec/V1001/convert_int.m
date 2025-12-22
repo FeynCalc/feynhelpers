@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2020-2022 Vladyslav Shtabovenko
+	Copyright (C) 2020-2026 Vladyslav Shtabovenko
 *)
 
 (* :Summary:  Generates scripts for the numerical evaluation of the given
@@ -41,7 +41,7 @@ int=SFAD[p1-p3,p1+q,{p3,m1^2},{p3+q,m1^2}]
 (*To compare with the analytic result on the Appendix C of hep-ph/9907431 we need the result up to first order in ep.*)
 
 
-PSDCreatePythonScripts[int,{p1,p3},
+files=PSDCreatePythonScripts[int,{p1,p3},
 FCGetNotebookDirectory[],PSDRealParameterRules->{m1->5.},
 FinalSubstitutions->{SPD[q]->m1^2},PSDRequestedOrder->1,OverwriteTarget->True]
 
@@ -91,22 +91,20 @@ FinalSubstitutions->{SPD[q]->m1^2},PSDRequestedOrder->1,OverwriteTarget->True]
 (*The format of the Mathematica results file is a list of two elements containing the real and the imaginary parts.*)
 
 
-results=FileNames["numres*_mma.m",FCGetNotebookDirectory[]];
+finalRes=PSDLoadNumericalResults[files,PSDRealParameterRules->{m1->5.}]
 
 
-currentRes=results[[1]];
-finalRes=Get[currentRes][[1]]+I*Get[currentRes][[2]];
 Print["Numerical result for the following choice of parameters: ",
-StringSplit[StringReplace[FileBaseName[currentRes],{"numres"|"mma"->""}],"_"]];
-Print[finalRes];
+{m1->5.}];
+Print[finalRes[[1]]];
 
 
 S2=4/(9Sqrt[3])FCClausen[2,Pi/3];
 Ls3/:N[Ls3[x_]]:=-NIntegrate[Log[Abs[2Sin[th/2]]]^2,{th,0,x}];
 
 
-V1001=E^(2*eps*EulerGamma)*(m1^2)^(-2*eps)*Gamma[1+eps]^2*(1/(2eps^2)+
-1/eps(5/2-Pi/Sqrt[3])+19/2+3/2Zeta[2]-4Pi/Sqrt[3]-63/4 S2+Pi/Sqrt[3]Log[3]+eps(
+V1001=E^(2*ep*EulerGamma)*(m1^2)^(-2*ep)*Gamma[1+ep]^2*(1/(2ep^2)+
+1/ep(5/2-Pi/Sqrt[3])+19/2+3/2Zeta[2]-4Pi/Sqrt[3]-63/4 S2+Pi/Sqrt[3]Log[3]+ep(
 65/2+8 Zeta[2]+3/2Zeta[3]-12 Pi/Sqrt[3]-63S2+63/4 S2 Log[3]+4 Pi/Sqrt[3]Log[3]-1/2Pi/Sqrt[3]Log[3]^2-21/2Pi/Sqrt[3]Zeta[2]-21/2Ls3[2Pi/3]/Sqrt[3]));
 
 
@@ -114,7 +112,7 @@ V1001=E^(2*eps*EulerGamma)*(m1^2)^(-2*eps)*Gamma[1+eps]^2*(1/(2eps^2)+
 (*This is the analytic result from hep-ph/9907431*)
 
 
-resV1001=Normal[Series[V1001,{eps,0,1}]]//FunctionExpand
+resV1001=Normal[Series[V1001,{ep,0,1}]]//FunctionExpand
 
 
 (* ::Text:: *)
@@ -129,7 +127,7 @@ N[resV1001/.m1->5]
 
 
 knownResults = N[resV1001/.m1->5];
-FCCompareResults[{FCCompareNumbers[Normal[finalRes],knownResults,Chop->10^(-7),FCVerbose->-1]},{0},
+FCCompareResults[{FCCompareNumbers[finalRes[[1]],knownResults,Chop->10^(-7),FCVerbose->-1]},{0},
 Text->{"\tCompare to hep-ph/9907431:","CORRECT.","WRONG!"}, Interrupt->{Hold[Quit[1]],Automatic}]
 Print["\tCPU Time used: ", Round[N[TimeUsed[],3],0.001], " s."];
 

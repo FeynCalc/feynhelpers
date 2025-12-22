@@ -4,13 +4,13 @@ if __name__ == "__main__":
     import pySecDec as psd
 
     li =     LoopIntegralFromPropagators(
-    ['-mg**2 + p3**2', '-mg**2 + p1**2', '2*n*p1', '2*n*(p1 + p3)'],
+    ['-mg**2 + p3**2', '-mg**2 + p1**2', '2*n*p1', '2*(n*p1 + n*p3)'],
     loop_momenta = ['p1', 'p3'],
-    powerlist = [1, 1, 1, 1],
-    dimensionality = '4 - 2*eps',
+    powerlist = ['1', '1', '1', '1'],
+    dimensionality = '4 - 2*ep',
     Feynman_parameters = 'x',
     replacement_rules = [('n**2','1'), ('q**2','qq')],
-    regulators = ['eps']
+    regulators = ['ep']
     )
 
     import os,shutil
@@ -26,6 +26,6 @@ if __name__ == "__main__":
     requested_orders = [1],
     real_parameters = ['qq', 'mg'],
     contour_deformation = False,
-    additional_prefactor = '(1)*exp(2*EulerGamma*eps)',
+    additional_prefactor = '(1)*exp(2*EulerGamma*ep)',
     decomposition_method = 'geometric'
     )

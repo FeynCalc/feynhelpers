@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2020-2022 Vladyslav Shtabovenko
+	Copyright (C) 2020-2026 Vladyslav Shtabovenko
 *)
 
 (* :Summary:  Generates scripts for the numerical evaluation of the given
@@ -21,9 +21,17 @@ If[ $FrontEnd === Null,
 		$FeynCalcStartupMessages = False;
 		Print["Numerical evaluation of the loop integral eik2Lv1 using pySecDec"];
 ];
-If[$Notebooks === False, $FeynCalcStartupMessages = False];
-$LoadAddOns= {"FeynHelpers"};
-<<FeynCalc`;
+LaunchKernels[4];
+$LoadAddOns={"FeynArts","FeynHelpers"};
+<<FeynCalc`
+$FAVerbose = 0;
+$ParallelizeFeynCalc=True;
+
+FCCheckVersion[10,2,0];
+If[ToExpression[StringSplit[$FeynHelpersVersion,"."]][[1]]<2,
+	Print["You need at least FeynHelpers 2.0 to run this example."];
+	Abort[];
+]
 
 
 (* ::Section:: *)
@@ -37,7 +45,7 @@ int=SFAD[{p1,mg^2},{p3,mg^2},{{0,2 p1 . n}},{{0,2 n . (p1+p3)}}]
 (*This integral is purely real, so to save time we explicitly disable the contour deformation. We want to obtain the result up to first order in ep.*)
 
 
-PSDCreatePythonScripts[int,{p1,p3},
+files=PSDCreatePythonScripts[int,{p1,p3},
 FCGetNotebookDirectory[],PSDRealParameterRules->{qq->5.,mg->3.},
 FinalSubstitutions->{SPD[n]->1,SPD[q]->qq},PSDContourDeformation->False,PSDRequestedOrder->1,OverwriteTarget->True]
 
@@ -87,24 +95,23 @@ FinalSubstitutions->{SPD[n]->1,SPD[q]->qq},PSDContourDeformation->False,PSDReque
 (*The format of the Mathematica results file is a list of two elements containing the real and the imaginary parts.*)
 
 
-results=FileNames["numres*_mma.m",FCGetNotebookDirectory[]];
+finalRes=PSDLoadNumericalResults[files,PSDRealParameterRules->{qq->5.,mg->3.}]
 
 
-currentRes=results[[1]];
-finalRes=Get[currentRes][[1]]+I*Get[currentRes][[2]];
 Print["Numerical result for the following choice of parameters: ",
-StringSplit[StringReplace[FileBaseName[currentRes],{"numres"|"mma"->""}],"_"]];
-Print[finalRes];
+{qq->5.,mg->3.}];
+Print[finalRes[[1]]];
 
 
 (* ::Section:: *)
 (*Check the final results*)
 
 
-knownResults = 44.41322-140.65835 eps;
-FCCompareResults[{FCCompareNumbers[Normal[finalRes],knownResults,Chop->10^(-6),FCVerbose->-1]},{0},
+knownResults = 44.41322-140.65835 ep;
+FCCompareResults[{FCCompareNumbers[finalRes[[1]],knownResults,Chop->10^(-6),FCVerbose->-1]},{0},
 Text->{"\tCompare to the known result:","CORRECT.","WRONG!"}, Interrupt->{Hold[Quit[1]],Automatic}]
 Print["\tCPU Time used: ", Round[N[TimeUsed[],3],0.001], " s."];
+
 
 
 

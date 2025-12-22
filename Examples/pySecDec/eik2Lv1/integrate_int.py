@@ -28,9 +28,9 @@ if num_params_complex_str!='':
 print('Numerical result')
 res_file = open(''.join(['numres',num_params_real_str,num_params_complex_str,'_psd.txt']),'w')
 for power in [-4, -3, -2, -1, 0, 1]:
-    val = complex(result.coeff('eps', power))
-    err = complex(error.coeff('eps', power))
-    out=(f'eps^{power:<2} {val: .16f} +/- {err: .16e}')
+    val = complex(result.coeff('ep', power))
+    err = complex(error.coeff('ep', power))
+    out=(f'ep^{power:<2} {val: .16f} +/- {err: .16e}')
     res_file.write(out)
     res_file.write('\n')
     print(out)
