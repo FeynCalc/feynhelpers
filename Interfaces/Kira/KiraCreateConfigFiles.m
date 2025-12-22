@@ -32,7 +32,7 @@ FCLoopFindSectors will be used to determine the top sector for each topology.
 
 The syntax  KiraCreateConfigFiles[{topo1, topo2, ...}, {sectors1, sectors2,
 ...}, path] or KiraCreateConfigFiles[{topo1, topo2, ...}, {glis1, glis2, ...},
-path] is also allowed. This implies that all config files will go into the
+ path] is also allowed. This implies that all config files will go into the
 corresponding subdirectories of path, e.g. path/topoName1/config,
 path/topoName2/config etc.
 

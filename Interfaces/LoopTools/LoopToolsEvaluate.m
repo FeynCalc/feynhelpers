@@ -48,7 +48,7 @@ the normalization between Passarino-Veltman functions in FeynCalc and
 LoopTools. In addition to that, the prefactor specified via
 LToolsImplicitPrefactor may also depend on $\\varepsilon$.
 
-Setting this option to False will leave the prefactors unexpanded, which
+Setting this option to False will leave the prefactors unexpanded, which 
 might sometimes be useful when examining the obtained results.";
 
 LToolsImplicitPrefactor::usage=
@@ -62,7 +62,7 @@ You may want to use LToolsImplicitPrefactor->1/(2Pi)^D when working with
 beginning.";
 
 LToolsFullResult::usage=
-"LToolsFullResult is an option for LToolsEvaluate. When set to True (default),
+"LToolsFullResult is an option for LToolsEvaluate. When set to True (default), 
 LToolsEvaluate will return the full result including singularities and
 accompanying terms. Otherwise, only the finite part (standard output of
 LoopTools) will be provided.
