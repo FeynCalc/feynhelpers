@@ -72,23 +72,23 @@ If [Needs["FeynCalc`"]===$Failed,
 	Abort[]
 ];
 
+If[	$VersionNumber < 10,
+	Message[InstallFeynCalc::notcomp];
+	Abort[]
+];
+
 If[	8.0 <=$VersionNumber < 9.0,
 	(*To use FetchURL in MMA8 we need to load URLTools first *)
 	Needs["Utilities`URLTools`"];
 ];
 
 Which[
-	(*Mma 8*)
-	8.0 <=$VersionNumber < 9.0,
-		(*To use FetchURL we need to load URLTools first *)
-		FCGetUrl[x_, opts:OptionsPattern[]]:= Utilities`URLTools`FetchURL[x,opts],
-	(*Mma 9 or 10 *)
-	9.0 <=$VersionNumber < 11.0,
-		FCGetUrl[x_, opts:OptionsPattern[]]:= URLSave[x,CreateTemporary[],opts],
+	(*Mma 10 *)
+	$VersionNumber < 11.0,
+		FCGetUrl[x_]:= URLSave[x,CreateTemporary[]],
 	(*Mma 11 and above *)
 	$VersionNumber >= 11.0,
-		FCGetUrl[x_, opts:OptionsPattern[]]:= URLSave[x,CreateTemporary[],opts]
-		(*FCGetUrl[x_, opts:OptionsPattern[]]:= First[URLDownload[x,CreateTemporary[],opts]]*)
+		FCGetUrl[x_]:= First[URLDownload[x,CreateTemporary[]]]
 ];
 
 (*Test that we can access the FeynCalc repository*)

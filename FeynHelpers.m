@@ -128,12 +128,12 @@ EndPackage[]
 
 
 fcVersion = StringSplit[$FeynCalcVersion, "."];
-tooOldString = "Your FeynCalc version is too old. FeynHelpers "<> $FeynHelpersVersion <> " requires at least FeynCalc 10.0";
+tooOldString = "Your FeynCalc version is too old. FeynHelpers "<> $FeynHelpersVersion <> " requires at least FeynCalc 10.2";
 
 If[ (fcVersion[[1]]<10),
 	Print[tooOldString];
 	Abort[],
-	If[ fcVersion[[2]]<0,
+	If[ fcVersion[[2]]<2,
 		Print[tooOldString];
 		Abort[]
 	];
