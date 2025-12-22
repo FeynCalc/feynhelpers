@@ -17,8 +17,6 @@ a particular tools please contact the corresponding developer team.*
 
 #### Automatic installation
 
-*Currently the stable version of FeynHelpers is not compatible with FeynCalc 10. Please use the development version instead!*
-
 Run the following instruction in a Kernel or Notebook session of Mathematica to install the stable version
 
 ```mathematica
@@ -61,7 +59,7 @@ Currently there is no native Windows version of FERMAT. The Linux version appear
 
 ### FIRE
 
-You can download the source code of FIRE from the [developer's website](https://bitbucket.org/feynmanIntegrals/fire). The content should be extracted to `FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE"}]`.
+You can download the source code of FIRE from the [developer's website](https://gitlab.srcc.msu.ru/feynmanintegrals/fire). The content should be extracted to `FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE"}]`.
 
 We recommend to enable support for flint, zstd, lthreads, tcmalloc, snappy and zlib via
 
@@ -136,7 +134,7 @@ Rename the self-compiled or precompiled MathLink executable `LoopTools.exe` to `
 
 ### QGRAF
 
-You can download the source code of QGRAF from the [developer's website](http://cfif.ist.utl.pt/~paulo/qgraf.html).
+You can download the source code of QGRAF from the [developer's website](http://cefema-gt.tecnico.ulisboa.pt/~paulo/qgraf.html).
 
 #### Linux and macOS
 
@@ -144,7 +142,7 @@ The compilation instructions can be found in the section "Compiling" of the manu
 on a Linux system equipped with a GNU Fortran compiler something like
 
 ```mathematica
-gfortran qgraf-3.6.3.f08 -o qgraf
+gfortran qgraf-3.x.y.f08 -o qgraf
 ```
 
 should do the job. Having compiled the program you need to move the binary file `qgraf` to `FileNameJoin[{$UserBaseDirectory, "Applications", "FeynCalc", "AddOns", "FeynHelpers", "ExternalTools", "QGRAF", "Binary"}]`.
