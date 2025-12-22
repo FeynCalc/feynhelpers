@@ -41,7 +41,7 @@ End[]
 Begin["`FeynHelpers`Private`"];
 
 If[ !ValueQ[FeynCalc`$FeynHelpersLoadInterfaces],
-	FeynCalc`$FeynHelpersLoadInterfaces = {"PackageX", "FIRE", "Kira", "Fermat", "QGRAF", "LoopTools", "pySecDec", "FIESTA", "Asy"}
+	FeynCalc`$FeynHelpersLoadInterfaces = {"PackageX", "FIRE", "Kira", "Fermat", "QGRAF", "LoopTools", "pySecDec", "FIESTA"}
 ];
 
 $FeynHelpersVersion="2.0.0";
@@ -123,15 +123,6 @@ If[	!FreeQ[$FeynHelpersLoadInterfaces,"FIESTA"],
 	Get/@load
 ];
 
-If[	!FreeQ[$FeynHelpersLoadInterfaces,"Asy"],
-	load = FileNameJoin[{$FeynHelpersDirectory,"Interfaces","ASy","ASyShared.m"}];
-	FCDeclareHeader[load];
-	Get[load];
-	load = FileNames[{"*.m"},FileNameJoin[{$FeynHelpersDirectory,"Interfaces","ASy"}]];
-	FCDeclareHeader/@load;
-	Get/@load
-];
-
 Remove["FeynCalc`load"];
 EndPackage[]
 
@@ -197,9 +188,6 @@ FeynCalc`FeynHelpersHowToCite[]:=
 	(
 	Print[Style[" \[Bullet] V. Shtabovenko, \"FeynHelpers: Connecting FeynCalc to FIRE and Package-X\", Comput. Phys. Commun., 218, 48-65, 2017, arXiv:1611.06793","Text"]];
 	Print[Style["Furthermore, remember to cite the authors of the tools that you are calling from FeynHelpers, which are","Text"]];
-
-	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Asy",ButtonData :> {URL["https://www.ttp.kit.edu/~asmirnov/Tools-Regions.htm"], None},
-		BaseStyle -> "Hyperlink"],"Text"], Style[" if you are using functions that beging with ASy.","Text"]];
 
 	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Fermat",ButtonData :> {URL["https://home.bway.net/lewis"], None},
 		BaseStyle -> "Hyperlink"],"Text"], Style[" if you are using functions that beging with Fer.","Text"]];

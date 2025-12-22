@@ -1,0 +1,30 @@
+(* :Title: AsyGetRawScalings.test											*)
+
+(*
+	This software is covered by the GNU General Public License 3.
+	Copyright (C) 2022-2026 Vladyslav Shtabovenko
+*)
+
+(* :Summary:  Framework independent unit tests for AsyGetRawScalings		*)
+
+(* ------------------------------------------------------------------------ *)
+
+Tests`Asy`AsyGetRawScalings =
+({
+{"AsyGetRawScalings-ID1",
+"ASyLoadPackage[]; \n ASyGetRawScalings[{q1, q2}, {SPD[n, q1] + SPD[nb, q1],
+SPD[n, q2] + SPD[nb, q2], m^2 - SPD[q1, q1],
+m^2 - SPD[q1, q1] - 2*SPD[q1, q2] - SPD[q2, q2],
+Q*SPD[n, q2] + (m^2*SPD[nb, q2])/Q - SPD[q2, q2], -m^2 + m^4/Q^2 +
+Q^2 - (m^2*SPD[n, q1])/Q + Q*SPD[n, q1] - (m^2*SPD[n, q2])/Q +
+Q*SPD[n, q2] + (m^2*SPD[nb, q1])/Q -
+Q*SPD[nb, q1] + (m^2*SPD[nb, q2])/Q - Q*SPD[nb, q2] -
+SPD[q1, q1] - 2*SPD[q1, q2] - SPD[q2, q2]}, {SPD[n, n] -> 0,
+SPD[nb, nb] -> 0, SPD[n, nb] -> 2, s -> Q^2, SPD[p1, p1] -> m^2,
+SPD[p2, p2] -> m^2, SPD[p1, p2] -> m^4/(2*s) + s/2}, {m -> x ,
+Q | s -> 1}, ASyPrePresolve -> False, ASyNormalize -> True]",
+"{{2, 2, 0, 0, 0, 2}, {2, 2, 0, 2, 0, 0},
+{1, 1, 0, 0, 1, 2}, {1, 1, 0, 2, 1, 0}, {2, 2, 2, 0, 2, 2}, {2, 2, 2, 2, 0, 2},
+{2, 2, 2, 2, 2, 0}, {0, 0, 0, 0, 0, 0}, {1, 2, 0, 1, 0, 1}, {1, 2, 0, 1, 1, 2},
+{1, 2, 0, 2, 1, 1}, {1, 2, 0, 2, 2, 2}}"}
+});
