@@ -2,7 +2,7 @@
 
 # This file is a part of FeynHelpers
 # FeynHelpers is covered by the GNU General Public License 3.
-# Copyright (C) 2017-2024 Vladyslav Shtabovenko
+# Copyright (C) 2017-2026 Vladyslav Shtabovenko
 
 # Usage examples
 # ./makeDiagrams.sh --pjobs 8

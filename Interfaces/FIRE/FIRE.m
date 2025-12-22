@@ -4,7 +4,7 @@
 
 (*
 	This software is covered by the GNU General Public License 3.
-	Copyright (C) 2015-2024 Vladyslav Shtabovenko
+	Copyright (C) 2015-2026 Vladyslav Shtabovenko
 *)
 
 (* :Summary: 	Interface between FeynCalc and FIRE							*)
@@ -127,7 +127,7 @@ Options[FIREBurn] = {
 	FIREConfigFiles -> {FileNameJoin[{$FeynCalcDirectory, "Database", "FIREp1.m"}],
 						FileNameJoin[{$FeynCalcDirectory, "Database", "FIREp2.m"}],
 						FileNameJoin[{$FeynCalcDirectory, "Database", "FIRERepList.m"}]},
-	FIREPath -> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE6", "FIRE6.m"}],
+	FIREPath -> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE7", "FIRE7.m"}],
 	FIRERun -> True,
 	FIRESilentMode -> True,
 	FIREStartFile -> FileNameJoin[{$FeynCalcDirectory, "Database", "FIREStartFile"}],
