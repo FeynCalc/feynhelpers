@@ -67,6 +67,11 @@ FIREPrepareStartFile::failmsg =
 "Error! FIREPrepareStartFile has encountered a fatal problem and must abort the computation. \
 The problem reads: `1`"
 
+FIREPrepareStartFile::twoprop =
+"Warning! As of now, FIRE7 cannot properly handle two-propagator integrals, cf. \
+<https://gitlab.com/feynmanintegrals/fire/-/issues/40>. Please consider using an older version of the program \
+or switching to KIRA."
+
 Begin["`Package`"]
 End[]
 
@@ -137,6 +142,11 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 		(* This is necessary to account for scalar products defined via downvalues *)
 		topo[[5]] = Map[Head[#][#[[1]],FRH[#[[2]]]]&, topo[[5]] ];
 		*)
+
+		If[	Length[topo[[2]]]==2 && !StringFreeQ[optFIREPath,"FIRE7"],
+			Message[FIREPrepareStartFile::twoprop];
+		];
+
 		If[ OptionValue[Check],
 			FCPrint[1, "FIREPrepareStartFile: Checking the correctness of topologies.", FCDoControl->fpsfVerbose];
 			time=AbsoluteTime[];
