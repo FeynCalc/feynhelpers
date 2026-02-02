@@ -1,9 +1,9 @@
-Get["/home/vs/.Mathematica/Applications/FIRE6/FIRE6.m"];
+Get["/home/vs/.Wolfram/Applications/FIRE7/FIRE7.m"];
 
 
 If[$FrontEnd===Null,
-  projectDirectory=DirectoryName[$InputFileName],
-  projectDirectory=NotebookDirectory[]
+projectDirectory=DirectoryName[$InputFileName],
+projectDirectory=NotebookDirectory[]
 ];
 SetDirectory[projectDirectory];
 Print["Working directory: ", projectDirectory];

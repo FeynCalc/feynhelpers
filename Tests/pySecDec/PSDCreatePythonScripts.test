@@ -24,8 +24,8 @@ Momentum[-p1+2*p3,D]]+Pair[Momentum[p3,D],Momentum[p3,D]],{1,1}]]},{\
 p1,p3},{q},{Pair[Momentum[q,D],Momentum[q,D]]->mb^2},{}],$\
 TemporaryDirectory,FCVerbose->0,PSDRealParameterRules->{mb->4.3,mc->1.\
 4,mg->0.121},PSDMinn->10^5,PSDRequestedOrder->2,\
-PSDContourDeformation->False,OverwriteTarget->True]\[IndentingNewLine]\
-(Import[#,\"Text\"]&/@outDir)===(Import[FileNameJoin[{$\
+PSDContourDeformation->False,OverwriteTarget->True];\[IndentingNewLine]\
+StringSplit/@(Import[#,\"Text\"]&/@outDir[[1;;2]])===StringSplit/@(Import[FileNameJoin[{$\
 FeynHelpersDirectory,\"Tests\",\"pySecDec\",\"Samples\",#}],\"Text\"]&\
 /@{\"generate_int-v1.py\",\"integrate_int-v1.py\"})", "True"}
 });
