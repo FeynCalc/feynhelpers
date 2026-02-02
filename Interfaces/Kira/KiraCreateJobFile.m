@@ -97,16 +97,14 @@ KiraCreateJobFile[topos: {__FCTopology}, topSectors: {{{__Integer}..}..}, rs: {{
 	MapThread[KiraCreateJobFile[#1,#2,#3,#4,opts]&,{topos,topSectors,rs,dirs}];
 *)
 KiraCreateJobFile[topoRaw_FCTopology, glis:{__GLI}, dirRaw_String, opts:OptionsPattern[]] :=
-	KiraCreateJobFile[topoRaw, Sequence@@Transpose@Map[{#[[1]],KiraGetRS[#[[2]]]}&,FCLoopFindSectors[glis][[1]]], dirRaw, opts];
+	KiraCreateJobFile[topoRaw, Sequence@@Transpose@Map[{#[[1]],KiraGetRS[#[[2]]]}&,FCLoopFindSectors[SelectNotFree[glis,topoRaw[[1]]]][[1]]], dirRaw, opts];
 
 	(*KiraCreateJobFile[topoRaw, {FCLoopFindSectors[SelectNotFree[glis, topoRaw[[1]]], Last -> True, GatherBy -> False]},
 		{KiraGetRS[SelectNotFree[glis, topoRaw[[1]]]]}, dirRaw, opts];*)
 
 
-
-
 KiraCreateJobFile[topos: {__FCTopology}, glis:{__GLI}, dirRaw_String, opts:OptionsPattern[]] :=
-	KiraCreateJobFile[#, glis, dirRaw, opts]&/@topos;
+	KiraCreateJobFile[#, SelectNotFree[glis,#[[1]]], dirRaw, opts]&/@topos;
 
 KiraCreateJobFile[topoRaw_FCTopology, topSectorsRaw: {{__Integer}..}, rs: {{_Integer, _Integer}..}, dirRaw_String, OptionsPattern[]] :=
 	Block[{	topo, topSectors, reduce, res,  dir, file, optOverwriteTarget, integralsString,
