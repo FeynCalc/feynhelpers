@@ -32,7 +32,7 @@ FCLoopFindSectors will be used to determine the top sector for each topology.
 
 The syntax  KiraCreateConfigFiles[{topo1, topo2, ...}, {sectors1, sectors2,
 ...}, path] or KiraCreateConfigFiles[{topo1, topo2, ...}, {glis1, glis2, ...},
- path] is also allowed. This implies that all config files will go into the
+path] is also allowed. This implies that all config files will go into the
 corresponding subdirectories of path, e.g. path/topoName1/config,
 path/topoName2/config etc.
 
@@ -437,12 +437,27 @@ spRule[Rule[Hold[SP][a_, b_], rhs_], relevantMomenta_List]:=
 spRule[Rule[Hold[SP][a_, b_], _], relevantMomenta_List]:=
 	""/; !MemberQ[relevantMomenta,a] || !MemberQ[relevantMomenta,b];
 
+spRule[Rule[Hold[SP][a_], rhs_], relevantMomenta_List]:=
+	"- [ [ " <> ToString[a, InputForm] <> ", " <> ToString[a, InputForm] <> "],"<> ToString[rhs, InputForm] <>"]"/;
+	MemberQ[relevantMomenta,a];
+
+spRule[Rule[Hold[SP][a_], _], relevantMomenta_List]:=
+	""/; !MemberQ[relevantMomenta,a];
+
 spRule[Rule[Hold[SPD][a_, b_], rhs_], relevantMomenta_List]:=
 	"- [ [ " <> ToString[a, InputForm] <> ", " <> ToString[b, InputForm] <> "],"<> ToString[rhs, InputForm] <>"]"/;
 	MemberQ[relevantMomenta,a] && MemberQ[relevantMomenta,b];
 
 spRule[Rule[Hold[SPD][a_, b_], _], relevantMomenta_List]:=
 	""/; !MemberQ[relevantMomenta,a] || !MemberQ[relevantMomenta,b];
+
+spRule[Rule[Hold[SPD][a_], rhs_], relevantMomenta_List]:=
+	"- [ [ " <> ToString[a, InputForm] <> ", " <> ToString[a, InputForm] <> "],"<> ToString[rhs, InputForm] <>"]"/;
+	MemberQ[relevantMomenta,a];
+
+spRule[Rule[Hold[SPD][a_], _], relevantMomenta_List]:=
+	""/; !MemberQ[relevantMomenta,a];
+
 
 fcProp[Pair[Momentum[a_, ___], Momentum[a_, ___]] - massSq_]:=
 	kiraQuadraticProp[a, massSq];
