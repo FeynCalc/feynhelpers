@@ -177,7 +177,7 @@ If[ $FeynCalcStartupMessages =!= False,
 				Style[DisplayForm@ButtonBox["examples.", BaseStyle -> "Hyperlink",	ButtonFunction :>
 							SystemOpen[FileNameJoin[{$FeynHelpersDirectory, "Examples"}]],
 							Evaluator -> Automatic, Method -> "Preemptive"], "Text"],
-			Style["The PDF-version of the manual can be downloaded ", "Text"],
+			Style[" The PDF-version of the manual can be downloaded ", "Text"],
 			Style[DisplayForm@ButtonBox["here.", ButtonData :> {URL["https://github.com/FeynCalc/feynhelpers-manual/releases/download/dev-manual/FeynHelpersManual.pdf"],
 				None},BaseStyle -> "Hyperlink",	ButtonNote -> "https://github.com/FeynCalc/feynhelpers-manual/releases/download/dev-manual/FeynHelpersManual.pdf"], "Text"]
 			];
@@ -187,6 +187,7 @@ If[ $FeynCalcStartupMessages =!= False,
 FeynCalc`FeynHelpersHowToCite[]:=
 	(
 	Print[Style[" \[Bullet] V. Shtabovenko, \"FeynHelpers: Connecting FeynCalc to FIRE and Package-X\", Comput. Phys. Commun., 218, 48-65, 2017, arXiv:1611.06793","Text"]];
+	Print[Style[" \[Bullet] V. Shtabovenko, \"FeynCalc 10.2 and FeynHelpers 2: Multiloop calculations streamlined\", arXiv:2512.19858","Text"]];
 	Print[Style["Furthermore, remember to cite the authors of the tools that you are calling from FeynHelpers, which are","Text"]];
 
 	Print[Style[" \[Bullet] "], Style[DisplayForm@ButtonBox["Fermat",ButtonData :> {URL["https://home.bway.net/lewis"], None},
