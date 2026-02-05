@@ -70,6 +70,8 @@ We recommend to enable support for flint, zstd, lthreads, tcmalloc, snappy and z
 If you compile FIRE without the zstd support, you should change the option `FIRECompressor`
 of `FIRECreateConfigFile` to `"lz4"`. However, for performance reasons it is better to use the zstd compression algorithm.
 
+Notice that as of 12.01.2025 FIRE 7 cannot properly handle integrals with 2 propagators. The issue and a possible fix can be found [here](https://gitlab.com/feynmanintegrals/fire/-/issues/40#note_2994322049).
+
 #### Linux
 
 The instructions for compiling FIRE from source on Linux are provided [here](https://bitbucket.org/feynmanIntegrals/fire/src/master/).

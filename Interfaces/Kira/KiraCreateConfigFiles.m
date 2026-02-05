@@ -437,12 +437,27 @@ spRule[Rule[Hold[SP][a_, b_], rhs_], relevantMomenta_List]:=
 spRule[Rule[Hold[SP][a_, b_], _], relevantMomenta_List]:=
 	""/; !MemberQ[relevantMomenta,a] || !MemberQ[relevantMomenta,b];
 
+spRule[Rule[Hold[SP][a_], rhs_], relevantMomenta_List]:=
+	"- [ [ " <> ToString[a, InputForm] <> ", " <> ToString[a, InputForm] <> "],"<> ToString[rhs, InputForm] <>"]"/;
+	MemberQ[relevantMomenta,a];
+
+spRule[Rule[Hold[SP][a_], _], relevantMomenta_List]:=
+	""/; !MemberQ[relevantMomenta,a];
+
 spRule[Rule[Hold[SPD][a_, b_], rhs_], relevantMomenta_List]:=
 	"- [ [ " <> ToString[a, InputForm] <> ", " <> ToString[b, InputForm] <> "],"<> ToString[rhs, InputForm] <>"]"/;
 	MemberQ[relevantMomenta,a] && MemberQ[relevantMomenta,b];
 
 spRule[Rule[Hold[SPD][a_, b_], _], relevantMomenta_List]:=
 	""/; !MemberQ[relevantMomenta,a] || !MemberQ[relevantMomenta,b];
+
+spRule[Rule[Hold[SPD][a_], rhs_], relevantMomenta_List]:=
+	"- [ [ " <> ToString[a, InputForm] <> ", " <> ToString[a, InputForm] <> "],"<> ToString[rhs, InputForm] <>"]"/;
+	MemberQ[relevantMomenta,a];
+
+spRule[Rule[Hold[SPD][a_], _], relevantMomenta_List]:=
+	""/; !MemberQ[relevantMomenta,a];
+
 
 fcProp[Pair[Momentum[a_, ___], Momentum[a_, ___]] - massSq_]:=
 	kiraQuadraticProp[a, massSq];

@@ -14,7 +14,7 @@ Tests`pySecDec`PSDLoadNumericalResults =
 {"PSDLoadNumericalResults-ID1",
 "FCCompareNumbers[PSDLoadNumericalResults[{
 FileNameJoin[{$FeynHelpersDirectory,\"Documentation\",\"Examples\",\"prop1LX11\",\"integrate_int.py\"}],
-FileNameJoin[{$FeynHelpersDirectory,\"Documentation\",\"Examples\",\"prop1LX11\",\"generate_int.py\"}]},
+FileNameJoin[{$FeynHelpersDirectory,\"Documentation\",\"Examples\",\"prop1LX11\",\"generate_int.py\"}], {qq, m1, m2}, {}},
 PSDRealParameterRules->{qq->1. , m1->2. , m2->3.}],
 {-1.819085009768877 + eps^(-1), 0},FCVerbose->-1]", "{0,0}"}
 });
