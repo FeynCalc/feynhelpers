@@ -59,6 +59,7 @@ FeynHelpers is a collection of interfaces that allow you to use other HEP-relate
 ## Mathematica FIRE interface
 
 - [FIREBurn](../FIREBurn.md) - reduced the given integral using Mathematica version of FIRE
+- [FIREReduceLoopIntegrals](../FIREReduceLoopIntegrals.md) - reduced the given integrals using C++ version of FIRE
 - [FIREAddPropagators](../FIREAddPropagators.md), [FIREConfigFiles](../FIREConfigFiles.md), [FIREOutput](../FIREOutput.md), [FIREPath](../FIREPath.md), [FIRERun](../FIRERun.md), [FIRESilentMode](../FIRESilentMode.md), [FIREStartFile](../FIREStartFile.md), [FIREUsingFermat](../FIREUsingFermat.md) - options of functions related to the Mathematica FIRE interface
 
 ## Kira interface
