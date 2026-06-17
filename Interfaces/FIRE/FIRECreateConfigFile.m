@@ -139,13 +139,8 @@ End[]
 
 Begin["`FIRECreateConfigFile`Private`"]
 
-fpsfVerbose::usage="";
-optDimension::usage="";
-optComplex::usage="";
-
-
-
 Options[FIRECreateConfigFile] = {
+	Check				-> True,
 	FCI					-> False,
 	FCVerbose			-> False,
 	FIREBucket			-> 29,
@@ -160,40 +155,74 @@ Options[FIRECreateConfigFile] = {
 	FIREUseLiteRed		-> True,
 	FIRESthreads		:> $ProcessorCount,
 	FIREThreads			:> $ProcessorCount,
+	ProgressIndicator	-> True,
 	OverwriteTarget		-> True,
 	Variables			-> Automatic
 };
 
 
+FIRECreateConfigFile[{(*mappings*)_List, topos: {__FCTopology}}, rest__] :=
+	FIRECreateConfigFile[topos,rest];
+
 FIRECreateConfigFile[topos: {__FCTopology}, dir_String, opts:OptionsPattern[]] :=
-	Map[FIRECreateConfigFile[#,4242,dir,opts]&,topos];
+	FIRECreateConfigFile[topos,ConstantArray[4242,Length[topos]],ConstantArray[dir,Length[topos]],opts];
 
-FIRECreateConfigFile[topos: {__FCTopology}, idRaw_List, dir__String, opts:OptionsPattern[]] :=
-	MapThread[FIRECreateConfigFile[#1,#2,dir,opts]&,{topos,idRaw}];
-
-FIRECreateConfigFile[topos: {__FCTopology}, idRaw_List, dirs: {__String}, opts:OptionsPattern[]] :=
-	MapThread[FIRECreateConfigFile[#1,#2,#3,opts]&,{topos,idRaw,dirs}];
+FIRECreateConfigFile[topos: {__FCTopology}, idRaw_List, dir_String, opts:OptionsPattern[]] :=
+	FIRECreateConfigFile[topos,idRaw,ConstantArray[dir,Length[topos]],opts];
 
 FIRECreateConfigFile[topos: {__FCTopology}, dirs: {__String}, opts:OptionsPattern[]] :=
-	MapThread[FIRECreateConfigFile[#1,4242,#2,opts]&,{topos,dirs}];
+	FIRECreateConfigFile[topos,ConstantArray[4242,Length[topos]],dirs,opts];
 
 FIRECreateConfigFile[topos: {__FCTopology}, idRaw_List, dirs: {__String}, opts:OptionsPattern[]] :=
-	MapThread[FIRECreateConfigFile[#1,#2,#3,opts]&,{topos,idRaw,dirs}];
+	Block[{res,out,counter,optVerbose},
+
+
+		If[	OptionValue[FCVerbose]===False,
+			optVerbose=$VeryVerbose,
+			If[	MatchQ[OptionValue[FCVerbose], _Integer],
+				optVerbose=OptionValue[FCVerbose]
+			];
+		];
+
+
+		If[	OptionValue[ProgressIndicator],
+
+			counter=0;
+			res = MapThread[(
+				counter++;
+				FCPrint[0, "Creating config file ("<>ToString[counter]<>"/"<>ToString[Length[topos]]<> ") for ", #1[[1]], " (" ,UseWriteString -> True];
+				out = FIRECreateConfigFile[#1,#2,#3,opts];
+				FCPrint[0, FileNameTake[out], ")... " ,UseWriteString -> True];
+				FCPrint[0, "done.\n" ,UseWriteString -> True];
+				out
+			)&,{topos,idRaw,dirs}];
+			FCPrint[0, "\n" ,UseWriteString -> True],
+
+			res = MapThread[(
+				FIRECreateConfigFile[#1,#2,#3,opts]
+				)&,{topos,idRaw,dirs}];
+		];
+
+		FCPrint[0, "FIRECreateConfigFile: ", FeynCalc`Package`FCStyle["Created ", {Darker[Green,0.55], Bold}], Length[res],
+			FeynCalc`Package`FCStyle[" .config files.", {Darker[Green,0.55], Bold}], FCDoControl->optVerbose];
+
+		res
+	];
 
 FIRECreateConfigFile[topoRaw_FCTopology, dirRaw_String, opts:OptionsPattern[]] :=
 	FIRECreateConfigFile[topoRaw, 4242, dirRaw, opts];
 
 FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]] :=
 	Block[{	topo, optNames, newNames, res, vars, id, topoName, dir, optFIREOutput,
-			file, filePath, optOverwriteTarget, status, x, optFIREBucket,
+			file, filePath, optOverwriteTarget, status, x, optFIREBucket, optVerbose,
 			optFIRECompressor, optFIREFthreads, optFIRELthreads, optFIREUseLiteRed,
 			optFIREPosPref, optFIRESthreads, optFIREThreads, optFIREProblemId,
 			configString, optFIREIntegrals, optVariables, optFIREDatabase, optFIRECalc},
 
 		If[	OptionValue[FCVerbose]===False,
-			fpsfVerbose=$VeryVerbose,
+			optVerbose=$VeryVerbose,
 			If[	MatchQ[OptionValue[FCVerbose], _Integer],
-				fpsfVerbose=OptionValue[FCVerbose]
+				optVerbose=OptionValue[FCVerbose]
 			];
 		];
 
@@ -213,8 +242,8 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 		optFIREUseLiteRed	= OptionValue[FIREUseLiteRed];
 		optFIREOutput		= OptionValue[FIREOutput];
 
-		FCPrint[1,"FIRECreateConfigFile: Entering.", FCDoControl->fpsfVerbose];
-		FCPrint[3,"FIRECreateConfigFile: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
+		FCPrint[1,"FIRECreateConfigFile: Entering.", FCDoControl->optVerbose];
+		FCPrint[3,"FIRECreateConfigFile: Entering with:", topoRaw, FCDoControl->optVerbose];
 
 		If[	OptionValue[FCI],
 			topo = topoRaw,
@@ -292,7 +321,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 			vars = Join[{"d"}, optVariables];
 		];
 
-		FCPrint[2,"FIRECreateConfigFile: Variables: ", vars, FCDoControl->fpsfVerbose];
+		FCPrint[2,"FIRECreateConfigFile: Variables: ", vars, FCDoControl->optVerbose];
 
 
 
@@ -328,7 +357,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 				Abort[]
 		];
 
-		FCPrint[2,"FIRECreateConfigFile: Problem number: ", id, FCDoControl->fpsfVerbose];
+		FCPrint[2,"FIRECreateConfigFile: Problem number: ", id, FCDoControl->optVerbose];
 
 		If[	!MatchQ[id,_Integer?Positive],
 			Message[FIRECreateConfigFile::failmsg, "Invalid FIRE problem number."];
@@ -337,7 +366,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 
 
 
-		FCPrint[3,"FIRECreateConfigFile: Config path: ", filePath, FCDoControl->fpsfVerbose];
+		FCPrint[3,"FIRECreateConfigFile: Config path: ", filePath, FCDoControl->optVerbose];
 
 
 		configString = {
@@ -400,7 +429,7 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 		configString = StringRiffle[configString /. "" -> Unevaluated[Sequence[]],"\n"];
 
 
-		FCPrint[3,"FIRECreateConfigFile: configString: ", configString, FCDoControl->fpsfVerbose];
+		FCPrint[3,"FIRECreateConfigFile: configString: ", configString, FCDoControl->optVerbose];
 
 		If[	FileExistsQ[filePath] && !optOverwriteTarget,
 			Message[FIRECreateConfigFile::failmsg, "The file ", filePath, " already exists and the option OverwriteTarget is set to False."];
@@ -416,7 +445,13 @@ FIRECreateConfigFile[topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]
 		WriteString[file, configString];
 		Close[file];
 
-		FCPrint[0,"FIRECreateConfigFile: Created .config file "<> FileNameTake[filePath] <> " for ", topoName, FCDoControl->fpsfVerbose];
+
+		If[OptionValue[Check],
+			If[	!FileExistsQ[filePath],
+				Message[FIRECreateConfigFile::failmsg, "Failed to create .config file."];
+				Return[False]
+			];
+		];
 
 
 		filePath

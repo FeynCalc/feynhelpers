@@ -45,16 +45,53 @@ fcsfVerbose::usage="";
 
 
 Options[FIRERunReduction] = {
+	Check				-> True,
 	FCVerbose			-> False,
-	FIREBinaryPath 		-> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE7", "bin", "FIRE7"}],
-	FIREShowOutput		-> False
+	FIREBinaryPath 		:> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE7", "bin", "FIRE7"}],
+	FIREShowOutput		-> False,
+	ProgressIndicator	-> True
 };
 
 FIRERunReduction[input_List, opts:OptionsPattern[]]:=
-	FIRERunReduction[#,opts]&/@input;
+	Block[{res,counter,out,optVerbose,time},
+
+		If[	OptionValue[FCVerbose]===False,
+			optVerbose=$VeryVerbose,
+			If[	MatchQ[OptionValue[FCVerbose], _Integer],
+				optVerbose=OptionValue[FCVerbose]
+			];
+		];
+
+		If[	OptionValue[ProgressIndicator],
+
+			counter=0;
+			res = Map[(
+				time=AbsoluteTime[];
+				counter++;
+				FCPrint[0, "Running reduction ("<>ToString[counter]<>"/"<>ToString[Length[input]]<> ") for ", FileBaseName[#], "... " ,UseWriteString -> True];
+				out = FIRERunReduction[#, opts];
+				FCPrint[0, "done, timing: ",N[AbsoluteTime[] - time, 4],"\n" ,UseWriteString -> True];
+				out
+				)&,input];
+				FCPrint[0, "\n" ,UseWriteString -> True],
+
+			res = Map[FIRERunReduction[#, opts]&,input]
+		];
+
+			FCPrint[0, "FIRERunReduction: ", FeynCalc`Package`FCStyle["Reduced ", {Darker[Green,0.55], Bold}], Length[res],
+			FeynCalc`Package`FCStyle[" topologies.", {Darker[Green,0.55], Bold}], FCDoControl->optVerbose];
+
+		res
+
+	];
+
+
+
+FIRERunReduction[a_, {(*mappings*)_List, topos: {__FCTopology}}, rest___] :=
+	FIRERunReduction[a, topos, rest];
 
 FIRERunReduction[pathRaw_String, topos:{__FCTopology}, opts:OptionsPattern[]] :=
-	FIRERunReduction[FileNameJoin[{pathRaw,ToString[#[[1]]]}], opts]&/@topos;
+	FIRERunReduction[Map[FileNameJoin[{pathRaw,ToString[#[[1]]]}]&,topos], opts];
 
 FIRERunReduction[pathRaw_String, OptionsPattern[]] :=
 	Block[{	path, dir, optFIREBinaryPath, out, configFile, exitCode,
@@ -129,6 +166,15 @@ FIRERunReduction[pathRaw_String, OptionsPattern[]] :=
 			res = True,
 			res = False
 		];
+
+		If[OptionValue[Check],
+			If[	!FileExistsQ[FileNameJoin[dir,FileBaseName[dir]<>".tables"]],
+				Print[FileNameJoin[dir,FileBaseName[dir]<>".tables"]];
+				Message[FIRERunReduction::failmsg, "Failed to create .tables file."];
+				Return[False]
+			];
+		];
+
 
 		res
 	];

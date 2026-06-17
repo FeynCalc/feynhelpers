@@ -51,32 +51,65 @@ End[]
 
 Begin["`FIRECreateStartFile`Private`"]
 
-fcsfVerbose::usage="";
-
 Options[FIRECreateStartFile] = {
+	Check						-> True,
 	FCVerbose					-> False,
 	FIREMathematicaKernelPath	-> Automatic,
 	FIREShowOutput				-> False,
+	ProgressIndicator			-> True,
 	OverwriteTarget				-> True
 };
 
 FIRECreateStartFile[pathsRaw:{__String}, opts:OptionsPattern[]] :=
-	FIRECreateStartFile[#, opts]&/@pathsRaw;
+	Block[{res,counter,time,out,optVerbose},
+
+		If[	OptionValue[FCVerbose]===False,
+			optVerbose=$VeryVerbose,
+			If[	MatchQ[OptionValue[FCVerbose], _Integer],
+				optVerbose=OptionValue[FCVerbose]
+			];
+		];
+		If[	OptionValue[ProgressIndicator],
+
+			counter=0;
+			res = Map[(
+				time=AbsoluteTime[];
+				counter++;
+				FCPrint[0, "Creating FIRE files ("<>ToString[counter]<>"/"<>ToString[Length[pathsRaw]]<> ") for ", FileBaseName[#], "... " ,UseWriteString -> True];
+				out = FIRECreateStartFile[#, opts];
+				FCPrint[0, "done, timing: ",N[AbsoluteTime[] - time, 4],"\n" ,UseWriteString -> True];
+				out
+				)&,pathsRaw];
+				FCPrint[0, "\n" ,UseWriteString -> True],
+
+			res = Map[FIRECreateStartFile[#, opts]&,pathsRaw];
+		];
+
+		FCPrint[0, "FIRECreateStartFile: ", FeynCalc`Package`FCStyle["Run ", {Darker[Green,0.55], Bold}], Length[res],
+			FeynCalc`Package`FCStyle[" script files.", {Darker[Green,0.55], Bold}], FCDoControl->optVerbose];
+
+		res
+
+	]
 
 FIRECreateStartFile[pathRaw_String, topos:{__FCTopology}, opts:OptionsPattern[]] :=
-	FIRECreateStartFile[FileNameJoin[{pathRaw,ToString[#[[1]]]}], opts]&/@topos;
+	FIRECreateStartFile[FileNameJoin[{pathRaw,ToString[#[[1]]]}]&/@topos, opts];
+
+
+FIRECreateStartFile[a_,{(*mappings*)_List, topos: {__FCTopology}}, rest___] :=
+	FIRECreateStartFile[a,topos,rest];
 
 FIRECreateStartFile[pathRaw_String, topo_FCTopology, opts:OptionsPattern[]] :=
 	FIRECreateStartFile[FileNameJoin[{pathRaw,ToString[topo[[1]]]}], opts];
 
 FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 	Block[{ path, optFIREMathematicaKernelPath, out, dir, fireShellScriptPath,
-			scriptFile, exitCode, res, optFIREShowOutput, output},
+			scriptFile, exitCode, res, optFIREShowOutput, output, aux, optVerbose},
 
 		If[	OptionValue[FCVerbose]===False,
-			fcsfVerbose=$VeryVerbose,
+			optVerbose=$VeryVerbose,
 			If[	MatchQ[OptionValue[FCVerbose], _Integer],
-				fcsfVerbose=OptionValue[FCVerbose]
+				optVerbose=OptionValue[FCVerbose]
 			];
 		];
 
@@ -123,7 +156,7 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 		scriptFile	= FileNameTake[path];
 
 		If[	FileExistsQ[FileNameJoin[{dir,Last[FileNameSplit[dir]]<>".start"}]] && !OptionValue[OverwriteTarget],
-			FCPrint[0,"FIRECreateStartFile: Start file already exists and the option OverwriteTarget is set to False, so skipping.", FCDoControl->fcsfVerbose];
+			FCPrint[0,"FIRECreateStartFile: Start file already exists and the option OverwriteTarget is set to False, so skipping.", FCDoControl->optVerbose];
 			Return[True]
 		];
 
@@ -133,10 +166,10 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 		];
 
 
-		FCPrint[2,"FIRECreateStartFile: Full path to the Math Kernel binary: ", optFIREMathematicaKernelPath, FCDoControl->fcsfVerbose];
-		FCPrint[2,"FIRECreateStartFile: Full path to the script file: ", path, FCDoControl->fcsfVerbose];
-		FCPrint[2,"FIRECreateStartFile: Working directory: ", dir, FCDoControl->fcsfVerbose];
-		FCPrint[2,"FIRECreateStartFile: Script file: ", scriptFile, FCDoControl->fcsfVerbose];
+		FCPrint[2,"FIRECreateStartFile: Full path to the Math Kernel binary: ", optFIREMathematicaKernelPath, FCDoControl->optVerbose];
+		FCPrint[2,"FIRECreateStartFile: Full path to the script file: ", path, FCDoControl->optVerbose];
+		FCPrint[2,"FIRECreateStartFile: Working directory: ", dir, FCDoControl->optVerbose];
+		FCPrint[2,"FIRECreateStartFile: Script file: ", scriptFile, FCDoControl->optVerbose];
 
 		If[	!FileExistsQ[path],
 			Message[FIRECreateStartFile::failmsg, "The script file " <> path <> " does not exist."];
@@ -163,9 +196,17 @@ FIRECreateStartFile[pathRaw_String, OptionsPattern[]] :=
 			res = True,
 
 			Message[FIRECreateStartFile::failmsg, "Mathematica process returned exit code: " <> ToString[exitCode] <>
-			" .Please run the script manually to better understand the issue."
+			". Please run the script manually to better understand the issue."
 			];
 			res = False
+		];
+
+		If[	OptionValue[Check],
+			aux=Import[#,"Text"]&/@FileNames[{"*.lbases","*.sbases","*.start"},pathRaw];
+			aux=StringFreeQ[aux,{"`","Private","FIRE"}];
+			If[!MatchQ[aux,{True..}],
+				Message[FIRECreateStartFile::failmsg,"Incorrect files generated for " <> pathRaw];
+			];
 		];
 
 		res

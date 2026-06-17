@@ -49,49 +49,73 @@ End[]
 
 Begin["`FIRECreateIntegralFile`Private`"]
 
-fpsfVerbose::usage="";
-
 Options[FIRECreateIntegralFile] = {
 	Check				-> True,
 	FCI					-> False,
 	FCVerbose			-> False,
 	FIREIntegrals		-> "LoopIntegrals.m",
+	ProgressIndicator	-> True,
 	OverwriteTarget		-> True
 };
 
+FIRECreateIntegralFile[expr_, {(*mappings*)_List, topos: {__FCTopology}}, rest__] :=
+	FIRECreateIntegralFile[expr, topos,rest];
+
 FIRECreateIntegralFile[expr_, topos: {__FCTopology}, dir_String, opts:OptionsPattern[]] :=
-	Map[FIRECreateIntegralFile[expr, #,4242,dir,opts]&,topos];
+	FIRECreateIntegralFile[expr, topos,ConstantArray[4242,Length[topos]],ConstantArray[dir,Length[topos]],opts];
 
 FIRECreateIntegralFile[expr_, topos: {__FCTopology}, idRaw_List, dir__String, opts:OptionsPattern[]] :=
-	MapThread[FIRECreateIntegralFile[expr, #1,#2,dir,opts]&,{topos,idRaw}];
-
-FIRECreateIntegralFile[expr_, topos: {__FCTopology}, idRaw_List, dirs: {__String}, opts:OptionsPattern[]] :=
-	MapThread[FIRECreateIntegralFile[expr, #1,#2,#3,opts]&,{topos,idRaw,dirs}];
+	FIRECreateIntegralFile[expr, topos,idRaw,ConstantArray[dir,Length[topos]],opts];
 
 FIRECreateIntegralFile[expr_, topos: {__FCTopology}, dirs: {__String}, opts:OptionsPattern[]] :=
-	MapThread[FIRECreateIntegralFile[expr, #1,4242,#2,opts]&,{topos,dirs}];
-
-FIRECreateIntegralFile[expr_, topos: {__FCTopology}, idRaw_List, dirs: {__String}, opts:OptionsPattern[]] :=
-	MapThread[FIRECreateIntegralFile[expr, #1,#2,#3,opts]&,{topos,idRaw,dirs}];
+	FIRECreateIntegralFile[expr, topos,ConstantArray[4242,Length[topos]],dirs,opts];
 
 FIRECreateIntegralFile[expr_, topoRaw_FCTopology, dirRaw_String, opts:OptionsPattern[]] :=
 	FIRECreateIntegralFile[expr, topoRaw, 4242, dirRaw, opts];
 
+
+FIRECreateIntegralFile[expr_, topos: {__FCTopology}, idRaw_List, dirs: {__String}, opts:OptionsPattern[]] :=
+	Block[{res,optVerbose},
+
+		If[	OptionValue[FCVerbose]===False,
+			optVerbose=$VeryVerbose,
+			If[	MatchQ[OptionValue[FCVerbose], _Integer],
+				optVerbose=OptionValue[FCVerbose]
+			];
+		];
+
+		res = MapThread[(
+			FIRECreateIntegralFile[expr,#1,#2,#3,opts]
+			)&,{topos,idRaw,dirs}];
+
+		If[	OptionValue[ProgressIndicator],
+			FCPrint[0, "\n" ,UseWriteString -> True]
+		];
+
+
+		FCPrint[0, "FIRECreateIntegralFile: ", FeynCalc`Package`FCStyle["Created ", {Darker[Green,0.55], Bold}], Length[res],
+			FeynCalc`Package`FCStyle[" integral files.", {Darker[Green,0.55], Bold}], FCDoControl->optVerbose];
+
+		res
+
+
+	];
+
 FIRECreateIntegralFile[expr_, topoRaw_FCTopology, idRaw_, dirRaw_String, OptionsPattern[]] :=
-	Block[{	ex, topo, gliList, optNames, newNames, res, vars, id, topoName,
+	Block[{	ex, topo, gliList, optNames, newNames, res, vars, id, topoName, optVerbose,
 			file, filePath, optOverwriteTarget, status, dir, null1, null2},
 
 		If[	OptionValue[FCVerbose]===False,
-			fpsfVerbose=$VeryVerbose,
+			optVerbose=$VeryVerbose,
 			If[	MatchQ[OptionValue[FCVerbose], _Integer],
-				fpsfVerbose=OptionValue[FCVerbose]
+				optVerbose=OptionValue[FCVerbose]
 			];
 		];
 
 		optOverwriteTarget = OptionValue[OverwriteTarget];
 
-		FCPrint[1,"FIRECreateIntegralFile: Entering.", FCDoControl->fpsfVerbose];
-		FCPrint[3,"FIRECreateIntegralFile: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
+		FCPrint[1,"FIRECreateIntegralFile: Entering.", FCDoControl->optVerbose];
+		FCPrint[3,"FIRECreateIntegralFile: Entering with:", topoRaw, FCDoControl->optVerbose];
 
 		If[	OptionValue[FCI],
 			{ex, topo} = {expr, topoRaw},
@@ -120,8 +144,8 @@ FIRECreateIntegralFile[expr_, topoRaw_FCTopology, idRaw_, dirRaw_String, Options
 		(*TODO: More freedom here*)
 		dir = FileNameJoin[{dirRaw,ToString[topoName]}];
 
-		FCPrint[2,"FIRECreateIntegralFile: Problem number: ", id, FCDoControl->fpsfVerbose];
-		FCPrint[2,"FIRECreateIntegralFile: TopoID: ", topoName, FCDoControl->fpsfVerbose];
+		FCPrint[2,"FIRECreateIntegralFile: Problem number: ", id, FCDoControl->optVerbose];
+		FCPrint[2,"FIRECreateIntegralFile: TopoID: ", topoName, FCDoControl->optVerbose];
 
 		If[	!MatchQ[id,_Integer?Positive],
 			Message[FIRECreateIntegralFile::failmsg, "Invalid FIRE problem number."];
@@ -130,12 +154,14 @@ FIRECreateIntegralFile[expr_, topoRaw_FCTopology, idRaw_, dirRaw_String, Options
 
 		gliList = Cases[ex+null1+null2,x:GLI[topo[[1]],_]:>x,Infinity]//Union;
 
-		If[	TrueQ[Length[gliList]>0],
-			FCPrint[0,"FIRECreateIntegralFile: ", topoName, ", number of loop integrals: ", Length[gliList], FCDoControl->fpsfVerbose],
-			FCPrint[0, Style["FIRECreateIntegralFile: You list of integrals is empty, so no reduction is needed.", {Darker[Red,0.55], Bold}], FCDoControl->fpsfVerbose];
+		If[	OptionValue[ProgressIndicator],
+			If[	TrueQ[Length[gliList]>0],
+				FCPrint[0,ToString[topoName] <> ", number of loop integrals: " <> ToString[Length[gliList]]<>"\n",UseWriteString -> True, FCDoControl->optVerbose],
+				FCPrint[0,"FIRECreateIntegralFile: ", Style["You list of integrals is empty, so no reduction is needed.", {Darker[Red,0.55], Bold}], FCDoControl->optVerbose];
+			];
 		];
 
-		FCPrint[3,"FIRECreateIntegralFile: List of GLIs: ", gliList, FCDoControl->fpsfVerbose];
+		FCPrint[3,"FIRECreateIntegralFile: List of GLIs: ", gliList, FCDoControl->optVerbose];
 
 		If[	!DirectoryQ[dir],
 			status = CreateDirectory[dir];
@@ -147,11 +173,11 @@ FIRECreateIntegralFile[expr_, topoRaw_FCTopology, idRaw_, dirRaw_String, Options
 
 		gliList = Map[{id,#[[2]]}&,gliList];
 
-		FCPrint[3,"FIRECreateIntegralFile: Converted GLIs: ", gliList, FCDoControl->fpsfVerbose];
+		FCPrint[3,"FIRECreateIntegralFile: Converted GLIs: ", gliList, FCDoControl->optVerbose];
 
 		filePath = FileNameJoin[{dir, OptionValue[FIREIntegrals]}];
 
-		FCPrint[3,"FIRECreateIntegralFile: Integral file path: ", filePath, FCDoControl->fpsfVerbose];
+		FCPrint[3,"FIRECreateIntegralFile: Integral file path: ", filePath, FCDoControl->optVerbose];
 
 		If[	FileExistsQ[filePath] && !optOverwriteTarget,
 			Message[FIRECreateIntegralFile::failmsg, "The file ", filePath, " already exists and the option OverwriteTarget is set to False."];
@@ -162,6 +188,14 @@ FIRECreateIntegralFile[expr_, topoRaw_FCTopology, idRaw_, dirRaw_String, Options
 		If[	file===$Failed,
 			Message[FIRECreateIntegralFile::failmsg, "Failed to save the integrals to ", filePath];
 			Abort[]
+		];
+
+		(*Check for tables!!!*)
+		If[OptionValue[Check],
+			If[	!FileExistsQ[filePath],
+				Message[FIRECreateIntegralFile::failmsg, "Failed to create .config file."];
+				Return[False]
+			];
 		];
 
 		filePath

@@ -77,12 +77,6 @@ End[]
 
 Begin["`FIREPrepareStartFile`Private`"]
 
-fpsfVerbose::usage="";
-optDimension::usage="";
-optComplex::usage="";
-
-
-
 Options[FIREPrepareStartFile] = {
 	Check						-> True,
 	CreateArchive				-> False,
@@ -101,11 +95,30 @@ Options[FIREPrepareStartFile] = {
 	StringReplace				-> {}
 };
 
+
+FIREPrepareStartFile[{(*mappings*)_List, topos: {__FCTopology}}, rest__] :=
+	FIREPrepareStartFile[topos,rest];
+
 FIREPrepareStartFile[topos: {__FCTopology}, dir_String, opts:OptionsPattern[]] :=
-	Map[FIREPrepareStartFile[#,dir,opts]&,topos];
+	FIREPrepareStartFile[topos,ConstantArray[dir,Length[topos]], opts];
 
 FIREPrepareStartFile[topos: {__FCTopology}, dirs: {__String}, opts:OptionsPattern[]] :=
-	MapThread[FIREPrepareStartFile[#1,#2,opts]&,{topos,dirs}];
+	Block[{res,optVerbose},
+
+		res = MapThread[FIREPrepareStartFile[#1,#2,opts]&,{topos,dirs}];
+
+		If[	OptionValue[FCVerbose]===False,
+			optVerbose=$VeryVerbose,
+			If[	MatchQ[OptionValue[FCVerbose], _Integer],
+				optVerbose=OptionValue[FCVerbose]
+			];
+		];
+
+		FCPrint[0, "FIREPrepareStartFile: ", FeynCalc`Package`FCStyle["Created ", {Darker[Green,0.55], Bold}], Length[res], FeynCalc`Package`FCStyle[" script files.", {Darker[Green,0.55], Bold}], FCDoControl->optVerbose];
+
+		res
+	];
+
 
 FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 	Block[{	topo, optNames, newNames, res, dims, internal, external, propagators, dir,
@@ -116,9 +129,9 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 			extMomsRHS, optVerbose},
 
 		If[	OptionValue[FCVerbose]===False,
-			fpsfVerbose=$VeryVerbose,
+			optVerbose=$VeryVerbose,
 			If[	MatchQ[OptionValue[FCVerbose], _Integer],
-				fpsfVerbose=OptionValue[FCVerbose]
+				optVerbose=OptionValue[FCVerbose]
 			];
 		];
 
@@ -131,8 +144,8 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 		optFIREUseLiteRed				= OptionValue[FIREUseLiteRed];
 		optFIREProblemId				= OptionValue[FIREProblemId];
 
-		FCPrint[1,"FIREPrepareStartFile: Entering.", FCDoControl->fpsfVerbose];
-		FCPrint[3,"FIREPrepareStartFile: Entering with:", topoRaw, FCDoControl->fpsfVerbose];
+		FCPrint[1,"FIREPrepareStartFile: Entering.", FCDoControl->optVerbose];
+		FCPrint[3,"FIREPrepareStartFile: Entering with:", topoRaw, FCDoControl->optVerbose];
 
 		If[	OptionValue[FCI],
 			topo = topoRaw,
@@ -149,7 +162,7 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 		];
 
 		If[ OptionValue[Check],
-			FCPrint[1, "FIREPrepareStartFile: Checking the correctness of topologies.", FCDoControl->fpsfVerbose];
+			FCPrint[1, "FIREPrepareStartFile: Checking the correctness of topologies.", FCDoControl->optVerbose];
 			time=AbsoluteTime[];
 
 			If[	!FCLoopValidTopologyQ[topo],
@@ -172,7 +185,7 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 				Abort[]
 			];
 
-			FCPrint[1, "FIREPrepareStartFile: Checks done, timing:", N[AbsoluteTime[] - time, 4],  FCDoControl->fpsfVerbose];
+			FCPrint[1, "FIREPrepareStartFile: Checks done, timing:", N[AbsoluteTime[] - time, 4],  FCDoControl->optVerbose];
 		];
 
 		If[ TrueQ[FeynCalc`FCLoopBasis`Private`cartesianIntegralQ[topo[[2]]]],
@@ -182,19 +195,22 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 			dims = Cases[OptionValue[SetDimensions], 4 | _Symbol ]
 		];
 
-		FCPrint[1,"FIREPrepareStartFile: Dimensions: ", dims, FCDoControl->fpsfVerbose];
+		FCPrint[1,"FIREPrepareStartFile: Dimensions: ", dims, FCDoControl->optVerbose];
 
 		If[	!FreeQ2[topo,{TemporalPair,TemporalMomentum}],
 			Message[FIREPrepareStartFile::failmsg, "Explicit temporal components are not supported."];
 			Abort[]
 		];
 
-		FCPrint[1, "FIREPrepareStartFile: Applying FCLoopPropagatorsToTopology.", FCDoControl->fpsfVerbose];
+		FCPrint[1, "FIREPrepareStartFile: Applying FCLoopPropagatorsToTopology.", FCDoControl->optVerbose];
 		time=AbsoluteTime[];
 
 		propagators = FCLoopPropagatorsToTopology[topo,FCI->True,ExpandScalarProduct->True];
 
-		FCPrint[1, "FIREPrepareStartFile: FCLoopPropagatorsToTopology done, timing:", N[AbsoluteTime[] - time, 4],  FCDoControl->fpsfVerbose];
+		FCPrint[1, "FIREPrepareStartFile: FCLoopPropagatorsToTopology done, timing:", N[AbsoluteTime[] - time, 4],  FCDoControl->optVerbose];
+
+		FCPrint[3, "FIREPrepareStartFile: Output of FCLoopPropagatorsToTopology: ", propagators, FCDoControl->optVerbose];
+
 
 		topoName = ToString[topo[[1]]];
 		internal = topo[[3]];
@@ -202,7 +218,6 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 		(*TODO: More freedom here*)
 		dir = FileNameJoin[{dirRaw,topoName}];
 
-		FCPrint[3, "FIREPrepareStartFile: Output of FCLoopPropagatorsToTopology: ", propagators, FCDoControl->fpsfVerbose];
 
 		{propagators, replacements} =  {propagators, topo[[5]]} /. {
 			Hold[SPD][a_] -> momHold[a]^2,
@@ -260,10 +275,10 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 		];
 
 
-		FCPrint[3,"FIREPrepareStartFile: prepareFIRE: FIRE's Internal: ", StandardForm[internal], FCDoControl->fpsfVerbose];
-		FCPrint[3,"FIREPrepareStartFile: prepareFIRE: FIRE's External: ", StandardForm[external], FCDoControl->fpsfVerbose];
-		FCPrint[3,"FIREPrepareStartFile: prepareFIRE: FIRE's Propagators: ", StandardForm[propagators], FCDoControl->fpsfVerbose];
-		FCPrint[3,"FIREPrepareStartFile: prepareFIRE: FIRE's Replacements: ", StandardForm[replacements], FCDoControl->fpsfVerbose];
+		FCPrint[3,"FIREPrepareStartFile: prepareFIRE: FIRE's Internal: ", StandardForm[internal], FCDoControl->optVerbose];
+		FCPrint[3,"FIREPrepareStartFile: prepareFIRE: FIRE's External: ", StandardForm[external], FCDoControl->optVerbose];
+		FCPrint[3,"FIREPrepareStartFile: prepareFIRE: FIRE's Propagators: ", StandardForm[propagators], FCDoControl->optVerbose];
+		FCPrint[3,"FIREPrepareStartFile: prepareFIRE: FIRE's Replacements: ", StandardForm[replacements], FCDoControl->optVerbose];
 
 		If[	!DirectoryQ[dir],
 			status = CreateDirectory[dir];
@@ -276,7 +291,7 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 		filePath = FileNameJoin[{dir,"CreateStartFile.m"}];
 
 
-		FCPrint[3,"FIREPrepareStartFile: Script path: ", filePath, FCDoControl->fpsfVerbose];
+		FCPrint[3,"FIREPrepareStartFile: Script path: ", filePath, FCDoControl->optVerbose];
 
 		If[	FileExistsQ[filePath] && !optOverwriteTarget,
 			Message[FIREPrepareStartFile::failmsg, "The file ", filePath, " already exists and the option OverwriteTarget is set to False."];
@@ -401,7 +416,7 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 		If[	optFIREUseLiteRed,
 				filePathLR = FileNameJoin[{dir,"CreateLiteRedFiles.m"}];
 
-				FCPrint[3,"FIREPrepareStartFile: LiteRed script path: ", filePathLR, FCDoControl->fpsfVerbose];
+				FCPrint[3,"FIREPrepareStartFile: LiteRed script path: ", filePathLR, FCDoControl->optVerbose];
 
 				If[	FileExistsQ[filePathLR] && !optOverwriteTarget,
 					Message[FIREPrepareStartFile::failmsg, "The file ", filePathLR, " already exists and the option OverwriteTarget is set to False."];
@@ -465,7 +480,10 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 				WriteString[fileLR, lrFileString];
 
 				Close[fileLR];
+
+
 		];
+
 
 		If[	TrueQ[optFIREUseLiteRed],
 			{filePath,filePathLR},
