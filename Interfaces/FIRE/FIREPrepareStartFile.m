@@ -111,8 +111,8 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 			replacements, file, filePath, optOverwriteTarget, status, optFIREPath, topoName,
 			check, time, optStringReplace, startFileString, optFIREAutoDetectRestrictions,
 			optFIREParallel, optFIRELI, prepareOptionsString, optFIREUseLiteRed, filePathLR,
-			lrFileString, fileLR, optFIREProblemId, fileNameJoin, directoryName
-			},
+			lrFileString, fileLR, optFIREProblemId, fileNameJoin, directoryName, momHold,
+			extMomsRHS, optVerbose},
 
 		If[	OptionValue[FCVerbose]===False,
 			fpsfVerbose=$VeryVerbose,
@@ -195,22 +195,36 @@ FIREPrepareStartFile[topoRaw_FCTopology, dirRaw_String, OptionsPattern[]] :=
 
 		FCPrint[1, "FIREPrepareStartFile: FCLoopPropagatorsToTopology done, timing:", N[AbsoluteTime[] - time, 4],  FCDoControl->fpsfVerbose];
 
+		topoName = ToString[topo[[1]]];
+		internal = topo[[3]];
+		external = topo[[4]];
+		(*TODO: More freedom here*)
+		dir = FileNameJoin[{dirRaw,topoName}];
+
 		FCPrint[3, "FIREPrepareStartFile: Output of FCLoopPropagatorsToTopology: ", propagators, FCDoControl->fpsfVerbose];
 
 		{propagators, replacements} =  {propagators, topo[[5]]} /. {
-			Hold[SPD][a_] -> a^2,
-			Hold[CSPD][a_] -> a^2,
-			Hold[SPD][a_, b_] -> a b,
-			Hold[CSPD][a_, b_] -> a b,
-			Pair[Momentum[a_,___],Momentum[b_,___]] -> a b,
-			CartesianPair[CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b,
-			Hold[Pair][Momentum[a_,___],Momentum[b_,___]] -> a b,
-			Hold[CartesianPair][CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> a b
+			Hold[SPD][a_] -> momHold[a]^2,
+			Hold[CSPD][a_] -> momHold[a]^2,
+			Hold[SPD][a_, b_] -> momHold[a] momHold[b],
+			Hold[CSPD][a_, b_] -> momHold[a] momHold[b],
+			Pair[Momentum[a_,___],Momentum[b_,___]] -> momHold[a] momHold[b],
+			CartesianPair[CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> momHold[a] momHold[b],
+			Hold[Pair][Momentum[a_,___],Momentum[b_,___]] -> momHold[a] momHold[b],
+			Hold[CartesianPair][CartesianMomentum[a_,___],CartesianMomentum[b_,___]] -> momHold[a] momHold[b]
 		};
 
 		replacements = Join[replacements,OptionValue[FinalSubstitutions]];
-
 		replacements = SelectFree[replacements,{TemporalMomentum,Polarization}];
+
+		(*Sort out replacement rules for external momenta not present in this topology*)
+		extMomsRHS = (Cases2[#,momHold]&/@First/@replacements)/. momHold->Identity;
+
+		replacements = MapThread[If[!SubsetQ[external,#1],
+			Unevaluated[Sequence[]],
+			#2]&, {extMomsRHS,replacements}];
+
+		{propagators, replacements}  = {propagators, replacements} /. momHold->Identity;
 
 		check = ToString /@ (Variables2[Last /@ replacements]);
 
@@ -243,12 +257,6 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 			Message[FIREPrepareStartFile::failmsg, "Failed to convert the given propagators into FIRE notation."];
 			Abort[]
 		];
-
-		topoName = ToString[topo[[1]]];
-		internal = topo[[3]];
-		external = topo[[4]];
-		(*TODO: More freedom here*)
-		dir = FileNameJoin[{dirRaw,topoName}];
 
 
 		FCPrint[3,"FIREPrepareStartFile: prepareFIRE: FIRE's Internal: ", StandardForm[internal], FCDoControl->fpsfVerbose];
