@@ -85,6 +85,7 @@ optComplex::usage="";
 
 Options[FIREPrepareStartFile] = {
 	Check						-> True,
+	CreateArchive				-> False,
 	DateString					-> False,
 	FCI							-> False,
 	FCVerbose					-> False,
@@ -92,8 +93,8 @@ Options[FIREPrepareStartFile] = {
 	FIREAutoDetectRestrictions	-> True,
 	FIRELI 						-> True,
 	FIREProblemId				-> 4242,
-	FIREParallel				-> 2,
-	FIREPath 					-> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE7", "FIRE7.m"}],
+	FIREParallel				:> Ceiling[$ProcessorCount/2],
+	FIREPath 					:> FileNameJoin[{$UserBaseDirectory, "Applications", "FIRE7", "FIRE7.m"}],
 	FIREUseLiteRed				-> True,
 	OverwriteTarget				-> True,
 	SetDimensions				-> {3, 4, D, D-1},
