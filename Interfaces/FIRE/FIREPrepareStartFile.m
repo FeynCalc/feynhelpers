@@ -326,7 +326,17 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 					"LaunchKernels[" <> ToString[optFIREParallel] <> "];",
 					Unevaluated[Sequence[]]
 			],
-			"\n\n\n",
+
+			If[	optFIREUseLiteRed,
+				Unevaluated[Sequence["\n\n\n",
+				"lrDir=FileNameJoin[{Directory[],\"LR\"}];\n",
+				"If[ !FileExistsQ[lrDir] || (Length[FileNames[All,lrDir<8]]),\n",
+						"    Print[\"No LiteRed files found.\"];\n",
+						"    Quit[1]\n",
+						"];\n",
+				"\n\n"]],
+				"\n\n"
+			],
 			"Internal=" <> ToString[internal,InputForm] <> ";\n",
 			"External=" <> ToString[external,InputForm] <> ";\n",
 			"Propagators=" <> ToString[propagators,InputForm] <> ";\n",
@@ -337,13 +347,43 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 
 			If[optFIREUseLiteRed,
 				Unevaluated[Sequence[
-					"TransformRules[FileNameJoin[{Directory[],\"LR\"}],\""<>ToString[topoName]<>".lbases\","<>ToString[optFIREProblemId]<>"];\n",
+					"TransformRules[lrDir,\""<>ToString[topoName]<>".lbases\","<>ToString[optFIREProblemId]<>"];\n",
 					"SaveSBases[\""<>ToString[topoName]<>"\"];\n"
 				]],
-
 				"SaveStart["<> ToString[topoName,InputForm]  <>"];\n"
-			]
+			],
 
+			If[optFIREUseLiteRed,
+				Unevaluated[Sequence[
+					"\n\n",
+					"If[ !FileExistsQ[\""<>ToString[topoName]<>".lbases\""<>"],\n",
+						"    Print[\"Failed to create the .lbases file.\"];\n",
+						"    Quit[1]\n",
+					"];\n",
+					"If[ !FileExistsQ[\""<>ToString[topoName]<>".sbases\""<>"],\n",
+						"    Print[\"Failed to create the .sbases file.\"];\n",
+						"    Quit[1]\n",
+					"];\n"
+					]],
+				Unevaluated[Sequence[
+					"\n\n",
+					"If[ !FileExistsQ[\""<>ToString[topoName]<>".start\""<>"],\n",
+						"    Print[\"Failed to create the .start file.\"];\n",
+						"    Quit[1]\n",
+					"];\n"
+					]]
+			],
+
+			If[	optFIREUseLiteRed && OptionValue[CreateArchive],
+				Unevaluated[Sequence[
+					"\n\n",
+					"zipFile=CreateArchive[lrDir,OverwriteTarget->True];\n",
+					"If[ FileExistsQ[zipFile],\n",
+					"    DeleteDirectory[lrDir,DeleteContents->True]\n",
+					"];\n"
+					]],
+				Unevaluated[Sequence[]]
+			]
 
 		};
 
@@ -395,11 +435,23 @@ p3}, {q}, {Pair[Momentum[q, D], Momentum[q, D]] -> mb^2}, {}]
 					"External=" <> ToString[external,InputForm] <> ";\n",
 					"Propagators=" <> ToString[propagators,InputForm] <> ";\n",
 					"Replacements=" <> ToString[replacements,InputForm] <> ";\n",
-					"Quiet[CreateNewBasis[topology, Directory->FileNameJoin[{Directory[],\"LR\"}]], {DiskSave::overwrite,DiskSave::dir}];\n",
+					"\n\n",
+					"lrDir=FileNameJoin[{Directory[],\"LR\"}];\n",
+					"If[ FileExistsQ[lrDir],\n",
+					"    DeleteDirectory[lrDir,DeleteContents->True]\n",
+					"];\n",
+					"\n\n",
+					"Quiet[CreateNewBasis[topology, Directory->lrDir], {DiskSave::overwrite,DiskSave::dir}];\n",
 					"Quiet[GenerateIBP[topology], FrontEndObject::notavail];\n",
 					"Quiet[AnalyzeSectors[topology], FrontEndObject::notavail];\n",
 					"Quiet[FindSymmetries[topology, EMs->True], FrontEndObject::notavail];\n",
-					"Quiet[DiskSave[topology], {DiskSave::overwrite,DiskSave::dir}];\n"
+					"Quiet[DiskSave[topology], {DiskSave::overwrite,DiskSave::dir}];\n",
+					"If[ !FileExistsQ[lrDir] || (Length[FileNames[All,lrDir<8]]),\n",
+					"    Print[\"Failed to create LiteRed files.\"];\n",
+					"    Quit[1]\n",
+					"];\n",
+					"Print[\"Done generating LiteRed files.\"];\n",
+					"Quit[];\n"
 				};
 
 
